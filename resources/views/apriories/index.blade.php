@@ -40,87 +40,40 @@
           </div>
         </div>
         
-        @if ($orders && $orders->total() > 0)
+        @if (!is_null($products) && $products->count() > 0)
         <div class="card mb-4">
-          <div class="card-header pb-0">
-            
+          <div class="card-header pb-0">    
           <div class="card-body px-0 pt-0 pb-2">
             <div class="table-responsive p-0">
               <table class="table align-items-center mb-0">
                 <thead>
                   <tr>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nama Pembeli</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Alamat</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">No HP</th>
-                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Produk</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Order Via</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">TGL Order</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">TGL Kirim</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Title</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Background</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Request</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Keterangan</th>
-                    <th class="text-secondary opacity-7"></th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Produk</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Jumlah</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Hasil Support</th>
                   </tr>
                 </thead>
                 <tbody>
-                  @foreach ($orders as $order)
+                  @foreach ($products as $product)
                   <tr>
-                    <td>
-                      <span class="badge badge-sm bg-gradient-success">{{ $order->status }}</span>
+                    <td class="align-middle">
+                      <p class="text-xs font-weight-bold mb-0">{{ $product->nama }}</p>
                     </td>
                     <td>
-                      <h6 class="mb-0 text-sm">{{ $order->nama_pembeli }}</h6>
-                    </td>
-                    <td class="align-middle text-center">
-                      <p class="text-xs font-weight-bold mb-0">{{ $order->alamat }}</p>
-                    </td>
-                    
-                    <td class="align-middle text-center">
-                      <span class="text-secondary text-xs font-weight-bold">{{ $order->no_hp }}</span>
-                    </td>
-                    <td class="align-middle text-center">
-                      <p class="text-xs font-weight-bold mb-0">{{ optional($order->product)->nama }}</p>
+                      <p class="text-xs font-weight-bold mb-0">{{ $product->orders_count }}</p>
                     </td>
                     <td>
-                      <p class="text-xs font-weight-bold mb-0">{{ $order->order_via }}</p>
-                    </td>
-                    <td>
-                      <p class="text-xs font-weight-bold mb-0">{{ Carbon\Carbon::parse($order->tgl_order)->isoFormat('DD MMM YYYY') }}</p>
-                    </td>
-                    <td>
-                      <p class="text-xs font-weight-bold mb-0">{{ Carbon\Carbon::parse($order->tgl_kirim)->isoFormat('DD MMM YYYY') }}</p>
-                    </td>
-                    <td>
-                      <p class="text-xs font-weight-bold mb-0">{{ $order->title }}</p>
-                    </td>
-                    <td>
-                      <p class="text-xs font-weight-bold mb-0">{{ $order->background }}</p>
-                    </td>
-                    <td>
-                      <p class="text-xs font-weight-bold mb-0">{{ $order->request }}</p>
-                    </td>
-                    <td>
-                      <p class="text-xs font-weight-bold mb-0">{{ $order->keterangan }}</p>
-                    </td>
-                    <td>
-                      <p class="text-xs font-weight-bold mb-0">-</p>
+                      <p class="text-xs font-weight-bold mb-0">{{ $jumlahMinSupport[$product->id] }} %</p>
                     </td>
                   </tr>
                   @endforeach
                 </tbody>
               </table>
             </div>
-            <div class="card-footer pagination float-end">
-              {{ $orders->withQueryString()->links() }}
-            </div>
           </div>
         </div>
-          @endif
-        
+        @endif
       </div>
-      
     </div>
   </div>
 </div>

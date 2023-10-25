@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,41 +19,57 @@ class ProsesAprioriController extends Controller
             [$startDate, $endDate] = explode(' - ', $date);
             $startDate = date('Y-m-d', strtotime($startDate));
             $endDate = date('Y-m-d', strtotime($endDate));
-            // $products = Product::with([
-            //     'orders' => function($query) use ($startDate, $endDate){
-            //         $query->whereBetween('tgl_order', [$startDate, $endDate]);
-            //     }
-            // ])
-            //     ->withCount('orders')
-            //     ->whereHas('orders', function($query) use ($startDate, $endDate){
-            //         $query->whereBetween('tgl_order', [$startDate, $endDate]);
-            //     })
-            //     ->get();
+            $products = Product::with([
+                'order' => function($query) use ($startDate, $endDate){
+                    $query->whereBetween('tgl_order', [$startDate, $endDate]);
+                }
+            ])
+                ->withCount(['orders' => function($query) use ($startDate, $endDate){
+                    $query->whereBetween('tgl_order', [$startDate, $endDate]);
+                }])
+                ->whereHas('order', function($query) use ($startDate, $endDate){
+                    $query->whereBetween('tgl_order', [$startDate, $endDate]);
+                })
+                ->get();
 
+                $productsCount = $products->count(); // Mendapatkan jumlah total produk
 
+                $jumlahMinSupport = [];
 
-            $orders = Order::with('product')
-                ->whereBetween('tgl_order', [$startDate, $endDate]);
+                foreach ($products as $product) {
+                    $jumlah = ($product->orders_count / $productsCount) * 100;
+                    $jumlahMinSupport[$product->id] = $jumlah;
+                }
 
-            // $this->prosesApriori($orders, $request);
-
-            $orders = $orders->paginate(10);
+                // Memfilter produk dengan >= $minSupport
+                $products = $products->filter(function($product) use ($minSupport, $jumlahMinSupport) {
+                    return $jumlahMinSupport[$product->id] >= $minSupport;
+                });
         }else{
-            $orders = null;
+            $products = null;
+            $jumlahMinSupport = null;
         }
+
         
-        return view('apriories.index', compact(['title','orders']));
+        return view('apriories.index', compact(['title','products','jumlahMinSupport']));
     }
 
-    public function prosesApriori($orders, $request) {
-        $orders = $orders->select('produk_id')
-            ->groupBy('produk_id')
-            ->get();
-            
-        foreach ($orders as $order) {
-            $produk = Product::withCount('orders')
-                ->find($order->produk_id);
+    public function support($products, $minSupport) {
+        $productsCount = $products->count(); // Mendapatkan jumlah total produk
+
+        $jumlahMinSupport = [];
+
+        foreach ($products as $product) {
+            $jumlah = ($product->orders_count / $productsCount) * 100;
+            $jumlahMinSupport[$product->id] = $jumlah;
         }
+
+        // Memfilter produk dengan >= $minSupport
+        $products = $products->filter(function($product) use ($minSupport, $jumlahMinSupport) {
+            $jumlahMinSupport = $jumlahMinSupport[$product->id] >= $minSupport;
+        });
+
+        return $jumlahMinSupport;
     }
 
     public function _prosesApriori()
