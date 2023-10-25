@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Imports\OrderImport;
+use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Excel as ExcelType;
+
+class OrderImportController extends Controller
+{
+    /**
+     * Handle the incoming request.
+     */
+    public function store(Request $request)
+    {
+        try {
+
+            $request->validate([
+                'template' => 'required|mimes:xlsx,xls|file|max:200'
+            ]);
+
+            $file = $request->file('template')->getRealPath();
+
+            $import = new OrderImport();
+            
+            Excel::import($import, $file, null, ExcelType::XLSX);
+
+            // $file = $request->file('template');
+            // Excel::import(new OrderImport, $file);
+            
+            
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            toast('Data Penjualan gagal diimport', 'error');
+            return redirect()->back();
+        }
+        
+        return redirect()->back()->with('success','Data penjualan success diimport..');
+    }
+}
