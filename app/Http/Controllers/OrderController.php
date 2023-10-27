@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateOrderRequest;
 use App\Models\DetailOrder;
 use App\Models\Order;
 use App\Models\Product;
@@ -32,25 +33,9 @@ class OrderController extends Controller
         return view('orders.create', compact(['title']));
     }
 
-    public function store(Request $request)
+    public function store(CreateOrderRequest $request)
     {
         try {
-            $request->validate([
-                'status' => ['required'],
-                'nama_pembeli' => ['required'],
-                'alamat' => ['required'],
-                'no_hp' => ['required'],
-                'produk_id' => ['required'],
-                'qty' => ['required'],
-                'order_via' => ['required'],
-                'tgl_order' => ['required', 'date', 'before_or_equal:tgl_kirim'],
-                'tgl_kirim' => ['required', 'date', 'after_or_equal:tgl_order'],
-                'title' => ['required'],
-                'background' => ['required'],
-                'request' => ['required'],
-                'keterangan' => ['required']
-            ]);
-
             $productId = $request->input('produk_id');
             $product = Product::find($productId);
 
