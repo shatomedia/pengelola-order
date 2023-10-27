@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->integer('no_urut')->unique();
+            $table->string('no_faktur');
             $table->string('status');
             $table->string('nama_pembeli');
             $table->string('alamat');
@@ -25,6 +27,8 @@ return new class extends Migration
             $table->string('background');
             $table->string('request');
             $table->string('keterangan');
+            $table->integer('Total_qty');
+            $table->integer('Total_harga_jual');
             $table->timestamps();
 
             $table->foreign('produk_id')->references('id')->on('products')->onDelete('restrict');
