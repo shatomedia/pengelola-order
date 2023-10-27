@@ -10,6 +10,7 @@ use App\Http\Controllers\OrderImportController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProsesAprioriController;
+use App\Http\Controllers\SelectProductController;
 use App\Http\Controllers\TemplateOrderController;
 use App\Http\Controllers\UserManageController;
 use Illuminate\Support\Facades\Route;
@@ -63,6 +64,7 @@ Route::middleware('auth')->group(function() {
     Route::get('/product-category/{id}/edit', [ProductCategoryController::class, 'edit']);
     Route::put('/product-category/{id}', [ProductCategoryController::class, 'update']);
     Route::delete('/product-category/{id}', [ProductCategoryController::class, 'destroy']);
+    Route::get('/select-product', [SelectProductController::class, 'index'])->name('select-product');
 
     Route::get('/proses-apriori', [ProsesAprioriController::class, 'index']);
 

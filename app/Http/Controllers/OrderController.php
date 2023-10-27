@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DetailOrder;
 use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -30,28 +34,76 @@ class OrderController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nama' => 'required',
-            'kategori_id' => 'required',
-            'stok' => 'required',
-            'satuan' => 'required',
-        ]);
-        Order::create([
-            'status' => $request->status,
-            'nama_pembeli' => $request->nama_pembeli,
-            'alamat' => $request->alamat,
-            'no_hp' => $request->no_hp,
-            'produk_id' => $request->produk_id,
-            'order_via' => $request->order_via,
-            'tgl_order' => $request->tgl_order,
-            'tgl_kirim' => $request->tgl_kirim,
-            'title' => $request->title,
-            'background' => $request->background,
-            'request' => $request->request,
-            'keterangan' => $request->keterangan
-        ]);
+        try {
+            $request->validate([
+                'status' => ['required'],
+                'nama_pembeli' => ['required'],
+                'alamat' => ['required'],
+                'no_hp' => ['required'],
+                'produk_id' => ['required', 'array'],
+                'produk_id.*' => ['required'],
+                'qty' => ['required', 'array'],
+                'qty.*' => ['required'],
+                'order_via' => ['required'],
+                'tgl_order' => ['required', 'date', 'before_or_equal:tgl_kirim'],
+                'tgl_kirim' => ['required', 'date', 'after_or_equal:tgl_order'],
+                'title' => ['required'],
+                'background' => ['required'],
+                'request' => ['required'],
+                'keterangan' => ['required']
+            ]);
 
-        return redirect('/order')->with('success','Data Penjualan berhasil ditambahkan.');
+            $productIds = $request->input('produk_id');
+            $qty = $request->input('qty');
+
+            DB::transaction(function () use ($productIds, $qty, $request){
+                $order = New Order();
+                $order->status = $request->input('status');
+                $order->nama_pembeli = $request->input('nama_pembeli');
+                $order->alamat = $request->input('alamat');
+                $order->no_hp = $request->input('no_hp');
+                $order->order_via = $request->input('order_via');
+                $order->tgl_order = $request->input('tgl_order');
+                $order->tgl_kirim = $request->input('tgl_kirim');
+                $order->title = $request->input('title');
+                $order->background = $request->input('background');
+                $order->request = $request->input('request');
+                $order->keterangan = $request->input('keterangan');
+                $order->save();
+
+                foreach ($productIds as $key => $productId){
+                    $product = Product::find($productId);
+
+                    $detailOrder = New DetailOrder();
+                    $detailOrder->order_id = $order->id;
+                    $detailOrder->produk_id = $productId;
+                    $detailOrder->qty = $qty[$key];
+
+                    $subTotal = $detailOrder->qty * intval($product->harga);
+
+                    $detailOrder->sub_total = $subTotal;
+                    $detailOrder->save();
+                }
+
+                $updateOrder = Order::with('detailOrders')
+                    ->withSum('detailOrders', 'qty')
+                    ->withSum('detailOrders', 'sub_total')
+                    ->find($order->id);
+
+                $updateOrder->total_qty = $updateOrder->detail_orders_sum_qty;
+                $updateOrder->total_harga_jual = $updateOrder->detail_orders_sum_sub_total;
+                $updateOrder->save();
+            });
+
+            alert()->success('success','Data Penjualan berhasil ditambahkan.');
+
+            return redirect('/order');
+        }catch (\Throwable $throwable){
+            Log::error($throwable->getMessage());
+            alert()->error('Oops', 'Data Error');
+
+            return redirect()->back();
+        }
     }
 
     public function edit($id)

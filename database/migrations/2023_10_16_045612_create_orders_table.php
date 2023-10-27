@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('nama_pembeli');
             $table->string('alamat');
             $table->string('no_hp');
-            $table->bigInteger('produk_id')->unsigned();
             $table->string('order_via');
             $table->date('tgl_order');
             $table->date('tgl_kirim');
@@ -27,11 +26,9 @@ return new class extends Migration
             $table->string('background');
             $table->string('request');
             $table->string('keterangan');
-            $table->integer('Total_qty');
-            $table->integer('Total_harga_jual');
+            $table->integer('total_qty')->nullable();
+            $table->integer('total_harga_jual')->nullable();
             $table->timestamps();
-
-            $table->foreign('produk_id')->references('id')->on('products')->onDelete('restrict');
         });
     }
 

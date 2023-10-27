@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class DetailOrder extends Model
 {
-    use HasFactory;
+    protected $fillable = [
+        'produk_id',
+        'order_id',
+        'qty',
+        'sub_total'
+    ];
 }

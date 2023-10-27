@@ -16,13 +16,19 @@
             @endforeach
           </ul>
         </div>
-          
+
         @endif
         <form action="/order" method="POST">
           @csrf
           <div class="form-group">
             <label for="inputStatus">Status</label>
-            <input name="status" type="text" class="form-control" id="inputStatus" aria-describedby="inputStatus" placeholder="Status">
+              <select name="status" class="form-control select2" id="inputStatus">
+                  <option value="">Pilih</option>
+                  <option value="Pending" {{ old('status') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                  <option value="Diproses" {{ old('status') == 'Diproses' ? 'selected' : '' }}>Diproses</option>
+                  <option value="Dikirim" {{ old('status') == 'Dikirim' ? 'selected' : '' }}>Dikirim</option>
+                  <option value="Batal" {{ old('status') == 'Batal' ? 'selected' : '' }}>Batal</option>
+              </select>
           </div>
           <div class="form-group">
             <label for="inputNamaPembeli">Nama Pembeli</label>
@@ -30,11 +36,11 @@
           </div>
           <div class="form-group">
             <label for="inputNoHp">No HP</label>
-            <input name="no_hp" type="text" class="form-control" id="inputNoHp" aria-describedby="inputNoHp" placeholder="No Hp">
+            <input name="no_hp" type="number" class="form-control" id="inputNoHp" aria-describedby="inputNoHp" placeholder="No Hp">
           </div>
           <div class="form-group">
-            <label for="inputProduk">Produk</label>
-            <input name="produk_id" type="text" class="form-control" id="inputProduk" aria-describedby="inputProduk" placeholder="Produk">
+            <label for="select-product">Produk</label>
+              <select name="product_id" id="select-product" data-placeholder="Pilih" class="custom-select w-100" style="width: 100%"></select>
           </div>
           <div class="form-group">
             <label for="inputOrderVia">Order Via</label>
@@ -42,11 +48,11 @@
           </div>
           <div class="form-group">
             <label for="inputTglOrder">Tgl Order</label>
-            <input name="tgl_order" type="text" class="form-control" id="inputTglOrder" aria-describedby="inputTglOrder" placeholder="Tgl Order">
+            <input name="tgl_order" type="date" class="form-control" id="inputTglOrder" aria-describedby="inputTglOrder" placeholder="Tgl Order">
           </div>
           <div class="form-group">
             <label for="inputTglKirim">Tgl Kirim</label>
-            <input name="tgl_kirim" type="text" class="form-control" id="inputTglKirim" aria-describedby="inputTglKirim" placeholder="Tgl Kirim">
+            <input name="tgl_kirim" type="date" class="form-control" id="inputTglKirim" aria-describedby="inputTglKirim" placeholder="Tgl Kirim">
           </div>
           <div class="form-group">
             <label for="inputTitle">Title</label>
@@ -71,4 +77,8 @@
     </div>
   </div>
 </div>
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('custom/order/select-product.js') }}"></script>
 @endsection

@@ -16,7 +16,7 @@
             @endforeach
           </ul>
         </div>
-          
+
         @endif
         <form action="/product" method="POST">
           @csrf
@@ -24,23 +24,19 @@
             <label for="inputNama">Nama</label>
             <input name="nama" type="text" class="form-control" id="inputNama" aria-describedby="inputNama" placeholder="Nama Produk">
           </div>
-          {{-- <div class="form-group">
-            <label for="inputKategori">Kategori</label>
-            <input name="kategori_id" type="text" class="form-control" id="inputKategori" aria-describedby="inputKategori" placeholder="Kategori">
-          </div> --}}
           <div class="form-group">
             <label for="formControlSelect">Kategori</label>
-            <select required name="kategori_id" class="form-control" id="formControlSelect">
+            <select required name="kategori_id" class="form-control select2" id="formControlSelect">
               <option value="">Pilih</option>
               @foreach ($categories as $category)
-                <option value="{{ $category->id }}" {{ old('kategori_id') == $category->id ? 'selected' : '' }}>{{ $category->nama_kategori }}</option> 
+                <option value="{{ $category->id }}" {{ old('kategori_id') == $category->id ? 'selected' : '' }}>{{ $category->nama_kategori }}</option>
               @endforeach
-              
+
             </select>
           </div>
           <div class="form-group">
             <label for="inputHarga">Harga</label>
-            <input name="harga" type="text" class="form-control" id="inputHarga" aria-describedby="inputHarga" placeholder="Harga">
+            <input name="harga" type="number" class="form-control" id="inputHarga" aria-describedby="inputHarga" placeholder="Harga">
           </div>
           <div class="form-group">
             <label for="inputDeskripsi">Deskripsi</label>
@@ -48,7 +44,7 @@
           </div>
           <div class="form-group">
             <label for="inputStok">Stok</label>
-            <input name="stok" type="text" class="form-control" id="inputStok" aria-describedby="inputStok" placeholder="Stok">
+            <input name="stok" type="number" class="form-control" id="inputStok" aria-describedby="inputStok" placeholder="Stok">
           </div>
           <div class="form-group">
             <label for="inputSatuan">Satuan</label>

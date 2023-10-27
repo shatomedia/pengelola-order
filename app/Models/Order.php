@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Order extends Model
 {
-    use HasFactory;
-    // protected $guarded = ['id'];
     protected $fillable = [
         'status',
         'nama_pembeli',
@@ -21,11 +20,18 @@ class Order extends Model
         'title',
         'background',
         'request',
-        'keterangan'
+        'keterangan',
+        'total_qty',
+        'total_harga_jual'
     ];
 
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class, 'produk_id', 'id');
+    }
+
+    public function detailOrders(): HasMany
+    {
+        return $this->hasMany(DetailOrder::class, 'order_id');
     }
 }
