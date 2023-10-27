@@ -40,10 +40,8 @@ class OrderController extends Controller
                 'nama_pembeli' => ['required'],
                 'alamat' => ['required'],
                 'no_hp' => ['required'],
-                'produk_id' => ['required', 'array'],
-                'produk_id.*' => ['required'],
-                'qty' => ['required', 'array'],
-                'qty.*' => ['required'],
+                'produk_id' => ['required'],
+                'qty' => ['required'],
                 'order_via' => ['required'],
                 'tgl_order' => ['required', 'date', 'before_or_equal:tgl_kirim'],
                 'tgl_kirim' => ['required', 'date', 'after_or_equal:tgl_order'],
@@ -53,10 +51,15 @@ class OrderController extends Controller
                 'keterangan' => ['required']
             ]);
 
-            $productIds = $request->input('produk_id');
-            $qty = $request->input('qty');
+            $productId = $request->input('produk_id');
+            $product = Product::find($productId);
 
-            DB::transaction(function () use ($productIds, $qty, $request){
+            if ($productId > $product->stok){
+                alert()->warning('Stok tidak mencukupi');
+                return redirect()->back();
+            }
+
+            DB::transaction(function () use ($productId, $product, $request){
                 $order = New Order();
                 $order->status = $request->input('status');
                 $order->nama_pembeli = $request->input('nama_pembeli');
@@ -71,20 +74,17 @@ class OrderController extends Controller
                 $order->keterangan = $request->input('keterangan');
                 $order->save();
 
-                foreach ($productIds as $key => $productId){
-                    $product = Product::find($productId);
+                $detailOrder = New DetailOrder();
+                $detailOrder->order_id = $order->id;
+                $detailOrder->produk_id = $product->id;
+                $detailOrder->qty = $request->input('qty');
 
-                    $detailOrder = New DetailOrder();
-                    $detailOrder->order_id = $order->id;
-                    $detailOrder->produk_id = $productId;
-                    $detailOrder->qty = $qty[$key];
+                $subTotal = $detailOrder->qty * intval($product->harga);
 
-                    $subTotal = $detailOrder->qty * intval($product->harga);
+                $detailOrder->sub_total = $subTotal;
+                $detailOrder->save();
 
-                    $detailOrder->sub_total = $subTotal;
-                    $detailOrder->save();
-                }
-
+                /*rekap total qty dan harga jual*/
                 $updateOrder = Order::with('detailOrders')
                     ->withSum('detailOrders', 'qty')
                     ->withSum('detailOrders', 'sub_total')
@@ -93,6 +93,11 @@ class OrderController extends Controller
                 $updateOrder->total_qty = $updateOrder->detail_orders_sum_qty;
                 $updateOrder->total_harga_jual = $updateOrder->detail_orders_sum_sub_total;
                 $updateOrder->save();
+
+                /*update stok produk*/
+                $stok = $product->stok - $updateOrder->total_qty;
+                $product->stok = $stok;
+                $product->save();
             });
 
             alert()->success('success','Data Penjualan berhasil ditambahkan.');

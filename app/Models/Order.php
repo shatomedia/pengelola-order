@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Order extends Model
 {
     protected $fillable = [
+        'no_urut',
+        'no_faktur',
         'status',
         'nama_pembeli',
         'alamat',
@@ -33,5 +35,16 @@ class Order extends Model
     public function detailOrders(): HasMany
     {
         return $this->hasMany(DetailOrder::class, 'order_id');
+    }
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->no_urut = Order::max('no_urut') + 1;
+
+            $model->no_faktur = 'INV-' . str_pad($model->no_urut, 5, '0', STR_PAD_LEFT);
+        });
     }
 }
