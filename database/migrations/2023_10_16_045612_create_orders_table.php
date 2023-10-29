@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('no_urut')->unique();
             $table->string('no_faktur');
-            $table->string('status');
+            $table->enum('status', ['Pending', 'Diproses', 'Dikirim', 'Batal']);
             $table->string('nama_pembeli');
             $table->string('alamat');
             $table->string('no_hp');

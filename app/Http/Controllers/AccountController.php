@@ -11,6 +11,6 @@ class AccountController extends Controller
     {
         $title = 'Akun Saya';
         $accounts = User::get();
-        return view('account.index', compact(['title', 'accounts']));
+        return view('account.index', compact('title', 'accounts'));
     }
 }

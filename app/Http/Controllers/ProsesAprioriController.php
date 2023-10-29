@@ -50,8 +50,8 @@ class ProsesAprioriController extends Controller
             $jumlahMinSupport = null;
         }
 
-        
-        return view('apriories.index', compact(['title','products','jumlahMinSupport']));
+
+        return view('apriories.index', compact('title','products','jumlahMinSupport'));
     }
 
     public function support($products, $minSupport) {
@@ -98,7 +98,7 @@ class ProsesAprioriController extends Controller
         // Hasil akhir
         dd($associationRules);
     }
-    
+
     // Implementasi Algoritma Apriori
     private function generateCandidateItemsets($transactions, $k) {
         $numTransactions = count($transactions);
@@ -153,21 +153,21 @@ class ProsesAprioriController extends Controller
     // Menghitung Confidence dan Memfilter Aturan Asosiasi
     private function generateAssociationRules($prunedItemsets, $minConfidence) {
         $associationRules = [];
-    
+
         foreach ($prunedItemsets as $itemset => $support) {
             $items = explode(',', $itemset);
-    
+
             if (count($items) > 1) {
                 $subsets = $this->getSubsets($items);
-    
+
                 foreach ($subsets as $subset) {
                     $itemsetX = $subset;
                     $itemsetY = array_diff($items, $subset);
                     $supportX = $prunedItemsets[implode(',', $itemsetX)];
                     $supportXY = $support;
-    
+
                     $confidence = $this->calculateConfidence($supportX, $supportXY);
-    
+
                     $associationRules[] = [
                         'itemsetX' => $itemsetX,
                         'itemsetY' => $itemsetY,
@@ -176,41 +176,41 @@ class ProsesAprioriController extends Controller
                 }
             }
         }
-    
+
         // Memfilter aturan asosiasi berdasarkan confidence
         $filteredRules = [];
-    
+
         foreach ($associationRules as $rule) {
             if ($rule['confidence'] >= $minConfidence) {
                 $filteredRules[] = $rule;
             }
         }
-    
+
         return $filteredRules;
     }
 
     private function getSubsets($items) {
         $subsets = [[]];
         $numItems = count($items);
-    
+
         for ($i = 0; $i < $numItems; $i++) {
             $newSubsets = $subsets;
-    
+
             foreach ($newSubsets as &$subset) {
                 array_push($subset, $items[$i]);
             }
-    
+
             $subsets = array_merge($subsets, $newSubsets);
         }
-    
+
         array_shift($subsets);
-    
+
         return $subsets;
     }
-    
+
     private function calculateConfidence($supportX, $supportXY) {
         return $supportXY / $supportX;
     }
-    
-    
+
+
 }

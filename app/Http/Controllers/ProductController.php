@@ -22,19 +22,19 @@ class ProductController extends Controller
     {
         $title = 'Produk';
         $products = Product::with('category')->get();
-        return view('products.index', compact(['title', 'products']));
+        return view('products.index', compact('title', 'products'));
     }
 
     public function create()
     {
         $title = 'Tambah Produk';
         $categories = ProductCategory::get();
-        return view('products.create', compact(['title', 'categories']));
+        return view('products.create', compact('title', 'categories'));
     }
 
     public function store(Request $request)
     {
-        
+
         $request->validate([
             'nama' => 'required',
             'kategori_id' => 'required',
@@ -59,7 +59,7 @@ class ProductController extends Controller
             return redirect()->back()->with('error','Data produk error.');
         }
 
-       
+
 
         return redirect('/product')->with('success','Data kategori produk berhasil ditambahkan.');
     }
@@ -68,7 +68,7 @@ class ProductController extends Controller
     {
         $title = 'Edit Produk';
         $products = Product::find($id);
-        return view('products.edit', compact(['title', 'products']));
+        return view('products.edit', compact('title', 'products'));
     }
 
     public function update(Request $request, $id)
@@ -94,7 +94,7 @@ class ProductController extends Controller
             Log::error($th->getMessage());
             return redirect()->back()->with('error','Data produk error.');
         }
-        
+
 
         return redirect('/product')->with('success','Data produk berhasil diedit.');
     }

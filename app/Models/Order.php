@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Order extends Model
@@ -26,11 +25,6 @@ class Order extends Model
         'total_qty',
         'total_harga_jual'
     ];
-
-    public function product(): BelongsTo
-    {
-        return $this->belongsTo(Product::class, 'produk_id', 'id');
-    }
 
     public function detailOrders(): HasMany
     {

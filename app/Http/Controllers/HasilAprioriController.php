@@ -9,6 +9,6 @@ class HasilAprioriController extends Controller
     public function index()
     {
         $title = "Hasil Apriori";
-        return view('hasilApriori.index', compact(['title']));
+        return view('hasilApriori.index', compact('title'));
     }
 }

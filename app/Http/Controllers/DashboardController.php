@@ -12,12 +12,12 @@ class DashboardController extends Controller
     {
         $this->middleware('permission:dashboard', ['only' => ['index']]);
     }
-    
+
     public function index()
     {
         $title = 'Dashboard';
         $orders = Order::get();
         $products = Product::get();
-        return view('dashboard.index', compact(['title', 'products', 'orders']));
+        return view('dashboard.index', compact('title', 'products', 'orders'));
     }
 }

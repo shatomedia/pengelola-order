@@ -19,18 +19,18 @@ class ProductCategoryController extends Controller
     {
         $title = 'Kategori Produk';
         $productcategories = ProductCategory::all();
-        return view('product_categories.index', compact(['title', 'productcategories']));
+        return view('product_categories.index', compact('title', 'productcategories'));
     }
 
     public function create()
     {
         $title = 'Tambah Kategori Produk';
-        return view('product_categories.create', compact(['title']));
+        return view('product_categories.create', compact('title'));
     }
 
     public  function store(Request $request)
     {
-        
+
         $request->validate([
             'nama_kategori' => 'required'
         ]);
@@ -46,7 +46,7 @@ class ProductCategoryController extends Controller
     {
         $title = 'Edit Kategori Produk';
         $productcategories = ProductCategory::find($id);
-        return view('product_categories.edit', compact(['title', 'productcategories']));
+        return view('product_categories.edit', compact('title', 'productcategories'));
     }
 
     public function update(Request $request, $id)

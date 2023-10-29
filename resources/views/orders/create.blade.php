@@ -39,6 +39,10 @@
                             <input name="no_hp" type="number" class="form-control" id="inputNoHp" aria-describedby="inputNoHp" placeholder="No Hp" value="{{ old('no_hp') }}" required>
                         </div>
                         <div class="form-group">
+                            <label for="alamat">Alamat</label>
+                            <textarea name="alamat" id="alamat" class="form-control" placeholder="Alamat Lengkap" required>{{ old('alamat') }}</textarea>
+                        </div>
+                        <div class="form-group">
                             <label for="select-product">Produk</label>
                             <select id="select-product" name="produk_id" data-placeholder="Pilih & Cari" class="form-control select2" style="width: 100%" required></select>
                         </div>
@@ -52,11 +56,11 @@
                         </div>
                         <div class="form-group">
                             <label for="inputTglOrder">Tgl Order</label>
-                            <input name="tgl_order" type="date" class="form-control" id="inputTglOrder" aria-describedby="inputTglOrder"value="{{ old('tgl_order') }}" placeholder="Tgl Order" required>
+                            <input name="tgl_order" type="text" class="form-control datepicker" id="inputTglOrder" aria-describedby="inputTglOrder"value="{{ old('tgl_order') }}" placeholder="Tgl Order" required>
                         </div>
                         <div class="form-group">
                             <label for="inputTglKirim">Tgl Kirim</label>
-                            <input name="tgl_kirim" type="date" class="form-control" id="inputTglKirim" aria-describedby="inputTglKirim" value="{{ old('tgl_kirim') }}" placeholder="Tgl Kirim" required>
+                            <input name="tgl_kirim" type="text" class="form-control datepicker" id="inputTglKirim" aria-describedby="inputTglKirim" value="{{ old('tgl_kirim') }}" placeholder="Tgl Kirim" required>
                         </div>
                         <div class="form-group">
                             <label for="inputTitle">Title</label>

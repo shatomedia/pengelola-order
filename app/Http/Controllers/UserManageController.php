@@ -19,8 +19,6 @@ class UserManageController extends Controller
     {
         $title = 'User Management';
         $users = User::get();
-        return view('user_management.index', compact(['title', 'users']));
+        return view('user_management.index', compact('title', 'users'));
     }
-
-    
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DetailOrder extends Model
 {
@@ -12,4 +13,9 @@ class DetailOrder extends Model
         'qty',
         'sub_total'
     ];
+
+    public function produk(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
+    }
 }

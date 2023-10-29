@@ -9,6 +9,6 @@ class LaporanPenjualanController extends Controller
     public function index()
     {
         $title = "Laporan Penjualan";
-        return view('laporanPenjualan.index', compact(['title']));
+        return view('laporanPenjualan.index', compact('title'));
     }
 }

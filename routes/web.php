@@ -42,12 +42,15 @@ Route::middleware('auth')->group(function() {
 
     Route::get('/dashboard', [DashboardController::class, 'index']);
 
-    Route::get('/order', [OrderController::class, 'index']);
-    Route::post('/order', [OrderController::class, 'store']);
-    Route::get('/order/create', [OrderController::class, 'create']);
-    Route::get('/order/{id}/edit', [OrderController::class, 'edit']);
-    Route::put('/order/{id}', [OrderController::class, 'update']);
-    Route::delete('/order/{id}', [OrderController::class, 'destroy']);
+    Route::prefix('order')->group(function (){
+        Route::get('/', [OrderController::class, 'index'])->name('order.index');
+        Route::post('/order', [OrderController::class, 'store'])->name('order.store');
+        Route::get('/create', [OrderController::class, 'create'])->name('order.create');
+        Route::get('/{id}/edit', [OrderController::class, 'edit'])->name('order.edit');
+        Route::put('/{id}/update', [OrderController::class, 'update'])->name('order.update');
+        Route::delete('/{id}/delete', [OrderController::class, 'destroy'])->name('order.destroy');
+        Route::post('/{id}/add-order-product', [OrderController::class, 'newProduct'])->name('order.new-product');
+    });
 
     Route::post('/order-import', [OrderImportController::class, 'store']);
 
