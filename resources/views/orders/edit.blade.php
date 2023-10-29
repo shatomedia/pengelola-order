@@ -89,6 +89,7 @@
                             <th>Nama Item</th>
                             <th>Sub Qty</th>
                             <th>Sub Total</th>
+                            <th>Opsi</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -97,6 +98,14 @@
                                 <td>{{ optional($detailOrder->produk)->nama }}</td>
                                 <td>{{ $detailOrder->qty }} {{ optional($detailOrder->produk)->satuan }}</td>
                                 <td>Rp {{ number_format($detailOrder->sub_total,0,',','.') }}</td>
+                                <td>
+                                    <form action="{{ route('detail-order.delete', $detailOrder->id) }}" method="post">
+                                        @csrf
+                                        @method('DELETE')
+                                        <input type="hidden" name="order_id" value="{{ $order->id }}">
+                                        <button type="submit" class="btn btn-sm btn-danger btn-delete-confirm">Hapus</button>
+                                    </form>
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>
@@ -114,7 +123,7 @@
                                     <span aria-hidden="true">×</span>
                                 </button>
                             </div>
-                            <form action="{{ route('order.new-product', $order->id) }}" method="post">
+                            <form action="{{ route('detail-order.store', $order->id) }}" method="post">
                                 @csrf
                                 <div class="modal-body">
                                     <input type="hidden" name="order_id" value="{{ $order->id }}">

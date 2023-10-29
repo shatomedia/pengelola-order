@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\AddOrderProdukRequest;
 use App\Http\Requests\CreateOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Models\DetailOrder;
 use App\Models\Order;
 use App\Models\Product;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -80,8 +78,8 @@ class OrderController extends Controller
                     ->withSum('detailOrders', 'sub_total')
                     ->find($order->id);
 
-                $updateOrder->total_qty = $updateOrder->detail_orders_sum_qty;
-                $updateOrder->total_harga_jual = $updateOrder->detail_orders_sum_sub_total;
+                $updateOrder->total_qty = $detailOrder->qty;
+                $updateOrder->total_harga_jual = $detailOrder->sub_total;
                 $updateOrder->save();
 
                 /*update stok produk*/
@@ -105,6 +103,8 @@ class OrderController extends Controller
     {
         $title = 'Edit Penjualan';
         $order = Order::with('detailOrders')
+            ->withSum('detailOrders', 'sub_total')
+            ->withSum('detailOrders', 'qty')
             ->findOrFail($id);
         $products = Product::with('detailOrder')
             ->whereDoesntHave('detailOrder', function ($query) use ($order){
@@ -166,54 +166,6 @@ class OrderController extends Controller
         }catch (\Throwable $throwable){
             Log::error($throwable->getMessage());
             alert()->erro('Oops', 'Data error');
-        }
-
-        return redirect()->back();
-    }
-
-    public function newProduct(AddOrderProdukRequest $request, $id)
-    {
-        try {
-            $productId = $request->input('produk_id');
-            $qty = $request->input('qty');
-            $product = Product::findOrFail($productId);
-
-            if ($qty > $product->stok){
-                alert()->warning('Oops..', 'Stok tidak mencukupi');
-                return redirect()->back();
-            }
-
-            DB::transaction(function () use ($request, $qty, $product, $id){
-                $order = Order::withSum('detailOrders', 'sub_total')
-                    ->withSum('detailOrders', 'qty')
-                    ->findOrFail($id);
-
-                $detailOrder = New DetailOrder();
-                $detailOrder->order_id = $order->id;
-                $detailOrder->produk_id = $product->id;
-                $detailOrder->qty = $qty;
-
-                $subTotal = intval($qty) * intval($product->harga);
-
-                $detailOrder->sub_total = $subTotal;
-                $detailOrder->save();
-
-                /*hitung ulang total qty dan total harga jual*/
-                $order->total_qty = $order->detail_orders_sum_qty;
-                $order->total_harga_jual = $order->detail_orders_sum_sub_total;
-                $order->save();
-
-                /*update stok produk*/
-                $stok = (int) $product->stok - (int) $order->total_qty;
-                dd($qty);
-                $product->stok = $stok;
-                $product->save();
-            });
-
-            alert()->success('Success', 'Produk penjualan berhasil ditambah');
-        }catch (\Throwable $throwable){
-            Log::error($throwable->getMessage());
-            alert()->error('Oops', 'Data Error');
         }
 
         return redirect()->back();

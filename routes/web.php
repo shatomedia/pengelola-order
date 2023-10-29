@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DetailOrderController;
 use App\Http\Controllers\HasilAprioriController;
 use App\Http\Controllers\LaporanPenjualanController;
 use App\Http\Controllers\OrderController;
@@ -49,7 +50,11 @@ Route::middleware('auth')->group(function() {
         Route::get('/{id}/edit', [OrderController::class, 'edit'])->name('order.edit');
         Route::put('/{id}/update', [OrderController::class, 'update'])->name('order.update');
         Route::delete('/{id}/delete', [OrderController::class, 'destroy'])->name('order.destroy');
-        Route::post('/{id}/add-order-product', [OrderController::class, 'newProduct'])->name('order.new-product');
+    });
+
+    Route::prefix('detail-order')->group(function (){
+        Route::post('/store/{id}', [DetailOrderController::class, 'store'])->name('detail-order.store');
+        Route::delete('/{id}/delete', [DetailOrderController::class, 'delete'])->name('detail-order.delete');
     });
 
     Route::post('/order-import', [OrderImportController::class, 'store']);
