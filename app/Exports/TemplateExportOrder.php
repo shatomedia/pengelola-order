@@ -2,14 +2,12 @@
 
 namespace App\Exports;
 
-use App\Models\Order;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -17,22 +15,16 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 class TemplateExportOrder implements FromCollection, WithHeadings, ShouldAutoSize, WithColumnFormatting, WithStyles
 
 {
-
     use Exportable;
-    
-    // public function query()
-    // {
-        
-    //    return Order::query()->where('id', 0); 
-    // }
 
-    public function collection()
+    public function collection(): Collection
     {
         $data = [];
         // Generate 200 rows of data
         for ($i = 1; $i <= 200; $i++) {
             $data[] = [
                 $i, // Automatically generate row numbers
+                '',
                 '',
                 '',
                 '',
@@ -59,6 +51,7 @@ class TemplateExportOrder implements FromCollection, WithHeadings, ShouldAutoSiz
             'alamat',
             'no_hp',
             'kode_produk',
+            'qty',
             'order_via',
             'tgl_order',
             'tgl_kirim',
@@ -69,32 +62,12 @@ class TemplateExportOrder implements FromCollection, WithHeadings, ShouldAutoSiz
         ];
     }
 
-    // public function map($row): array
-    // {
-    //     return [
-    //         '',
-    //         '',
-    //         '',
-    //         '',
-    //         '',
-    //         '',
-    //         '',
-    //         '',
-    //         '',
-    //         '',
-    //         '',
-    //         '',
-    //         ''
-            
-    //     ];
-    // }
-
     public function columnFormats(): array
     {
         return [
             'E' => NumberFormat::FORMAT_TEXT,
-            'H' => NumberFormat::FORMAT_DATE_YYYYMMDD,
             'I' => NumberFormat::FORMAT_DATE_YYYYMMDD,
+            'J' => NumberFormat::FORMAT_DATE_YYYYMMDD,
         ];
     }
 

@@ -55,7 +55,7 @@ class OrderImport implements ToCollection, WithHeadingRow
                 $detailOrder = New DetailOrder();
                 $detailOrder->order_id = $order->id;
                 $detailOrder->produk_id = $produk->id;
-                $detailOrder->qty = 1;
+                $detailOrder->qty = $row['qty'];
 
                 $subTotal = $detailOrder->qty * $produk->harga;
 

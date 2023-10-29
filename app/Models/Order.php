@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -40,5 +41,10 @@ class Order extends Model
 
             $model->no_faktur = 'INV-' . str_pad($model->no_urut, 5, '0', STR_PAD_LEFT);
         });
+    }
+
+    public function scopeStatusOrder(Builder $query, $status): Builder
+    {
+        return $query->where('status', $status);
     }
 }

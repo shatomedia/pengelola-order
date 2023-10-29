@@ -20,9 +20,14 @@
                             <form action="{{ url('proses-apriori') }}" method="get">
                                 <div class="form-group">
                                     <label for="date-input" class="form-control-label">Date</label>
-                                    <input class="form-control datepicker-month" name="date" type="text" value="{{ request('date') ? request('date') : null }}" id="date-input" autocomplete="off">
-                                    <button type="submit" class="btn bg-gradient-info mt-3">Search</button>
+                                    <select name="date" id="date-input" class="form-control select2" style="width: 100%">
+                                        <option value="">Pilih Tahun</option>
+                                        @foreach($years as $year)
+                                            <option value="{{ $year }}" {{ request('date') == $year ? 'selected' : '' }}>{{ $year }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
+                                <button type="submit" class="btn bg-gradient-info mt-3">Search</button>
                             </form>
                         </div>
                         <div class="col-md-6">
@@ -59,10 +64,10 @@
                                                         <p class="text-xs font-weight-bold mb-0">{{ $product->nama }}</p>
                                                     </td>
                                                     <td>
-                                                        <p class="text-xs font-weight-bold mb-0">{{ $product->orders_count }}</p>
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $product->total_qty }}</p>
                                                     </td>
                                                     <td>
-                                                        <p class="text-xs font-weight-bold mb-0">{{ $jumlahMinSupport[$product->id] }} %</p>
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $satuSet[$product->id] }} %</p>
                                                     </td>
                                                 </tr>
                                             @endforeach

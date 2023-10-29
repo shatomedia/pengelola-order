@@ -24,4 +24,9 @@ class DetailOrder extends Model
     {
         return $query->where('order_id', $orderId);
     }
+
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class);
+    }
 }

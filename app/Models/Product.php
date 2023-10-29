@@ -17,15 +17,6 @@ class Product extends Model
         return $this->belongsTo(ProductCategory::class, 'kategori_id', 'id');
     }
 
-    public function orders() : HasMany {
-        return $this->hasMany(Order::class, 'produk_id');
-    }
-
-    public function order(): HasOne
-    {
-        return $this->hasOne(Order::class, 'produk_id', 'id');
-    }
-
     public function detailOrder(): HasOne
     {
         return $this->hasOne(DetailOrder::class, 'produk_id', 'id');
@@ -34,5 +25,17 @@ class Product extends Model
     public function scopeKodeProduk(Builder $query, $kodeProduk): Builder
     {
         return $query->where('kode_produk', $kodeProduk);
+    }
+
+    public function detailOrdersTertinggi(): HasMany
+    {
+        return $this->hasMany(DetailOrder::class, 'produk_id', 'id')
+            ->orderByDesc('qty')
+            ->take(3);
+    }
+
+    public function detailOrders(): HasMany
+    {
+        return $this->hasMany(DetailOrder::class, 'produk_id', 'id');
     }
 }
