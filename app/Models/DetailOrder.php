@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -17,5 +18,10 @@ class DetailOrder extends Model
     public function produk(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function scopeOrderId(Builder $query, $orderId): Builder
+    {
+        return $query->where('order_id', $orderId);
     }
 }

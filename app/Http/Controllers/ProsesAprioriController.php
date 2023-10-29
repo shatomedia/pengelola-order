@@ -50,7 +50,6 @@ class ProsesAprioriController extends Controller
             $jumlahMinSupport = null;
         }
 
-
         return view('apriories.index', compact('title','products','jumlahMinSupport'));
     }
 

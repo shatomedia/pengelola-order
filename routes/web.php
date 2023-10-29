@@ -45,7 +45,7 @@ Route::middleware('auth')->group(function() {
 
     Route::prefix('order')->group(function (){
         Route::get('/', [OrderController::class, 'index'])->name('order.index');
-        Route::post('/order', [OrderController::class, 'store'])->name('order.store');
+        Route::post('/store', [OrderController::class, 'store'])->name('order.store');
         Route::get('/create', [OrderController::class, 'create'])->name('order.create');
         Route::get('/{id}/edit', [OrderController::class, 'edit'])->name('order.edit');
         Route::put('/{id}/update', [OrderController::class, 'update'])->name('order.update');

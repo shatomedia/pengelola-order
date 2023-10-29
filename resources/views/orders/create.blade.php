@@ -18,7 +18,7 @@
                         </div>
 
                     @endif
-                    <form action="{{ url('/order') }}" method="POST">
+                    <form action="{{ route('order.store') }}" method="POST">
                         @csrf
                         <div class="form-group">
                             <label for="inputStatus">Status</label>

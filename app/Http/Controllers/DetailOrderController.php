@@ -66,35 +66,44 @@ class DetailOrderController extends Controller
     public function delete(Request $request, $id)
     {
         try {
-            DB::transaction(function () use ($request, $id){
-                $orderId = $request->input('order_id');
-                $order = Order::withCount('detailOrders')
-                    ->findOrFail($orderId);
+            $orderId = $request->input('order_id');
+            $order = Order::withCount('detailOrders')
+                ->findOrFail($orderId);
 
-                $detailOrder = DetailOrder::findOrFail($id);
+            if ($order->detail_orders_count <= 1) {
+                /*
+                 * pada bagian ini hitungan stok produk masih perlu dicek ulang, jika ada orderan sisa 1.
+                 * apakah stok produk dikembalikan dengan cara menambahkan qty item yang di pesan + stok produk saat ini?
+                */
+                $order->delete();
 
-                $product = Product::findOrFail($detailOrder->produk_id);
-                $stok = $detailOrder->qty + $product->stok;
+                alert()->success('Success', 'Penjualan berhasil dihapus');
+                return to_route('order.index');
+            }else{
+                DB::transaction(function () use ($request, $order, $orderId, $id){
+                    $detailOrder = DetailOrder::findOrFail($id);
 
-                $product->stok = $stok;
-                $product->save();
+                    $product = Product::findOrFail($detailOrder->produk_id);
+                    $stok = $detailOrder->qty + $product->stok;
 
-                $detailOrder->delete();
+                    $product->stok = $stok;
+                    $product->save();
 
-                if ($order->detail_orders_count <= 1) {
-                    $order->delete();
+                    $detailOrder->delete();
 
-                    alert()->success('Success', 'Penjualan berhasil dihapus');
+                    $total = DetailOrder::orderId($orderId)
+                        ->get();
+                    $totalQty = $total->sum('qty');
+                    $totalHargaJual = $total->sum('sub_total');
 
-                    return to_route('order.index');
-                }else{
+                    $order->total_qty = $totalQty;
+                    $order->total_harga_jual = $totalHargaJual;
+                    $order->save();
+                });
 
-
-                    alert()->success('Success', 'Detail Order Berhasil dihapus');
-
-                    return redirect()->back();
-                }
-            });
+                alert()->success('Success', 'Detail Order Berhasil dihapus');
+                return redirect()->back();
+            }
         }catch (\Throwable $throwable){
             Log::error($throwable->getMessage());
             alert()->error('Oops', 'Data error');
