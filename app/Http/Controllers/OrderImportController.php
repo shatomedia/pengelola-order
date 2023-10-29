@@ -25,19 +25,15 @@ class OrderImportController extends Controller
             $file = $request->file('template')->getRealPath();
 
             $import = new OrderImport();
-            
+
             Excel::import($import, $file, null, ExcelType::XLSX);
 
-            // $file = $request->file('template');
-            // Excel::import(new OrderImport, $file);
-            
-            
+            \alert()->success('Success', 'Import Penjualan berhasil tersimpan');
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             toast('Data Penjualan gagal diimport', 'error');
-            return redirect()->back();
         }
-        
-        return redirect()->back()->with('success','Data penjualan success diimport..');
+
+        return redirect()->back();
     }
 }

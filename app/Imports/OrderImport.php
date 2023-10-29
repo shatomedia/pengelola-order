@@ -2,128 +2,72 @@
 
 namespace App\Imports;
 
+use App\Models\DetailOrder;
 use App\Models\Order;
 use App\Models\Product;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToCollection;
-use Maatwebsite\Excel\Concerns\ToArray;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Maatwebsite\Excel\Concerns\WithStartRow;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class OrderImport implements ToCollection, WithHeadingRow
 {
-    public function collection(Collection $rows)
+    public function collection(Collection $collection): void
     {
-        foreach ($rows as $row) 
-        {
-            // dd($row['status']);
-            $produk = Product::where('kode_produk', $row['kode_produk'])->first();
-            $tanggalOrder = Date::excelToDateTimeObject($row['tgl_order']);
-            $tanggalKirim = Date::excelToDateTimeObject($row['tgl_kirim']);
+        DB::transaction(function () use ($collection){
+            foreach ($collection as $row)
+            {
+                // jika sudah ada kode produk maka diambil data pertama, jika kosong maka buat baru
+                $produk = Product::kodeProduk($row['kode_produk'])
+                    ->firstOrNew();
+                $produk->nama = Str::title(str_replace('-', ' ', $row['kode_produk']));
+                $produk->kode_produk = $row['kode_produk'];
+                $produk->kategori_id = random_int(1,2);
+                $produk->harga = 1000000;
+                $produk->deskripsi = 'Isi dengan deskripsi produk';
+                $produk->stok = 100;
+                $produk->satuan = 'Item';
+                $produk->save();
 
-            $order = New Order();
-            $order->status = $row['status'];
-            $order->nama_pembeli = $row['nama_pembeli'];
-            $order->alamat = $row['alamat'];
-            $order->no_hp = $row['no_hp'];
-            $order->produk_id = $produk->id;
-            $order->order_via = $row['order_via'];
-            $order->tgl_order = $tanggalOrder;
-            $order->tgl_kirim = $tanggalKirim;
-            $order->title = $row['title'];
-            $order->background = $row['background'];
-            $order->request = $row['request'];
-            $order->keterangan = $row['keterangan'];
-            $order->save();
-            // dd($order);
+                $tanggalOrder = Date::excelToDateTimeObject($row['tgl_order']);
+                $tanggalKirim = Date::excelToDateTimeObject($row['tgl_kirim']);
 
-            
+                $order = Order::whereDate('tgl_kirim', $tanggalKirim)
+                    ->where('nama_pembeli', $row['nama_pembeli'])
+                    ->firstOrNew();
 
-            // Order::create([
-            // 'status' => $row['status'],
-            // 'nama_pembeli' => $row['nama_pembeli'],
-            // 'alamat' => $row['alamat'],
-            // 'no_hp' => $row['no_hp'],
-            // 'produk_id' => 1,
-            // 'order_via' => $row['order_via'],
-            // 'tgl_order' => $row['tgl_order'],
-            // 'tgl_kirim' => $row['tgl_kirim'],
-            // 'title' => $row['title'],
-            // 'background' => $row['background'],
-            // 'request' => $row['request'],
-            // 'keterangan' => $row['keterangan']
-            // ]);
-        }
+                $order->status = $row['status'];
+                $order->nama_pembeli = $row['nama_pembeli'];
+                $order->alamat = $row['alamat'];
+                $order->no_hp = $row['no_hp'];
+                $order->order_via = $row['order_via'];
+                $order->tgl_order = $tanggalOrder;
+                $order->tgl_kirim = $tanggalKirim;
+                $order->title = $row['title'];
+                $order->background = $row['background'];
+                $order->request = $row['request'];
+                $order->keterangan = $row['keterangan'];
+                $order->save();
+
+                $detailOrder = New DetailOrder();
+                $detailOrder->order_id = $order->id;
+                $detailOrder->produk_id = $produk->id;
+                $detailOrder->qty = 1;
+
+                $subTotal = $detailOrder->qty * $produk->harga;
+
+                $detailOrder->sub_total = $subTotal;
+                $detailOrder->save();
+
+                $detailOrderProduk = DetailOrder::orderId($order->id)
+                    ->get();
+                $order->total_qty = $detailOrderProduk->sum('qty');
+                $order->total_harga_jual = $detailOrderProduk->sum('sub_total');
+                $order->save();
+            }
+        });
     }
-
-    // /**
-    //   * @return int
-    //  */
-    // public function startRow(): int
-    // {
-    //     return 2;
-    // }
 }
-
-
-
-
-
-
-
-// class OrderImport implements ToModel, WithStartRow
-// {
-//     /**
-//     * @param array $row
-//     *
-//     * @return \Illuminate\Database\Eloquent\Model|null
-//     */
-//     public function model(array $row)
-//     {
-//         if(!array_filter($row)) {
-//             return null;
-//         }
-        
-//         return new Order([
-//             'status' => $row['status'],
-//             'nama_pembeli' => $row['nama_pembeli'],
-//             'alamat' => $row['alamat'],
-//             'no_hp' => $row['no_hp'],
-//             'kode_produk' => $row['kode_produk'],
-//             'order_via' => $row['order_via'],
-//             'tgl_order' => $row['tgl_order'],
-//             'tgl_kirim' => $row['tgl_kirim'],
-//             'title' => $row['title'],
-//             'background' => $row['background'],
-//             'request' => $row['request'],
-//             'keterangan' => $row['keterangan']
-//         ]);
-//     }
-
-//     /**
-//      * @return int
-//      */
-//     public function startRow(): int
-//     {
-//         return 2;
-//     }
-
-//     // public function rules(): array
-//     // {
-//     //     return [
-//     //         'status' => 'required',
-//     //         'nama_pembeli' => 'required',
-//     //         'alamat' => 'required',
-//     //         'no_hp' => 'required',
-//     //         'kode_produk' => 'required',
-//     //         'order_via' => 'required',
-//     //         'tgl_order' => 'required',
-//     //         'tgl_kirim' => 'required',
-//     //         'title' => 'required',
-//     //         'background' => 'required',
-//     //         'request' => 'required',
-//     //         'keterangan' => 'required',
-//     //     ];
-//     // }
-// }
