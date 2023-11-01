@@ -29,4 +29,9 @@ class DetailOrder extends Model
     {
         return $this->belongsTo(Order::class);
     }
+
+    public function scopeProductId(Builder $query, $productId): Builder
+    {
+        return $query->where('produk_id', $productId);
+    }
 }

@@ -15,34 +15,34 @@
                         </div>
                     @endif
 
-                    <div class="row">
-                        <div class="col-md-6 mb-md-0 mb-4">
-                            <form action="{{ url('proses-apriori') }}" method="get">
+                    <form action="{{ url('proses-apriori') }}" method="get">
+                        <div class="row">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="date-input" class="form-control-label">Date</label>
-                                    <select name="date" id="date-input" class="form-control select2" style="width: 100%">
+                                    <select name="date" id="date-input" class="form-control select2" style="width: 100%" required>
                                         <option value="">Pilih Tahun</option>
                                         @foreach($years as $year)
                                             <option value="{{ $year }}" {{ request('date') == $year ? 'selected' : '' }}>{{ $year }}</option>
                                         @endforeach
                                     </select>
                                 </div>
-                                <button type="submit" class="btn bg-gradient-info mt-3">Search</button>
-                            </form>
-                        </div>
-                        <div class="col-md-6">
-                            <form action="{{ url('proses-apriori') }}" method="get">
-                                <input type="hidden" name="date" value="{{ request('date') ? request('date') : null }}">
+                            </div>
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="supportInput" class="form-control-label">Min Support</label>
                                     <input class="form-control" name="min_support" type="number" id="supportInput" value="{{ request('min_support') ? request('min_support') : null }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
                                     <label for="supportConfidence" class="form-control-label">Min Confidence</label>
                                     <input class="form-control" name="min_confidence" type="number" id="supportConfidence" value="{{ request('min_confidence') ? request('min_confidence') : null }}" required>
-                                    <button type="submit" class="btn bg-gradient-warning mt-3">Proses</button>
                                 </div>
-                            </form>
+                            </div>
                         </div>
-                    </div>
+                        <button type="submit" class="btn bg-gradient-warning w-100 mt-3">Proses</button>
+                    </form>
 
                     @if (!is_null($products) && $products->count() > 0)
                         <div class="card mb-4">
@@ -53,21 +53,21 @@
                                             <thead>
                                             <tr>
                                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Produk</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Jumlah</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Transaksi</th>
                                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Hasil Support</th>
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            @foreach ($products as $product)
+                                            @foreach ($satuSetItem as $key  => $satuItem)
                                                 <tr>
                                                     <td class="align-middle">
-                                                        <p class="text-xs font-weight-bold mb-0">{{ $product->nama }}</p>
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $key }}</p>
+                                                    </td>
+                                                    <td class="align-middle">
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $totalTransaksi[$key] }}</p>
                                                     </td>
                                                     <td>
-                                                        <p class="text-xs font-weight-bold mb-0">{{ $product->total_qty }}</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="text-xs font-weight-bold mb-0">{{ $satuSet[$product->id] }} %</p>
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $satuItem }} %</p>
                                                     </td>
                                                 </tr>
                                             @endforeach
