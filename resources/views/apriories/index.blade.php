@@ -58,16 +58,16 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            @foreach ($satuSetItem as $key  => $satuItem)
+                                            @foreach ($satuSetItem as $satuItem)
                                                 <tr>
                                                     <td class="align-middle">
-                                                        <p class="text-xs font-weight-bold mb-0">{{ $key }}</p>
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $satuItem['product_name'] }}</p>
                                                     </td>
                                                     <td class="align-middle">
-                                                        <p class="text-xs font-weight-bold mb-0">{{ $totalTransaksi[$key] }}</p>
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $satuItem['total_transaksi'] }}</p>
                                                     </td>
                                                     <td>
-                                                        <p class="text-xs font-weight-bold mb-0">{{ $satuItem }} %</p>
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $satuItem['persentase'] }} %</p>
                                                     </td>
                                                 </tr>
                                             @endforeach
