@@ -48,6 +48,7 @@
                         <div class="card mb-4">
                             <div class="card-header pb-0">
                                 <div class="card-body px-0 pt-0 pb-2">
+                                    <div class="alert alert-light text-center" style="padding: 5px">1 ITEMSET</div>
                                     <div class="table-responsive p-0">
                                         <table class="table align-items-center mb-0">
                                             <thead>
@@ -68,6 +69,33 @@
                                                     </td>
                                                     <td>
                                                         <p class="text-xs font-weight-bold mb-0">{{ $satuItem['persentase'] }} %</p>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="alert alert-light text-center" style="padding: 5px">2 ITEMSET</div>
+                                    <div class="table-responsive p-0">
+                                        <table class="table align-items-center mb-0">
+                                            <thead>
+                                            <tr>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Produk</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Transaksi</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Hasil Support</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            @foreach($totalYesPerIndex as $key => $totalYes)
+                                                <tr>
+                                                    <td class="align-middle">
+                                                        <p class="text-xs font-weight-bold mb-0"></p>
+                                                    </td>
+                                                    <td class="align-middle">
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $totalYes }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $persentase2SetItems[$key] }} %</p>
                                                     </td>
                                                 </tr>
                                             @endforeach

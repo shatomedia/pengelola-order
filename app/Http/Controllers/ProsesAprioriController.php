@@ -228,6 +228,7 @@ class ProsesAprioriController extends Controller
 
                 /*=================== hasil proses keempat ======================*/
                 $product2Sets = [];
+                $combination2Sets = [];
 
                 foreach (range(1, 12) as $month) {
                     $combinations = [];
@@ -250,6 +251,8 @@ class ProsesAprioriController extends Controller
                             ];
                         }
                     }
+
+                    $combination2Sets[$month] = $combinations;
 
                     $results = [];
 
@@ -285,14 +288,27 @@ class ProsesAprioriController extends Controller
                     }
                 }
 
-                dd($product2Sets, $totalYesPerIndex);
+                $persentase2SetItems = [];
+                foreach ($totalYesPerIndex as $persentaseTotalYes){
+                    $totalStatus = (int) $persentaseTotalYes;
+                    $persentase2SetItems[] = ($totalStatus / 12) * 100;
+                }
+
+                /*dd($combination2Sets, $product2Sets, $totalYesPerIndex, $persentase2SetItems);*/
                 /*================ akhir hasil proses keempat =====================*/
+            }else {
+                $combination2Sets = null;
+                $totalYesPerIndex = null;
+                $persentase2SetItems = null;
             }
         }else{
             $products = null;
             $satuSetItem = null;
+            $combination2Sets = null;
+            $totalYesPerIndex = null;
+            $persentase2SetItems = null;
         }
 
-        return view('apriories.index', compact('title','products','years','satuSetItem'));
+        return view('apriories.index', compact('title','products','years','satuSetItem','combination2Sets','totalYesPerIndex','persentase2SetItems'));
     }
 }
