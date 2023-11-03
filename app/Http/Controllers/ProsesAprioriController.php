@@ -252,7 +252,9 @@ class ProsesAprioriController extends Controller
                         }
                     }
 
-                    $combination2Sets[$month] = $combinations;
+                    /*$combination2Sets[$month] = $combinations;
+                    $kombinasi = $combinations;*/
+                    $combination2Sets = array_merge($combination2Sets, $combinations);
 
                     $results = [];
 
@@ -277,6 +279,8 @@ class ProsesAprioriController extends Controller
                     $product2Sets[$month] = $results;
                 }
 
+                $uniqueCombinations = array_unique($combination2Sets, SORT_REGULAR);
+
                 // Menghitung jumlah "Y" per kombinasi produk dengan indeks yang sama selama 12 bulan
                 $totalYesPerIndex = array_fill(0, count($combinations), 0);
 
@@ -294,21 +298,28 @@ class ProsesAprioriController extends Controller
                     $persentase2SetItems[] = ($totalStatus / 12) * 100;
                 }
 
-                /*dd($combination2Sets, $product2Sets, $totalYesPerIndex, $persentase2SetItems);*/
+                $uniqueNames = array_map(function($combination) {
+                    return [
+                        'product_name_1' => $combination['product_name_1'] . ' => ',
+                        'product_name_2' => $combination['product_name_2'],
+                    ];
+                }, $uniqueCombinations);
+
+                /*dd($uniqueNames, $product2Sets, $totalYesPerIndex, $persentase2SetItems);*/
                 /*================ akhir hasil proses keempat =====================*/
             }else {
-                $combination2Sets = null;
+                $uniqueNames = null;
                 $totalYesPerIndex = null;
                 $persentase2SetItems = null;
             }
         }else{
             $products = null;
             $satuSetItem = null;
-            $combination2Sets = null;
+            $uniqueNames = null;
             $totalYesPerIndex = null;
             $persentase2SetItems = null;
         }
 
-        return view('apriories.index', compact('title','products','years','satuSetItem','combination2Sets','totalYesPerIndex','persentase2SetItems'));
+        return view('apriories.index', compact('title','products','years','satuSetItem','uniqueNames','totalYesPerIndex','persentase2SetItems'));
     }
 }

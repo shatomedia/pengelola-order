@@ -89,7 +89,11 @@
                                             @foreach($totalYesPerIndex as $key => $totalYes)
                                                 <tr>
                                                     <td class="align-middle">
-                                                        <p class="text-xs font-weight-bold mb-0"></p>
+                                                        <p class="text-xs font-weight-bold mb-0">
+                                                            @foreach($uniqueNames[$key] as $uniqueName)
+                                                                {{ $uniqueName }}
+                                                            @endforeach
+                                                        </p>
                                                     </td>
                                                     <td class="align-middle">
                                                         <p class="text-xs font-weight-bold mb-0">{{ $totalYes }}</p>
