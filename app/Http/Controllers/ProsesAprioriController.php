@@ -90,7 +90,8 @@ class ProsesAprioriController extends Controller
                     $productIds[] = $item['product_id'];
                 }
 
-                $product2Sets = [];
+                /*================= hasil proses pertama ===================*/
+                /*$product2Sets = [];
                 foreach (range(1, 12) as $month) {
                     $combinations = [];
 
@@ -116,7 +117,114 @@ class ProsesAprioriController extends Controller
                     $product2Sets[$month] = $combinations;
                 }
 
-                dd($product2Sets);
+                dd($product2Sets);*/
+                /*================= akhir hasil proses pertama ===================*/
+
+                /*================= hasil proses kedua ===========================*/
+                /*$product2Sets = [];
+                foreach (range(1, 12) as $month) {
+                    $combinations = [];
+
+                    $productCount = count($productIds);
+
+                    for ($i = 0; $i < $productCount - 1; $i++) {
+                        for ($j = $i + 1; $j < $productCount; $j++) {
+                            $productId1 = $productIds[$i];
+                            $productId2 = $productIds[$j];
+
+                            $product1 = Product::find($productId1);
+                            $product2 = Product::find($productId2);
+
+                            $combinations[] = [
+                                'product_id_1' => $productId1,
+                                'product_name_1' => $product1->nama,
+                                'product_id_2' => $productId2,
+                                'product_name_2' => $product2->nama,
+                            ];
+                        }
+                    }
+
+                    $results = [];
+
+                    foreach ($combinations as $combination) {
+                        $transaksiItem1 = DetailOrder::productId($combination['product_id_1'])
+                            ->whereHas('order', function ($query) use ($date, $month){
+                                $query->whereYear('tgl_kirim', $date)
+                                    ->whereMonth('tgl_kirim', $month);
+                            })
+                            ->first();
+
+                        $transaksiItem2 = DetailOrder::productId($combination['product_id_2'])
+                            ->whereHas('order', function ($query) use ($date, $month){
+                                $query->whereYear('tgl_kirim', $date)
+                                    ->whereMonth('tgl_kirim', $month);
+                            })
+                            ->first();
+
+                        $results[] = $transaksiItem1 && $transaksiItem2 ? 'Y' : 'N';
+                    }
+
+                    $product2Sets[$month] = $results;
+                }
+
+                dd($product2Sets);*/
+                /*==================== akhir hasil proses kedua ====================*/
+
+                /*==================== hasil proses ketiga ==========================*/
+                $product2Sets = [];
+                $totalYesPerMonth = [];
+
+                foreach (range(1, 12) as $month) {
+                    $combinations = [];
+                    $productCount = count($productIds);
+
+                    for ($i = 0; $i < $productCount - 1; $i++) {
+                        for ($j = $i + 1; $j < $productCount; $j++) {
+                            $productId1 = $productIds[$i];
+                            $productId2 = $productIds[$j];
+
+                            $product1 = Product::find($productId1);
+                            $product2 = Product::find($productId2);
+
+                            $combinations[] = [
+                                'product_id_1' => $productId1,
+                                'product_name_1' => $product1->nama,
+                                'product_id_2' => $productId2,
+                                'product_name_2' => $product2->nama,
+                            ];
+                        }
+                    }
+
+                    $results = [];
+
+                    foreach ($combinations as $combination) {
+                        $transaksiItem1 = DetailOrder::productId($combination['product_id_1'])
+                            ->whereHas('order', function ($query) use ($date, $month) {
+                                $query->whereYear('tgl_kirim', $date)
+                                    ->whereMonth('tgl_kirim', $month);
+                            })
+                            ->first();
+
+                        $transaksiItem2 = DetailOrder::productId($combination['product_id_2'])
+                            ->whereHas('order', function ($query) use ($date, $month) {
+                                $query->whereYear('tgl_kirim', $date)
+                                    ->whereMonth('tgl_kirim', $month);
+                            })
+                            ->first();
+
+                        $results[] = $transaksiItem1 && $transaksiItem2 ? 'Y' : 'N';
+                    }
+
+                    $product2Sets[$month] = $results;
+
+                    // Menghitung jumlah "Y" tiap bulan
+                    $totalYesPerMonth[$month] = count(array_filter($results, function ($result) {
+                        return $result === 'Y';
+                    }));
+                }
+
+                dd($product2Sets, $totalYesPerMonth);
+                /*=================== akhir hasil proses ketiga ===================*/
             }
         }else{
             $products = null;
