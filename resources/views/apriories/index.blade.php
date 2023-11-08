@@ -45,8 +45,8 @@
                     </form>
 
                     @if (!is_null($products) && $products->count() > 0)
-                        <div class="card mb-4">
-                            <div class="card-header pb-0">
+                        <div class="card mb-4 shadow-none">
+                            <div class="card-header p-0">
                                 <div class="card-body px-0 pt-0 pb-2">
                                     <div class="alert alert-light text-center" style="padding: 5px">1 ITEMSET</div>
                                     <div class="table-responsive p-0">

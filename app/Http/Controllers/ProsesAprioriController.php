@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\ProsesApriori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ProsesAprioriController extends Controller
 {
@@ -29,7 +30,9 @@ class ProsesAprioriController extends Controller
                         $query->whereYear('tgl_kirim', $date)
                             ->whereMonth('tgl_kirim', $month);
                     })
-                    ->orderByDesc('qty')
+                    ->select('produk_id', DB::raw('SUM(qty) as total_qty'))
+                    ->groupBy('produk_id')
+                    ->orderByDesc('total_qty')
                     ->take(3)
                     ->get();
 
@@ -81,102 +84,14 @@ class ProsesAprioriController extends Controller
                 }
             }
 
-            $jumlahData = count($satuSetItem);
-
             /*hasil 2 setitem*/
-            if ($jumlahData > 0){
-                $productIds = [];
-                foreach ($satuSetItem as $item) {
-                    $productIds[] = $item['product_id'];
-                }
+            $proses2Set = $this->proses2Set($satuSetItem);
+            $filteredNameCombinations = $proses2Set['filteredNameCombinations'];
+            $filteredNames = $proses2Set['filteredNames'];
+            $totalYesPerIndex = $proses2Set['totalYesPerIndex'];
+            $persentase2SetItems = $proses2Set['persentase2SetItems'];
 
-                $product2Sets = [];
-                $combination2Sets = [];
-
-                foreach (range(1, 12) as $month) {
-                    $combinations = [];
-
-                    $productCount = count($productIds);
-
-                    for ($i = 0; $i < $productCount - 1; $i++) {
-                        for ($j = $i + 1; $j < $productCount; $j++) {
-                            $productId1 = $productIds[$i];
-                            $productId2 = $productIds[$j];
-
-                            $product1 = Product::find($productId1);
-                            $product2 = Product::find($productId2);
-
-                            $combinations[] = [
-                                'product_id_1' => $productId1,
-                                'product_name_1' => $product1->nama,
-                                'product_id_2' => $productId2,
-                                'product_name_2' => $product2->nama,
-                            ];
-                        }
-                    }
-
-                    $combination2Sets = array_merge($combination2Sets, $combinations);
-
-                    $results = [];
-
-                    foreach ($combinations as $combination) {
-                        $transaksiItem1 = DetailOrder::productId($combination['product_id_1'])
-                            ->whereHas('order', function ($query) use ($date, $month){
-                                $query->whereYear('tgl_kirim', $date)
-                                    ->whereMonth('tgl_kirim', $month);
-                            })
-                            ->first();
-
-                        $transaksiItem2 = DetailOrder::productId($combination['product_id_2'])
-                            ->whereHas('order', function ($query) use ($date, $month){
-                                $query->whereYear('tgl_kirim', $date)
-                                    ->whereMonth('tgl_kirim', $month);
-                            })
-                            ->first();
-
-                        $results[] = $transaksiItem1 && $transaksiItem2 ? 'Y' : 'N';
-                    }
-
-                    $product2Sets[$month] = $results;
-                }
-
-                $uniqueCombinations = array_unique($combination2Sets, SORT_REGULAR);
-
-                // Menghitung jumlah "Y" per kombinasi produk dengan indeks yang sama selama 12 bulan
-                $totalYesPerIndex = array_fill(0, count($combinations), 0);
-
-                foreach ($product2Sets as $monthResults) {
-                    foreach ($monthResults as $index => $result) {
-                        if ($result === 'Y') {
-                            $totalYesPerIndex[$index]++;
-                        }
-                    }
-                }
-
-                $persentase2SetItems = [];
-                foreach ($totalYesPerIndex as $persentaseTotalYes){
-                    $totalStatus = (int) $persentaseTotalYes;
-                    $persentase2SetItems[] = ($totalStatus / 12) * 100;
-                }
-
-                $filteredNameCombinations = array_filter($uniqueCombinations, function($combination, $index) use ($persentase2SetItems, $minSupport) {
-                    return $persentase2SetItems[$index] >= $minSupport;
-                }, ARRAY_FILTER_USE_BOTH);
-
-                $filteredNames = array_map(function($combination) {
-                    return [
-                        'product_name_1' => $combination['product_name_1'] . ' => ',
-                        'product_name_2' => $combination['product_name_2'],
-                    ];
-                }, $filteredNameCombinations);
-
-                /*dd($filteredNames, $totalYesPerIndex, $persentase2SetItems, $filteredNameCombinations);*/
-            }else {
-                $filteredNameCombinations = null;
-                $filteredNames = null;
-                $totalYesPerIndex = null;
-                $persentase2SetItems = null;
-            }
+            /*dd($filteredNames, $totalYesPerIndex, $persentase2SetItems, $filteredNameCombinations);*/
         }else{
             $products = null;
             $satuSetItem = null;
@@ -187,5 +102,98 @@ class ProsesAprioriController extends Controller
         }
 
         return view('apriories.index', compact('title','products','years','satuSetItem','filteredNameCombinations','filteredNames','totalYesPerIndex','persentase2SetItems'));
+    }
+
+    public function proses2Set($satuSetItem,)
+    {
+        $date = \request('date');
+        $minSupport = \request('min_support');
+
+        $productIds = [];
+        foreach ($satuSetItem as $item) {
+            $productIds[] = $item['product_id'];
+        }
+
+        $product2Sets = [];
+        $combination2Sets = [];
+
+        foreach (range(1, 12) as $month) {
+            $combinations = [];
+
+            $productCount = count($productIds);
+
+            for ($i = 0; $i < $productCount - 1; $i++) {
+                for ($j = $i + 1; $j < $productCount; $j++) {
+                    $productId1 = $productIds[$i];
+                    $productId2 = $productIds[$j];
+
+                    $product1 = Product::find($productId1);
+                    $product2 = Product::find($productId2);
+
+                    $combinations[] = [
+                        'product_id_1' => $productId1,
+                        'product_name_1' => $product1->nama,
+                        'product_id_2' => $productId2,
+                        'product_name_2' => $product2->nama,
+                    ];
+                }
+            }
+
+            $combination2Sets = array_merge($combination2Sets, $combinations);
+
+            $results = [];
+
+            foreach ($combinations as $combination) {
+                $transaksiItem1 = DetailOrder::productId($combination['product_id_1'])
+                    ->whereHas('order', function ($query) use ($date, $month){
+                        $query->whereYear('tgl_kirim', $date)
+                            ->whereMonth('tgl_kirim', $month);
+                    })
+                    ->first();
+
+                $transaksiItem2 = DetailOrder::productId($combination['product_id_2'])
+                    ->whereHas('order', function ($query) use ($date, $month){
+                        $query->whereYear('tgl_kirim', $date)
+                            ->whereMonth('tgl_kirim', $month);
+                    })
+                    ->first();
+
+                $results[] = $transaksiItem1 && $transaksiItem2 ? 'Y' : 'N';
+            }
+
+            $product2Sets[$month] = $results;
+        }
+
+        $uniqueCombinations = array_unique($combination2Sets, SORT_REGULAR);
+
+        // Menghitung jumlah "Y" per kombinasi produk dengan indeks yang sama selama 12 bulan
+        $totalYesPerIndex = array_fill(0, count($combinations), 0);
+
+        foreach ($product2Sets as $monthResults) {
+            foreach ($monthResults as $index => $result) {
+                if ($result === 'Y') {
+                    $totalYesPerIndex[$index]++;
+                }
+            }
+        }
+
+        $persentase2SetItems = [];
+        foreach ($totalYesPerIndex as $persentaseTotalYes){
+            $totalStatus = (int) $persentaseTotalYes;
+            $persentase2SetItems[] = ($totalStatus / 12) * 100;
+        }
+
+        $filteredNameCombinations = array_filter($uniqueCombinations, function($combination, $index) use ($persentase2SetItems, $minSupport) {
+            return $persentase2SetItems[$index] >= $minSupport;
+        }, ARRAY_FILTER_USE_BOTH);
+
+        $filteredNames = array_map(function($combination) {
+            return [
+                'product_name_1' => $combination['product_name_1'] . ' => ',
+                'product_name_2' => $combination['product_name_2'],
+            ];
+        }, $filteredNameCombinations);
+
+        return compact('filteredNames', 'totalYesPerIndex', 'persentase2SetItems', 'filteredNameCombinations');
     }
 }
