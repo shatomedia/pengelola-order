@@ -86,17 +86,17 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            @foreach($totalYesPerIndex as $key => $totalYes)
+                                            @foreach($filteredNameCombinations as $key => $filteredNameCombination)
                                                 <tr>
                                                     <td class="align-middle">
                                                         <p class="text-xs font-weight-bold mb-0">
-                                                            @foreach($uniqueNames[$key] as $uniqueName)
+                                                            @foreach($filteredNames[$key] as $uniqueName)
                                                                 {{ $uniqueName }}
                                                             @endforeach
                                                         </p>
                                                     </td>
                                                     <td class="align-middle">
-                                                        <p class="text-xs font-weight-bold mb-0">{{ $totalYes }}</p>
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $totalYesPerIndex[$key] }}</p>
                                                     </td>
                                                     <td>
                                                         <p class="text-xs font-weight-bold mb-0">{{ $persentase2SetItems[$key] }} %</p>
