@@ -60,15 +60,16 @@ class ProsesAprioriController extends Controller
 
             foreach ($productAprioris as $productApriori){
                 $productCounts = [];
-                foreach (range(1, 12) as $month){
-                    $detailOrder = DetailOrder::productId($productApriori->product_id)
-                        ->whereHas('order', function ($query) use ($date, $month){
-                            $query->whereYear('tgl_kirim', $date)
-                                ->whereMonth('tgl_kirim', $month);
-                        })
+                foreach (range(1,12) as $month){
+                    $proApriori = ProsesApriori::join('products','proses_aprioris.product_id', 'products.id')
+                        ->join('detail_orders','detail_orders.produk_id', '=', 'products.id')
+                        ->join('orders','orders.id', '=', 'detail_orders.id')
+                        ->whereYear('proses_aprioris.date', $date)
+                        ->whereMonth('proses_aprioris.date', $month)
+                        ->where('products.id', $productApriori->product_id)
                         ->first();
 
-                    $productCounts[] = $detailOrder ? 1 : 0;
+                    $productCounts[] = $proApriori ? 1 : 0;
                 }
 
                 $totalStatus1 = array_sum($productCounts);
@@ -104,7 +105,7 @@ class ProsesAprioriController extends Controller
         return view('apriories.index', compact('title','products','years','satuSetItem','filteredNameCombinations','filteredNames','totalYesPerIndex','persentase2SetItems'));
     }
 
-    public function proses2Set($satuSetItem,)
+    public function proses2Set($satuSetItem)
     {
         $date = \request('date');
         $minSupport = \request('min_support');
@@ -144,18 +145,20 @@ class ProsesAprioriController extends Controller
             $results = [];
 
             foreach ($combinations as $combination) {
-                $transaksiItem1 = DetailOrder::productId($combination['product_id_1'])
-                    ->whereHas('order', function ($query) use ($date, $month){
-                        $query->whereYear('tgl_kirim', $date)
-                            ->whereMonth('tgl_kirim', $month);
-                    })
+                $transaksiItem1 = ProsesApriori::join('products','proses_aprioris.product_id', 'products.id')
+                    ->join('detail_orders','detail_orders.produk_id', '=', 'products.id')
+                    ->join('orders','orders.id', '=', 'detail_orders.id')
+                    ->whereYear('proses_aprioris.date', $date)
+                    ->whereMonth('proses_aprioris.date', $month)
+                    ->where('products.id', $combination['product_id_1'])
                     ->first();
 
-                $transaksiItem2 = DetailOrder::productId($combination['product_id_2'])
-                    ->whereHas('order', function ($query) use ($date, $month){
-                        $query->whereYear('tgl_kirim', $date)
-                            ->whereMonth('tgl_kirim', $month);
-                    })
+                $transaksiItem2 = ProsesApriori::join('products','proses_aprioris.product_id', 'products.id')
+                    ->join('detail_orders','detail_orders.produk_id', '=', 'products.id')
+                    ->join('orders','orders.id', '=', 'detail_orders.id')
+                    ->whereYear('proses_aprioris.date', $date)
+                    ->whereMonth('proses_aprioris.date', $month)
+                    ->where('products.id', $combination['product_id_2'])
                     ->first();
 
                 $results[] = $transaksiItem1 && $transaksiItem2 ? 'Y' : 'N';
