@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class ProductItemSet extends Model
@@ -13,4 +14,9 @@ class ProductItemSet extends Model
         'kategori',
         'tahun',
     ];
+
+    public function scopeKodeItemSet(Builder $query, $kodeItemSet): Builder
+    {
+        return $query->where('kode_item_set', $kodeItemSet);
+    }
 }

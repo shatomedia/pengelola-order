@@ -125,19 +125,35 @@ class ProsesAprioriController extends Controller
 
             /*proses confidence*/
             if (count($filtered2NameCombinations) > 0){
-                $combinedData = [];
-
+                $confidence = [];
                 foreach ($filtered2NameCombinations as $key => $value) {
-                    // Menambahkan product_id_1 ke dalam array baru
-                    $combinedData[$key]['product_ids'][] = $value['product_id_1'];
-                    // Menambahkan product_id_2 ke dalam array baru
-                    $combinedData[$key]['product_ids'][] = $value['product_id_2'];
+                    // item set ke 1
+                    $product1 = Product::where('id', $value['product_id_1'])
+                        ->pluck('nama');
+                    $codeProduct = Str::slug($product1);
+                    $totalYes1 = $total2YesPerIndex[$key];
+                    $productItemSet = ProductItemSet::kodeItemSet($codeProduct)
+                        ->whereYear('tahun', $date)
+                        ->first();
+                    $confidence[$key][$productItemSet->kode_item_set] = ($totalYes1 / $productItemSet->total_transaksi) * 100;
 
-                    $combinedData[$key]['total_yes'] = $total2YesPerIndex[$key];
+                    // item set ke 2
+                    $product2 = Product::where('id', $value['product_id_2'])
+                        ->pluck('nama');
+                    $codeProduct = Str::slug($product2);
+                    $totalYes2 = $total2YesPerIndex[$key];
+                    $productItemSet = ProductItemSet::kodeItemSet($codeProduct)
+                        ->whereYear('tahun', $date)
+                        ->first();
+                    $confidence[$key][$productItemSet->kode_item_set] = ($totalYes2 / $productItemSet->total_transaksi) * 100;
+
+                    /*foreach ($combinedData2[$key] as $data){
+                        $s[$key] = $data;
+                    }*/
                 }
 
                 // Output hasil
-                /*dd($combinedData);*/
+                dd($confidence);
             }
 
         }else{
