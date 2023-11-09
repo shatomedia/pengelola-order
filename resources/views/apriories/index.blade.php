@@ -48,6 +48,7 @@
                         <div class="card mb-4 shadow-none">
                             <div class="card-header p-0">
                                 <div class="card-body px-0 pt-0 pb-2">
+                                    <hr>
                                     <div class="alert alert-light text-center" style="padding: 5px">1 ITEMSET</div>
                                     <div class="table-responsive p-0">
                                         <table class="table align-items-center mb-0">
@@ -72,9 +73,17 @@
                                                     </td>
                                                 </tr>
                                             @endforeach
+                                            @if(count($satuSetItem) == 0)
+                                                <tr>
+                                                    <td colspan="3" class="text-center font-italic">Frequent Item Tidak Terbentuk</td>
+                                                </tr>
+                                            @endif
                                             </tbody>
                                         </table>
                                     </div>
+                                    {{--========================--}}
+                                    {{--====== 2 set items =====--}}
+                                    <hr>
                                     <div class="alert alert-light text-center" style="padding: 5px">2 ITEMSET</div>
                                     <div class="table-responsive p-0">
                                         <table class="table align-items-center mb-0">
@@ -86,23 +95,67 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            @foreach($filteredNameCombinations as $key => $filteredNameCombination)
+                                            @foreach($filtered2NameCombinations as $key => $filteredNameCombination)
                                                 <tr>
                                                     <td class="align-middle">
                                                         <p class="text-xs font-weight-bold mb-0">
-                                                            @foreach($filteredNames[$key] as $uniqueName)
+                                                            @foreach($filtered2Names[$key] as $uniqueName)
                                                                 {{ $uniqueName }}
                                                             @endforeach
                                                         </p>
                                                     </td>
                                                     <td class="align-middle">
-                                                        <p class="text-xs font-weight-bold mb-0">{{ $totalYesPerIndex[$key] }}</p>
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $total2YesPerIndex[$key] }}</p>
                                                     </td>
                                                     <td>
                                                         <p class="text-xs font-weight-bold mb-0">{{ $persentase2SetItems[$key] }} %</p>
                                                     </td>
                                                 </tr>
                                             @endforeach
+                                            @if(count($filtered2NameCombinations) == 0)
+                                                <tr>
+                                                    <td colspan="3" class="text-center font-italic">Frequent Item Tidak Terbentuk</td>
+                                                </tr>
+                                            @endif
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    {{--========================--}}
+                                    {{--====== 3 set items =====--}}
+                                    <hr>
+                                    <div class="alert alert-light text-center" style="padding: 5px">3 ITEMSET</div>
+                                    <div class="table-responsive p-0">
+                                        <table class="table align-items-center mb-0">
+                                            <thead>
+                                            <tr>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Produk</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Transaksi</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Hasil Support</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            @foreach($filtered3NameCombinations as $key => $filteredNameCombination)
+                                                <tr>
+                                                    <td class="align-middle">
+                                                        <p class="text-xs font-weight-bold mb-0">
+                                                            @foreach($filtered3Names[$key] as $uniqueName)
+                                                                {{ $uniqueName }}
+                                                            @endforeach
+                                                        </p>
+                                                    </td>
+                                                    <td class="align-middle">
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $total3YesPerIndex[$key] }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $persentase3SetItems[$key] }} %</p>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                            @if(count($filtered3NameCombinations) == 0)
+                                                <tr>
+                                                    <td colspan="3" class="text-center font-italic">Frequent Item Tidak Terbentuk</td>
+                                                </tr>
+                                            @endif
                                             </tbody>
                                         </table>
                                     </div>
