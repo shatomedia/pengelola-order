@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\DetailOrder;
 use App\Models\Product;
+use App\Models\ProductItemSet;
 use App\Models\ProsesApriori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ProsesAprioriController extends Controller
 {
@@ -17,7 +19,7 @@ class ProsesAprioriController extends Controller
         $startYear = Carbon::now()
             ->subYears(4)
             ->year;
-        $endYear = $startYear + 4;
+        $endYear = $startYear + 3;
         $years = range($startYear, $endYear);
         $date = $request->input('date');
         $minSupport = $request->input('min_support');
@@ -83,6 +85,21 @@ class ProsesAprioriController extends Controller
                         'persentase' => $persentaseMinSupport,
                     ];
                 }
+
+                /*simpan ke database untuk kategori 1 itemset*/
+                $productName1ItemSet = Product::where('id', $productApriori->product_id)
+                    ->pluck('nama');
+                $productName1ItemSetSlug = Str::slug($productName1ItemSet);
+                $productItemSet = ProductItemSet::whereYear('tahun', $date)
+                    ->where('kode_item_set', $productName1ItemSetSlug)
+                    ->firstOrNew();
+                $productItemSet->kode_item_set = $productName1ItemSetSlug;
+                $productItemSet->total_transaksi = $totalStatus1;
+                $productItemSet->persentase = $persentaseMinSupport;
+                $productItemSet->kategori = '1_itemset';
+                $productItemSet->tahun = $date;
+                $productItemSet->save();
+                /*===========*/
             }
 
             /*hasil 2 setitem*/
@@ -105,6 +122,24 @@ class ProsesAprioriController extends Controller
             $filtered4Names = $proses4SetItems['filteredNames'];
             $total4YesPerIndex = $proses4SetItems['totalYesPerIndex'];
             $persentase4SetItems = $proses4SetItems['persentase4SetItems'];
+
+            /*proses confidence*/
+            if (count($filtered2NameCombinations) > 0){
+                $combinedData = [];
+
+                foreach ($filtered2NameCombinations as $key => $value) {
+                    // Menambahkan product_id_1 ke dalam array baru
+                    $combinedData[$key]['product_ids'][] = $value['product_id_1'];
+                    // Menambahkan product_id_2 ke dalam array baru
+                    $combinedData[$key]['product_ids'][] = $value['product_id_2'];
+
+                    $combinedData[$key]['total_yes'] = $total2YesPerIndex[$key];
+                }
+
+                // Output hasil
+                /*dd($combinedData);*/
+            }
+
         }else{
             $products = null;
             $satuSetItem = null;
@@ -227,6 +262,25 @@ class ProsesAprioriController extends Controller
                 'product_name_2' => $combination['product_name_2'],
             ];
         }, $filteredNameCombinations);
+
+        /*simpan ke database untuk kategori 2 itemset*/
+        foreach ($filteredNameCombinations as $key => $filteredNameCombination){
+            $mergedName = [];
+            foreach ($filteredNames as $index => $namesArray) {
+                $mergedName[$index] = Str::slug($namesArray['product_name_1'] . $namesArray['product_name_2']);
+            }
+
+            $productItemSet = ProductItemSet::whereYear('tahun', $date)
+                ->where('kode_item_set', $mergedName[$key])
+                ->firstOrNew();
+            $productItemSet->kode_item_set = $mergedName[$key];
+            $productItemSet->total_transaksi = $totalYesPerIndex[$key];
+            $productItemSet->persentase = $persentase2SetItems[$key];
+            $productItemSet->kategori = '2_itemset';
+            $productItemSet->tahun = $date;
+            $productItemSet->save();
+        }
+        /*===========*/
 
         return compact('filteredNames', 'totalYesPerIndex', 'persentase2SetItems', 'filteredNameCombinations');
     }
