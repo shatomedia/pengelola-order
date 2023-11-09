@@ -159,6 +159,45 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                    {{--========================--}}
+                                    {{--====== 4 set items =====--}}
+                                    <hr>
+                                    <div class="alert alert-light text-center" style="padding: 5px">4 ITEMSET</div>
+                                    <div class="table-responsive p-0">
+                                        <table class="table align-items-center mb-0">
+                                            <thead>
+                                            <tr>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Produk</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Transaksi</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Hasil Support</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            @foreach($filtered4NameCombinations as $key => $filteredNameCombination)
+                                                <tr>
+                                                    <td class="align-middle">
+                                                        <p class="text-xs font-weight-bold mb-0">
+                                                            @foreach($filtered4Names[$key] as $uniqueName)
+                                                                {{ $uniqueName }}
+                                                            @endforeach
+                                                        </p>
+                                                    </td>
+                                                    <td class="align-middle">
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $total4YesPerIndex[$key] }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $persentase4SetItems[$key] }} %</p>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                            @if(count($filtered4NameCombinations) == 0)
+                                                <tr>
+                                                    <td colspan="3" class="text-center font-italic">Frequent Item Tidak Terbentuk</td>
+                                                </tr>
+                                            @endif
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
