@@ -392,6 +392,25 @@ class ProsesAprioriController extends Controller
             ];
         }, $filteredNameCombinations);
 
+        /*simpan ke database untuk kategori 2 itemset*/
+        foreach ($filteredNameCombinations as $key => $filteredNameCombination){
+            $mergedName = [];
+            foreach ($filteredNames as $index => $namesArray) {
+                $mergedName[$index] = Str::slug($namesArray['product_name_1'] . $namesArray['product_name_2'] . $namesArray['product_name_3']);
+            }
+
+            $productItemSet = ProductItemSet::whereYear('tahun', $date)
+                ->where('kode_item_set', $mergedName[$key])
+                ->firstOrNew();
+            $productItemSet->kode_item_set = $mergedName[$key];
+            $productItemSet->total_transaksi = $totalYesPerIndex[$key];
+            $productItemSet->persentase = $persentase3SetItems[$key];
+            $productItemSet->kategori = '3_itemset';
+            $productItemSet->tahun = $date;
+            $productItemSet->save();
+        }
+        /*===========*/
+
         return compact('filteredNames', 'totalYesPerIndex', 'persentase3SetItems', 'filteredNameCombinations');
     }
 
