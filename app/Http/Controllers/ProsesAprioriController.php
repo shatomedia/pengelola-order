@@ -124,9 +124,7 @@ class ProsesAprioriController extends Controller
             $persentase4SetItems = $proses4SetItems['persentase4SetItems'];
 
             /*proses confidence*/
-            $confidence = $this->confidence(
-                $date, $minConfidence, $filtered2NameCombinations, $total2YesPerIndex, $filtered2Names, $persentase2SetItems
-            );
+            $confidence = $this->confidence($date, $minConfidence, $satuSetItem);
 
             $tableConfidenceItemSets = $confidence['tableConfidenceItemSets'];
         }else{
@@ -532,9 +530,16 @@ class ProsesAprioriController extends Controller
         return compact('filteredNames', 'totalYesPerIndex', 'persentase4SetItems', 'filteredNameCombinations');
     }
 
-    public function confidence(
-        $date, $minConfidence, $filtered2NameCombinations, $total2YesPerIndex, $filtered2Names, $persentase2SetItems
-    ){
+    public function confidence($date, $minConfidence, $satuSetItem)
+    {
+        /*proses 2 item set*/
+        $proses2SetItems = $this->proses2SetItem($satuSetItem);
+        $filtered2NameCombinations = $proses2SetItems['filteredNameCombinations'];
+        $filtered2Names = $proses2SetItems['filteredNames'];
+        $total2YesPerIndex = $proses2SetItems['totalYesPerIndex'];
+        $persentase2SetItems = $proses2SetItems['persentase2SetItems'];
+
+
         $confidence2ItemSets = [];
         $nameProduct2Confidence = [];
         $persentaseMinSupportConfidence = [];
