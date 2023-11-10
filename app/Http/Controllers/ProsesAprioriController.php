@@ -554,14 +554,11 @@ class ProsesAprioriController extends Controller
         $persentase4SetItems = $proses4SetItems['persentase4SetItems'];
 
         /*confidence*/
-        $confidence2ItemSets = [];
-        $nameProduct2Confidence = [];
+        $confidenceItemSets = [];
+        $nameProductConfidence = [];
         $persentaseMinSupportConfidence = [];
         $tableConfidenceItemSets = [];
 
-        $confidence3ItemSets = [];
-
-        $confidence3ItemSets1 = [];
         if (count($filtered3NameCombinations) > 0){
             foreach ($filtered3NameCombinations as $key => $value){
                 $totalYes = $total3YesPerIndex[$key];
@@ -572,7 +569,7 @@ class ProsesAprioriController extends Controller
                     ->filterKategori('2_itemset')
                     ->whereYear('tahun', $date)
                     ->first();
-                $confidence3ItemSets[$key][$product1->kode_item_set] = ($totalYes / $product1->total_transaksi) * 100;
+                $confidenceItemSets[$key][$product1->kode_item_set] = ($totalYes / $product1->total_transaksi) * 100;
 
                 /*product2 1 => 3*/
                 $productName2 = Str::slug($value['product_name_1'] . '-' . $value['product_name_3']);
@@ -580,7 +577,7 @@ class ProsesAprioriController extends Controller
                     ->filterKategori('2_itemset')
                     ->whereYear('tahun', $date)
                     ->first();
-                $confidence3ItemSets[$key][$product2->kode_item_set] = ($totalYes / $product2->total_transaksi) * 100;
+                $confidenceItemSets[$key][$product2->kode_item_set] = ($totalYes / $product2->total_transaksi) * 100;
 
                 /*product3 2 => 3*/
                 $productName2 = Str::slug($value['product_name_2'] . '-' . $value['product_name_3']);
@@ -588,7 +585,57 @@ class ProsesAprioriController extends Controller
                     ->filterKategori('2_itemset')
                     ->whereYear('tahun', $date)
                     ->first();
-                $confidence3ItemSets[$key][$product3->kode_item_set] = ($totalYes / $product3->total_transaksi) * 100;
+                $confidenceItemSets[$key][$product3->kode_item_set] = ($totalYes / $product3->total_transaksi) * 100;
+
+                $nameProductConfidence[$key] = $filtered3Names[$key];
+                $persentaseMinSupportConfidence[$key] = $persentase3SetItems[$key];
+            }
+
+            foreach ($confidenceItemSets as $key => $values) {
+                $productNames = $nameProductConfidence[$key];
+                $persentaseHasilSupport = $persentaseMinSupportConfidence[$key];
+
+                // Check if both arrays have data for the given key
+                if (count($values) > 0 && count($productNames) > 0) {
+                    // Assuming there are two items in each array for a key
+                    $keys = array_keys($values);
+                    $product1 = $keys[0];
+                    $product2 = $keys[1];
+                    $product3 = $keys[2];
+
+                    $confidence1 = $values[$product1];
+                    $confidence2 = $values[$product2];
+                    $confidence3 = $values[$product3];
+
+                    // Removing "=>" character from the strings
+                    $productNames['product_name_1'] = str_replace(" =>", "", $productNames['product_name_1']);
+                    $productNames['product_name_2'] = str_replace(" =>", "", $productNames['product_name_2']);
+                    $productNames['product_name_3'] = str_replace(" =>", "", $productNames['product_name_3']);
+
+                    if ($confidence1 >= $minConfidence) {
+                        $tableConfidenceItemSets[] = [
+                            'nama_product' => $productNames['product_name_1'] . " => " . $productNames['product_name_2'],
+                            'persentase_hasil_support_confidence' => $persentaseHasilSupport,
+                            'confidence' => $confidence1
+                        ];
+                    }
+
+                    if ($confidence2 >= $minConfidence) {
+                        $tableConfidenceItemSets[] = [
+                            'nama_product' => $productNames['product_name_1'] . " => " . $productNames['product_name_3'],
+                            'persentase_hasil_support_confidence' => $persentaseHasilSupport,
+                            'confidence' => $confidence2
+                        ];
+                    }
+
+                    if ($confidence3 >= $minConfidence) {
+                        $tableConfidenceItemSets[] = [
+                            'nama_product' => $productNames['product_name_2'] . " => " . $productNames['product_name_3'],
+                            'persentase_hasil_support_confidence' => $persentaseHasilSupport,
+                            'confidence' => $confidence3
+                        ];
+                    }
+                }
             }
         }elseif (count($filtered2NameCombinations) > 0){
             foreach ($filtered2NameCombinations as $key => $value) {
@@ -600,7 +647,7 @@ class ProsesAprioriController extends Controller
                 $productItemSet1 = ProductItemSet::kodeItemSet($codeProduct1)
                     ->whereYear('tahun', $date)
                     ->first();
-                $confidence2ItemSets[$key][$productItemSet1->kode_item_set] = ($totalYes / $productItemSet1->total_transaksi) * 100;
+                $confidenceItemSets[$key][$productItemSet1->kode_item_set] = ($totalYes / $productItemSet1->total_transaksi) * 100;
 
                 // item set ke 2
                 $product2 = Product::where('id', $value['product_id_2'])
@@ -609,14 +656,14 @@ class ProsesAprioriController extends Controller
                 $productItemSet2 = ProductItemSet::kodeItemSet($codeProduct2)
                     ->whereYear('tahun', $date)
                     ->first();
-                $confidence2ItemSets[$key][$productItemSet2->kode_item_set] = ($totalYes / $productItemSet2->total_transaksi) * 100;
+                $confidenceItemSets[$key][$productItemSet2->kode_item_set] = ($totalYes / $productItemSet2->total_transaksi) * 100;
 
-                $nameProduct2Confidence[$key] = $filtered2Names[$key];
+                $nameProductConfidence[$key] = $filtered2Names[$key];
                 $persentaseMinSupportConfidence[$key] = $persentase2SetItems[$key];
             }
 
-            foreach ($confidence2ItemSets as $key => $values) {
-                $productNames = $nameProduct2Confidence[$key];
+            foreach ($confidenceItemSets as $key => $values) {
+                $productNames = $nameProductConfidence[$key];
                 $persentaseHasilSupport = $persentaseMinSupportConfidence[$key];
 
                 // Check if both arrays have data for the given key
@@ -652,7 +699,6 @@ class ProsesAprioriController extends Controller
             }
         }
 
-        dd($confidence3ItemSets);
         return compact('tableConfidenceItemSets');
     }
 }
