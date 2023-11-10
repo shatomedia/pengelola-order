@@ -201,7 +201,7 @@
                                     {{--========================--}}
                                     {{--====== confidence 2 item sets =====--}}
                                     <hr>
-                                    <div class="alert alert-success text-center text-light fw-bold" style="padding: 5px">CONFIDENCE 2 ITEMSET</div>
+                                    <div class="alert alert-success text-center text-light fw-bold" style="padding: 5px">CONFIDENCE</div>
                                     <div class="table-responsive p-0">
                                         <table class="table align-items-center mb-0">
                                             <thead>
@@ -212,18 +212,18 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            @foreach($tableConfidence2ItemSets as $key => $confidence2ItemSet)
+                                            @foreach($tableConfidenceItemSets as $key => $confidenceItemSet)
                                                 <tr>
                                                     <td class="align-middle">
                                                         <p class="text-xs font-weight-bold mb-0">
-                                                            {{ $confidence2ItemSet['nama_product'] }}
+                                                            {{ $confidenceItemSet['nama_product'] }}
                                                         </p>
                                                     </td>
                                                     <td>
-                                                        <p class="text-xs font-weight-bold mb-0"></p>
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $confidenceItemSet['persentase_hasil_support_confidence'] }} %</p>
                                                     </td>
                                                     <td class="align-middle">
-                                                        <p class="text-xs font-weight-bold mb-0">{{ $confidence2ItemSet['confidence'] }}</p>
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $confidenceItemSet['confidence'] }} %</p>
                                                     </td>
                                                 </tr>
                                             @endforeach

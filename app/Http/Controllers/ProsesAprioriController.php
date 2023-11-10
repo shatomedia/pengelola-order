@@ -126,7 +126,8 @@ class ProsesAprioriController extends Controller
             /*proses confidence*/
             $confidence2ItemSets = [];
             $nameProduct2Confidence = [];
-            $tableConfidence2ItemSets = [];
+            $persentaseMinSupportConfidence = [];
+            $tableConfidenceItemSets = [];
             if (count($filtered2NameCombinations) > 0){
                 foreach ($filtered2NameCombinations as $key => $value) {
                     // item set ke 1
@@ -150,10 +151,12 @@ class ProsesAprioriController extends Controller
                     $confidence2ItemSets[$key][$productItemSet->kode_item_set] = ($totalYes2 / $productItemSet->total_transaksi) * 100;
 
                     $nameProduct2Confidence[$key] = $filtered2Names[$key];
+                    $persentaseMinSupportConfidence[$key] = $persentase2SetItems[$key];
                 }
 
                 foreach ($confidence2ItemSets as $key => $values) {
                     $productNames = $nameProduct2Confidence[$key];
+                    $persentaseHasilSupport = $persentaseMinSupportConfidence[$key];
 
                     // Check if both arrays have data for the given key
                     if (count($values) > 0 && count($productNames) > 0) {
@@ -169,15 +172,21 @@ class ProsesAprioriController extends Controller
                         $productNames['product_name_1'] = str_replace(" =>", "", $productNames['product_name_1']);
                         $productNames['product_name_2'] = str_replace(" =>", "", $productNames['product_name_2']);
 
-                        $tableConfidence2ItemSets[] = [
-                            'nama_product' => $productNames['product_name_1'] . " => " . $productNames['product_name_2'],
-                            'confidence' => $confidence1
-                        ];
+                        if ($confidence1 >= $minConfidence) {
+                            $tableConfidenceItemSets[] = [
+                                'nama_product' => $productNames['product_name_1'] . " => " . $productNames['product_name_2'],
+                                'persentase_hasil_support_confidence' => $persentaseHasilSupport,
+                                'confidence' => $confidence1
+                            ];
+                        }
 
-                        $tableConfidence2ItemSets[] = [
-                            'nama_product' => $productNames['product_name_2'] . " => " . $productNames['product_name_1'],
-                            'confidence' => $confidence2
-                        ];
+                        if ($confidence2 >= $minConfidence) {
+                            $tableConfidenceItemSets[] = [
+                                'nama_product' => $productNames['product_name_2'] . " => " . $productNames['product_name_1'],
+                                'persentase_hasil_support_confidence' => $persentaseHasilSupport,
+                                'confidence' => $confidence2
+                            ];
+                        }
                     }
                 }
             }
@@ -204,7 +213,7 @@ class ProsesAprioriController extends Controller
             $persentase4SetItems = null;
 
             /*confidence 2 item sets*/
-            $tableConfidence2ItemSets = null;
+            $tableConfidenceItemSets = null;
         }
 
         return view('apriories.index', compact(
@@ -212,7 +221,7 @@ class ProsesAprioriController extends Controller
             'filtered2NameCombinations','filtered2Names','total2YesPerIndex','persentase2SetItems',
             'filtered3NameCombinations','filtered3Names','total3YesPerIndex','persentase3SetItems',
             'filtered4NameCombinations','filtered4Names','total4YesPerIndex','persentase4SetItems',
-            'tableConfidence2ItemSets'
+            'tableConfidenceItemSets'
         ));
     }
 
