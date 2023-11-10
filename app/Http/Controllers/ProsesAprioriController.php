@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DetailOrder;
+use App\Models\HasilApriori;
 use App\Models\Product;
 use App\Models\ProductItemSet;
 use App\Models\ProsesApriori;
@@ -645,32 +646,32 @@ class ProsesAprioriController extends Controller
                     if ($confidence1 >= $minConfidence) {
                         $tableConfidenceItemSets[] = [
                             'nama_product' => $productNames['product_name_1'] . ", " . $productNames['product_name_2'] . ", " . $productNames['product_name_3'] . " => " . $productNames['product_name_4'],
-                            'persentase_hasil_support_confidence' => $persentaseHasilSupport,
-                            'confidence' => $confidence1
+                            'persentase_hasil_support' => $persentaseHasilSupport,
+                            'persentase_hasil_confidence' => $confidence1
                         ];
                     }
 
                     if ($confidence2 >= $minConfidence) {
                         $tableConfidenceItemSets[] = [
                             'nama_product' => $productNames['product_name_1'] . ", " . $productNames['product_name_2'] . ", " . $productNames['product_name_4'] . " => " . $productNames['product_name_3'],
-                            'persentase_hasil_support_confidence' => $persentaseHasilSupport,
-                            'confidence' => $confidence2
+                            'persentase_hasil_support' => $persentaseHasilSupport,
+                            'persentase_hasil_confidence' => $confidence2
                         ];
                     }
 
                     if ($confidence3 >= $minConfidence) {
                         $tableConfidenceItemSets[] = [
                             'nama_product' => $productNames['product_name_2'] . ", " . $productNames['product_name_3'] . ", " . $productNames['product_name_4'] . " => " . $productNames['product_name_1'],
-                            'persentase_hasil_support_confidence' => $persentaseHasilSupport,
-                            'confidence' => $confidence3
+                            'persentase_hasil_support' => $persentaseHasilSupport,
+                            'persentase_hasil_confidence' => $confidence3
                         ];
                     }
 
                     if ($confidence4 >= $minConfidence) {
                         $tableConfidenceItemSets[] = [
                             'nama_product' => $productNames['product_name_1'] . ", " . $productNames['product_name_3'] . ", " . $productNames['product_name_4'] . " => " . $productNames['product_name_2'],
-                            'persentase_hasil_support_confidence' => $persentaseHasilSupport,
-                            'confidence' => $confidence4
+                            'persentase_hasil_support' => $persentaseHasilSupport,
+                            'persentase_hasil_confidence' => $confidence4
                         ];
                     }
                 }
@@ -731,24 +732,24 @@ class ProsesAprioriController extends Controller
                     if ($confidence1 >= $minConfidence) {
                         $tableConfidenceItemSets[] = [
                             'nama_product' => $productNames['product_name_1'] . ", " . $productNames['product_name_2'] . " => " . $productNames['product_name_3'],
-                            'persentase_hasil_support_confidence' => $persentaseHasilSupport,
-                            'confidence' => $confidence1
+                            'persentase_hasil_support' => $persentaseHasilSupport,
+                            'persentase_hasil_confidence' => $confidence1
                         ];
                     }
 
                     if ($confidence2 >= $minConfidence) {
                         $tableConfidenceItemSets[] = [
                             'nama_product' => $productNames['product_name_1'] . ", " . $productNames['product_name_3'] . " => " . $productNames['product_name_2'],
-                            'persentase_hasil_support_confidence' => $persentaseHasilSupport,
-                            'confidence' => $confidence2
+                            'persentase_hasil_support' => $persentaseHasilSupport,
+                            'persentase_hasil_confidence' => $confidence2
                         ];
                     }
 
                     if ($confidence3 >= $minConfidence) {
                         $tableConfidenceItemSets[] = [
                             'nama_product' => $productNames['product_name_2'] . ", " . $productNames['product_name_3'] . " => " . $productNames['product_name_1'],
-                            'persentase_hasil_support_confidence' => $persentaseHasilSupport,
-                            'confidence' => $confidence3
+                            'persentase_hasil_support' => $persentaseHasilSupport,
+                            'persentase_hasil_confidence' => $confidence3
                         ];
                     }
                 }
@@ -799,19 +800,31 @@ class ProsesAprioriController extends Controller
                     if ($confidence1 >= $minConfidence) {
                         $tableConfidenceItemSets[] = [
                             'nama_product' => $productNames['product_name_1'] . " => " . $productNames['product_name_2'],
-                            'persentase_hasil_support_confidence' => $persentaseHasilSupport,
-                            'confidence' => $confidence1
+                            'persentase_hasil_support' => $persentaseHasilSupport,
+                            'persentase_hasil_confidence' => $confidence1
                         ];
                     }
 
                     if ($confidence2 >= $minConfidence) {
                         $tableConfidenceItemSets[] = [
                             'nama_product' => $productNames['product_name_2'] . " => " . $productNames['product_name_1'],
-                            'persentase_hasil_support_confidence' => $persentaseHasilSupport,
-                            'confidence' => $confidence2
+                            'persentase_hasil_support' => $persentaseHasilSupport,
+                            'persentase_hasil_confidence' => $confidence2
                         ];
                     }
                 }
+            }
+        }
+
+        if (count($tableConfidenceItemSets) > 0){
+            foreach ($tableConfidenceItemSets as $tableConfidenceItemSet){
+                $hasilApriori = New HasilApriori();
+                $hasilApriori->penguji = auth()->user()->id;
+                $hasilApriori->nama_produk = $tableConfidenceItemSet['nama_product'];
+                $hasilApriori->persentase_hasil_support = $tableConfidenceItemSet['persentase_hasil_support'];
+                $hasilApriori->persentase_hasil_confidence = $tableConfidenceItemSet['persentase_hasil_confidence'];
+                $hasilApriori->tanggal = date('Y-m-d');
+                $hasilApriori->save();
             }
         }
 

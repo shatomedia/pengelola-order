@@ -220,10 +220,10 @@
                                                         </p>
                                                     </td>
                                                     <td>
-                                                        <p class="text-xs font-weight-bold mb-0">{{ $confidenceItemSet['persentase_hasil_support_confidence'] }} %</p>
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $confidenceItemSet['persentase_hasil_support'] }} %</p>
                                                     </td>
                                                     <td class="align-middle">
-                                                        <p class="text-xs font-weight-bold mb-0">{{ $confidenceItemSet['confidence'] }} %</p>
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $confidenceItemSet['persentase_hasil_confidence'] }} %</p>
                                                     </td>
                                                 </tr>
                                             @endforeach
