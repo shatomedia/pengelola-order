@@ -19,4 +19,9 @@ class ProductItemSet extends Model
     {
         return $query->where('kode_item_set', $kodeItemSet);
     }
+
+    public function scopeFilterKategori(Builder $query, $kategori): Builder
+    {
+        return $query->where('kategori', $kategori);
+    }
 }
