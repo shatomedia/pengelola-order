@@ -124,8 +124,10 @@ class ProsesAprioriController extends Controller
             $persentase4SetItems = $proses4SetItems['persentase4SetItems'];
 
             /*proses confidence*/
+            $confidence2ItemSets = [];
+            $nameProduct2Confidence = [];
+            $tableConfidence2ItemSets = [];
             if (count($filtered2NameCombinations) > 0){
-                $confidence = [];
                 foreach ($filtered2NameCombinations as $key => $value) {
                     // item set ke 1
                     $product1 = Product::where('id', $value['product_id_1'])
@@ -135,7 +137,7 @@ class ProsesAprioriController extends Controller
                     $productItemSet = ProductItemSet::kodeItemSet($codeProduct)
                         ->whereYear('tahun', $date)
                         ->first();
-                    $confidence[$key][$productItemSet->kode_item_set] = ($totalYes1 / $productItemSet->total_transaksi) * 100;
+                    $confidence2ItemSets[$key][$productItemSet->kode_item_set] = ($totalYes1 / $productItemSet->total_transaksi) * 100;
 
                     // item set ke 2
                     $product2 = Product::where('id', $value['product_id_2'])
@@ -145,17 +147,40 @@ class ProsesAprioriController extends Controller
                     $productItemSet = ProductItemSet::kodeItemSet($codeProduct)
                         ->whereYear('tahun', $date)
                         ->first();
-                    $confidence[$key][$productItemSet->kode_item_set] = ($totalYes2 / $productItemSet->total_transaksi) * 100;
+                    $confidence2ItemSets[$key][$productItemSet->kode_item_set] = ($totalYes2 / $productItemSet->total_transaksi) * 100;
 
-                    /*foreach ($combinedData2[$key] as $data){
-                        $s[$key] = $data;
-                    }*/
+                    $nameProduct2Confidence[$key] = $filtered2Names[$key];
                 }
 
-                // Output hasil
-                dd($confidence);
-            }
+                foreach ($confidence2ItemSets as $key => $values) {
+                    $productNames = $nameProduct2Confidence[$key];
 
+                    // Check if both arrays have data for the given key
+                    if (count($values) > 0 && count($productNames) > 0) {
+                        // Assuming there are two items in each array for a key
+                        $keys = array_keys($values);
+                        $product1 = $keys[0];
+                        $product2 = $keys[1];
+
+                        $confidence1 = $values[$product1];
+                        $confidence2 = $values[$product2];
+
+                        // Removing "=>" character from the strings
+                        $productNames['product_name_1'] = str_replace(" =>", "", $productNames['product_name_1']);
+                        $productNames['product_name_2'] = str_replace(" =>", "", $productNames['product_name_2']);
+
+                        $tableConfidence2ItemSets[] = [
+                            'nama_product' => $productNames['product_name_1'] . " => " . $productNames['product_name_2'],
+                            'confidence' => $confidence1
+                        ];
+
+                        $tableConfidence2ItemSets[] = [
+                            'nama_product' => $productNames['product_name_2'] . " => " . $productNames['product_name_1'],
+                            'confidence' => $confidence2
+                        ];
+                    }
+                }
+            }
         }else{
             $products = null;
             $satuSetItem = null;
@@ -177,13 +202,17 @@ class ProsesAprioriController extends Controller
             $filtered4Names = null;
             $total4YesPerIndex = null;
             $persentase4SetItems = null;
+
+            /*confidence 2 item sets*/
+            $tableConfidence2ItemSets = null;
         }
 
         return view('apriories.index', compact(
             'title','products','years','satuSetItem',
             'filtered2NameCombinations','filtered2Names','total2YesPerIndex','persentase2SetItems',
             'filtered3NameCombinations','filtered3Names','total3YesPerIndex','persentase3SetItems',
-            'filtered4NameCombinations','filtered4Names','total4YesPerIndex','persentase4SetItems'
+            'filtered4NameCombinations','filtered4Names','total4YesPerIndex','persentase4SetItems',
+            'tableConfidence2ItemSets'
         ));
     }
 

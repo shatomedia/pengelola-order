@@ -198,6 +198,38 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                    {{--========================--}}
+                                    {{--====== confidence 2 item sets =====--}}
+                                    <hr>
+                                    <div class="alert alert-success text-center text-light fw-bold" style="padding: 5px">CONFIDENCE 2 ITEMSET</div>
+                                    <div class="table-responsive p-0">
+                                        <table class="table align-items-center mb-0">
+                                            <thead>
+                                            <tr>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Produk</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Hasil Support</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Confidence</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            @foreach($tableConfidence2ItemSets as $key => $confidence2ItemSet)
+                                                <tr>
+                                                    <td class="align-middle">
+                                                        <p class="text-xs font-weight-bold mb-0">
+                                                            {{ $confidence2ItemSet['nama_product'] }}
+                                                        </p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="text-xs font-weight-bold mb-0"></p>
+                                                    </td>
+                                                    <td class="align-middle">
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $confidence2ItemSet['confidence'] }}</p>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
