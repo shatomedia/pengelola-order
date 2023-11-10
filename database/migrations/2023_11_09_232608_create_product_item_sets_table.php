@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->string('kode_item_set');
             $table->integer('total_transaksi');
             $table->string('persentase');
-            $table->enum('kategori', ['1_itemset','2_itemset','3_itemset']);
+            $table->enum('kategori', ['1_itemset','2_itemset','3_itemset','4_itemset']);
             $table->year('tahun');
             $table->timestamps();
         });

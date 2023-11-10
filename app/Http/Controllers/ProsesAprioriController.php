@@ -383,7 +383,7 @@ class ProsesAprioriController extends Controller
             ];
         }, $filteredNameCombinations);
 
-        /*simpan ke database untuk kategori 2 itemset*/
+        /*simpan ke database untuk kategori 3 itemset*/
         foreach ($filteredNameCombinations as $key => $filteredNameCombination){
             $mergedName = [];
             foreach ($filteredNames as $index => $namesArray) {
@@ -527,6 +527,25 @@ class ProsesAprioriController extends Controller
             ];
         }, $filteredNameCombinations);
 
+        /*simpan ke database untuk kategori 4 itemset*/
+        foreach ($filteredNameCombinations as $key => $filteredNameCombination){
+            $mergedName = [];
+            foreach ($filteredNames as $index => $namesArray) {
+                $mergedName[$index] = Str::slug($namesArray['product_name_1'] . $namesArray['product_name_2'] . $namesArray['product_name_3'] . $namesArray['product_name_4']);
+            }
+
+            $productItemSet = ProductItemSet::whereYear('tahun', $date)
+                ->where('kode_item_set', $mergedName[$key])
+                ->firstOrNew();
+            $productItemSet->kode_item_set = $mergedName[$key];
+            $productItemSet->total_transaksi = $totalYesPerIndex[$key];
+            $productItemSet->persentase = $persentase4SetItems[$key];
+            $productItemSet->kategori = '4_itemset';
+            $productItemSet->tahun = $date;
+            $productItemSet->save();
+        }
+        /*===========*/
+
         return compact('filteredNames', 'totalYesPerIndex', 'persentase4SetItems', 'filteredNameCombinations');
     }
 
@@ -559,7 +578,104 @@ class ProsesAprioriController extends Controller
         $persentaseMinSupportConfidence = [];
         $tableConfidenceItemSets = [];
 
-        if (count($filtered3NameCombinations) > 0){
+        if (count($filtered4NameCombinations) > 0){
+            foreach ($filtered4NameCombinations as $key => $value){
+                $totalYes = $total4YesPerIndex[$key];
+
+                /*product1 1 => 2 => 3*/
+                $productName1 = Str::slug($value['product_name_1'] . '-' . $value['product_name_2'] . '-' . $value['product_name_3']);
+                $product1 = ProductItemSet::kodeItemSet($productName1)
+                    ->filterKategori('3_itemset')
+                    ->whereYear('tahun', $date)
+                    ->first();
+                $confidenceItemSets[$key][$product1->kode_item_set] = ($totalYes / $product1->total_transaksi) * 100;
+
+                /*product2 1 => 2 => 4*/
+                $productName2 = Str::slug($value['product_name_1'] . '-' . $value['product_name_2'] . '-' . $value['product_name_4']);
+                $product2 = ProductItemSet::kodeItemSet($productName2)
+                    ->filterKategori('3_itemset')
+                    ->whereYear('tahun', $date)
+                    ->first();
+                $confidenceItemSets[$key][$product2->kode_item_set] = ($totalYes / $product2->total_transaksi) * 100;
+
+                /*product3 2 => 3 => 4*/
+                $productName3 = Str::slug($value['product_name_2'] . '-' . $value['product_name_3'] . '-' . $value['product_name_4']);
+                $product3 = ProductItemSet::kodeItemSet($productName3)
+                    ->filterKategori('3_itemset')
+                    ->whereYear('tahun', $date)
+                    ->first();
+                $confidenceItemSets[$key][$product3->kode_item_set] = ($totalYes / $product3->total_transaksi) * 100;
+
+                /*product3 1 => 3 => 4*/
+                $productName4 = Str::slug($value['product_name_1'] . '-' . $value['product_name_3'] . '-' . $value['product_name_4']);
+                $product4 = ProductItemSet::kodeItemSet($productName4)
+                    ->filterKategori('3_itemset')
+                    ->whereYear('tahun', $date)
+                    ->first();
+                $confidenceItemSets[$key][$product4->kode_item_set] = ($totalYes / $product4->total_transaksi) * 100;
+
+                $nameProductConfidence[$key] = $filtered4Names[$key];
+                $persentaseMinSupportConfidence[$key] = $persentase4SetItems[$key];
+            }
+
+            foreach ($confidenceItemSets as $key => $values) {
+                $productNames = $nameProductConfidence[$key];
+                $persentaseHasilSupport = $persentaseMinSupportConfidence[$key];
+
+                // Check if both arrays have data for the given key
+                if (count($values) > 0 && count($productNames) > 0) {
+                    // Assuming there are two items in each array for a key
+                    $keys = array_keys($values);
+                    $product1 = $keys[0];
+                    $product2 = $keys[1];
+                    $product3 = $keys[2];
+                    $product4 = $keys[3];
+
+                    $confidence1 = $values[$product1];
+                    $confidence2 = $values[$product2];
+                    $confidence3 = $values[$product3];
+                    $confidence4 = $values[$product4];
+
+                    // Removing "=>" character from the strings
+                    $productNames['product_name_1'] = str_replace(" =>", "", $productNames['product_name_1']);
+                    $productNames['product_name_2'] = str_replace(" =>", "", $productNames['product_name_2']);
+                    $productNames['product_name_3'] = str_replace(" =>", "", $productNames['product_name_3']);
+                    $productNames['product_name_4'] = str_replace(" =>", "", $productNames['product_name_4']);
+
+                    if ($confidence1 >= $minConfidence) {
+                        $tableConfidenceItemSets[] = [
+                            'nama_product' => $productNames['product_name_1'] . " => " . $productNames['product_name_2'] . " => " . $productNames['product_name_3'],
+                            'persentase_hasil_support_confidence' => $persentaseHasilSupport,
+                            'confidence' => $confidence1
+                        ];
+                    }
+
+                    if ($confidence2 >= $minConfidence) {
+                        $tableConfidenceItemSets[] = [
+                            'nama_product' => $productNames['product_name_1'] . " => " . $productNames['product_name_2'] . " => " . $productNames['product_name_4'],
+                            'persentase_hasil_support_confidence' => $persentaseHasilSupport,
+                            'confidence' => $confidence2
+                        ];
+                    }
+
+                    if ($confidence3 >= $minConfidence) {
+                        $tableConfidenceItemSets[] = [
+                            'nama_product' => $productNames['product_name_2'] . " => " . $productNames['product_name_3'] . " => " . $productNames['product_name_4'],
+                            'persentase_hasil_support_confidence' => $persentaseHasilSupport,
+                            'confidence' => $confidence3
+                        ];
+                    }
+
+                    if ($confidence4 >= $minConfidence) {
+                        $tableConfidenceItemSets[] = [
+                            'nama_product' => $productNames['product_name_1'] . " => " . $productNames['product_name_3'] . " => " . $productNames['product_name_4'],
+                            'persentase_hasil_support_confidence' => $persentaseHasilSupport,
+                            'confidence' => $confidence4
+                        ];
+                    }
+                }
+            }
+        }elseif (count($filtered3NameCombinations) > 0){
             foreach ($filtered3NameCombinations as $key => $value){
                 $totalYes = $total3YesPerIndex[$key];
 
@@ -580,8 +696,8 @@ class ProsesAprioriController extends Controller
                 $confidenceItemSets[$key][$product2->kode_item_set] = ($totalYes / $product2->total_transaksi) * 100;
 
                 /*product3 2 => 3*/
-                $productName2 = Str::slug($value['product_name_2'] . '-' . $value['product_name_3']);
-                $product3 = ProductItemSet::kodeItemSet($productName2)
+                $productName3 = Str::slug($value['product_name_2'] . '-' . $value['product_name_3']);
+                $product3 = ProductItemSet::kodeItemSet($productName3)
                     ->filterKategori('2_itemset')
                     ->whereYear('tahun', $date)
                     ->first();
