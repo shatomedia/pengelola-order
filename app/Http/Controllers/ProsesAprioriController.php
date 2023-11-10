@@ -644,7 +644,7 @@ class ProsesAprioriController extends Controller
 
                     if ($confidence1 >= $minConfidence) {
                         $tableConfidenceItemSets[] = [
-                            'nama_product' => $productNames['product_name_1'] . " => " . $productNames['product_name_2'] . " => " . $productNames['product_name_3'],
+                            'nama_product' => $productNames['product_name_1'] . ", " . $productNames['product_name_2'] . ", " . $productNames['product_name_3'] . " => " . $productNames['product_name_4'],
                             'persentase_hasil_support_confidence' => $persentaseHasilSupport,
                             'confidence' => $confidence1
                         ];
@@ -652,7 +652,7 @@ class ProsesAprioriController extends Controller
 
                     if ($confidence2 >= $minConfidence) {
                         $tableConfidenceItemSets[] = [
-                            'nama_product' => $productNames['product_name_1'] . " => " . $productNames['product_name_2'] . " => " . $productNames['product_name_4'],
+                            'nama_product' => $productNames['product_name_1'] . ", " . $productNames['product_name_2'] . ", " . $productNames['product_name_4'] . " => " . $productNames['product_name_3'],
                             'persentase_hasil_support_confidence' => $persentaseHasilSupport,
                             'confidence' => $confidence2
                         ];
@@ -660,7 +660,7 @@ class ProsesAprioriController extends Controller
 
                     if ($confidence3 >= $minConfidence) {
                         $tableConfidenceItemSets[] = [
-                            'nama_product' => $productNames['product_name_2'] . " => " . $productNames['product_name_3'] . " => " . $productNames['product_name_4'],
+                            'nama_product' => $productNames['product_name_2'] . ", " . $productNames['product_name_3'] . ", " . $productNames['product_name_4'] . " => " . $productNames['product_name_1'],
                             'persentase_hasil_support_confidence' => $persentaseHasilSupport,
                             'confidence' => $confidence3
                         ];
@@ -668,7 +668,7 @@ class ProsesAprioriController extends Controller
 
                     if ($confidence4 >= $minConfidence) {
                         $tableConfidenceItemSets[] = [
-                            'nama_product' => $productNames['product_name_1'] . " => " . $productNames['product_name_3'] . " => " . $productNames['product_name_4'],
+                            'nama_product' => $productNames['product_name_1'] . ", " . $productNames['product_name_3'] . ", " . $productNames['product_name_4'] . " => " . $productNames['product_name_2'],
                             'persentase_hasil_support_confidence' => $persentaseHasilSupport,
                             'confidence' => $confidence4
                         ];
@@ -730,7 +730,7 @@ class ProsesAprioriController extends Controller
 
                     if ($confidence1 >= $minConfidence) {
                         $tableConfidenceItemSets[] = [
-                            'nama_product' => $productNames['product_name_1'] . " => " . $productNames['product_name_2'],
+                            'nama_product' => $productNames['product_name_1'] . ", " . $productNames['product_name_2'] . " => " . $productNames['product_name_3'],
                             'persentase_hasil_support_confidence' => $persentaseHasilSupport,
                             'confidence' => $confidence1
                         ];
@@ -738,7 +738,7 @@ class ProsesAprioriController extends Controller
 
                     if ($confidence2 >= $minConfidence) {
                         $tableConfidenceItemSets[] = [
-                            'nama_product' => $productNames['product_name_1'] . " => " . $productNames['product_name_3'],
+                            'nama_product' => $productNames['product_name_1'] . ", " . $productNames['product_name_3'] . " => " . $productNames['product_name_2'],
                             'persentase_hasil_support_confidence' => $persentaseHasilSupport,
                             'confidence' => $confidence2
                         ];
@@ -746,7 +746,7 @@ class ProsesAprioriController extends Controller
 
                     if ($confidence3 >= $minConfidence) {
                         $tableConfidenceItemSets[] = [
-                            'nama_product' => $productNames['product_name_2'] . " => " . $productNames['product_name_3'],
+                            'nama_product' => $productNames['product_name_2'] . ", " . $productNames['product_name_3'] . " => " . $productNames['product_name_1'],
                             'persentase_hasil_support_confidence' => $persentaseHasilSupport,
                             'confidence' => $confidence3
                         ];
