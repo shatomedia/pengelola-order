@@ -32,6 +32,9 @@ class DashboardController extends Controller
             ->get()
             ->toArray();
 
-        return view('dashboard.index', compact('title', 'products', 'orders','hasilApriori'));
+        $totalPenjualan = Order::statusOrder('Dikirim')
+            ->sum('total_harga_jual');
+
+        return view('dashboard.index', compact('title', 'products', 'orders','hasilApriori','totalPenjualan'));
     }
 }

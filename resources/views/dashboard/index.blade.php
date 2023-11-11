@@ -48,7 +48,7 @@
             </div>
         </div>
 
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+        {{--<div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
             <div class="card">
                 <div class="card-body p-3">
                     <div class="row">
@@ -69,8 +69,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-xl-3 col-sm-6">
+        </div>--}}
+        <div class="col-xl-6 col-sm-6">
             <div class="card">
                 <div class="card-body p-3">
                     <div class="row">
@@ -78,8 +78,7 @@
                             <div class="numbers">
                                 <p class="text-sm mb-0 text-capitalize font-weight-bold">Sales</p>
                                 <h5 class="font-weight-bolder mb-0">
-                                    $103,430
-                                    <span class="text-success text-sm font-weight-bolder">+5%</span>
+                                    Rp. {{ number_format($totalPenjualan,0,',','.') }}
                                 </h5>
                             </div>
                         </div>
