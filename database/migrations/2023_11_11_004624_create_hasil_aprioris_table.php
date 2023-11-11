@@ -9,6 +9,8 @@ return new class extends Migration {
     {
         Schema::create('hasil_aprioris', function (Blueprint $table) {
             $table->id();
+            $table->integer('no_urut');
+            $table->string('kode_pengujian');
             $table->unsignedBigInteger('penguji');
             $table->string('nama_produk');
             $table->string('persentase_hasil_support');

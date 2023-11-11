@@ -587,7 +587,7 @@ class ProsesAprioriController extends Controller
                 $productName1 = Str::slug($value['product_name_1'] . '-' . $value['product_name_2'] . '-' . $value['product_name_3']);
                 $product1 = ProductItemSet::kodeItemSet($productName1)
                     ->filterKategori('3_itemset')
-                    ->whereYear('tahun', $date)
+                    ->where('tahun', $date)
                     ->first();
                 $confidenceItemSets[$key][$product1->kode_item_set] = ($totalYes / $product1->total_transaksi) * 100;
 
@@ -595,7 +595,7 @@ class ProsesAprioriController extends Controller
                 $productName2 = Str::slug($value['product_name_1'] . '-' . $value['product_name_2'] . '-' . $value['product_name_4']);
                 $product2 = ProductItemSet::kodeItemSet($productName2)
                     ->filterKategori('3_itemset')
-                    ->whereYear('tahun', $date)
+                    ->where('tahun', $date)
                     ->first();
                 $confidenceItemSets[$key][$product2->kode_item_set] = ($totalYes / $product2->total_transaksi) * 100;
 
@@ -603,7 +603,7 @@ class ProsesAprioriController extends Controller
                 $productName3 = Str::slug($value['product_name_2'] . '-' . $value['product_name_3'] . '-' . $value['product_name_4']);
                 $product3 = ProductItemSet::kodeItemSet($productName3)
                     ->filterKategori('3_itemset')
-                    ->whereYear('tahun', $date)
+                    ->where('tahun', $date)
                     ->first();
                 $confidenceItemSets[$key][$product3->kode_item_set] = ($totalYes / $product3->total_transaksi) * 100;
 
@@ -611,7 +611,7 @@ class ProsesAprioriController extends Controller
                 $productName4 = Str::slug($value['product_name_1'] . '-' . $value['product_name_3'] . '-' . $value['product_name_4']);
                 $product4 = ProductItemSet::kodeItemSet($productName4)
                     ->filterKategori('3_itemset')
-                    ->whereYear('tahun', $date)
+                    ->where('tahun', $date)
                     ->first();
                 $confidenceItemSets[$key][$product4->kode_item_set] = ($totalYes / $product4->total_transaksi) * 100;
 
@@ -680,27 +680,27 @@ class ProsesAprioriController extends Controller
             foreach ($filtered3NameCombinations as $key => $value){
                 $totalYes = $total3YesPerIndex[$key];
 
-                /*product1 1 => 2*/
+                // product1 1 => 2
                 $productName1 = Str::slug($value['product_name_1'] . '-' . $value['product_name_2']);
                 $product1 = ProductItemSet::kodeItemSet($productName1)
                     ->filterKategori('2_itemset')
-                    ->whereYear('tahun', $date)
+                    ->where('tahun', $date)
                     ->first();
                 $confidenceItemSets[$key][$product1->kode_item_set] = ($totalYes / $product1->total_transaksi) * 100;
 
-                /*product2 1 => 3*/
+                // product2 1 => 3
                 $productName2 = Str::slug($value['product_name_1'] . '-' . $value['product_name_3']);
                 $product2 = ProductItemSet::kodeItemSet($productName2)
                     ->filterKategori('2_itemset')
-                    ->whereYear('tahun', $date)
+                    ->where('tahun', $date)
                     ->first();
                 $confidenceItemSets[$key][$product2->kode_item_set] = ($totalYes / $product2->total_transaksi) * 100;
 
-                /*product3 2 => 3*/
+                // product3 2 => 3
                 $productName3 = Str::slug($value['product_name_2'] . '-' . $value['product_name_3']);
                 $product3 = ProductItemSet::kodeItemSet($productName3)
                     ->filterKategori('2_itemset')
-                    ->whereYear('tahun', $date)
+                    ->where('tahun', $date)
                     ->first();
                 $confidenceItemSets[$key][$product3->kode_item_set] = ($totalYes / $product3->total_transaksi) * 100;
 
@@ -762,7 +762,7 @@ class ProsesAprioriController extends Controller
                     ->pluck('nama');
                 $codeProduct1 = Str::slug($product1);
                 $productItemSet1 = ProductItemSet::kodeItemSet($codeProduct1)
-                    ->whereYear('tahun', $date)
+                    ->where('tahun', $date)
                     ->first();
                 $confidenceItemSets[$key][$productItemSet1->kode_item_set] = ($totalYes / $productItemSet1->total_transaksi) * 100;
 
@@ -771,7 +771,7 @@ class ProsesAprioriController extends Controller
                     ->pluck('nama');
                 $codeProduct2 = Str::slug($product2);
                 $productItemSet2 = ProductItemSet::kodeItemSet($codeProduct2)
-                    ->whereYear('tahun', $date)
+                    ->where('tahun', $date)
                     ->first();
                 $confidenceItemSets[$key][$productItemSet2->kode_item_set] = ($totalYes / $productItemSet2->total_transaksi) * 100;
 
@@ -817,8 +817,13 @@ class ProsesAprioriController extends Controller
         }
 
         if (count($tableConfidenceItemSets) > 0){
+            $lastBatchNumber = HasilApriori::max('no_urut');
+            $lastSequenceNumber = $lastBatchNumber ?: 0;
+
             foreach ($tableConfidenceItemSets as $tableConfidenceItemSet){
                 $hasilApriori = New HasilApriori();
+                $hasilApriori->no_urut = $lastSequenceNumber + 1;
+                $hasilApriori->kode_pengujian = 'PNG' . str_pad($hasilApriori->no_urut, 5, '0', STR_PAD_LEFT);
                 $hasilApriori->penguji = auth()->user()->id;
                 $hasilApriori->nama_produk = $tableConfidenceItemSet['nama_product'];
                 $hasilApriori->persentase_hasil_support = $tableConfidenceItemSet['persentase_hasil_support'];
