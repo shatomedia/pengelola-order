@@ -13,12 +13,15 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form action="{{ url('/laporan-penjualan') }}" method="get">
+                        <form action="{{ route('laporan-penjualan.index') }}" method="get">
                             <div class="form-group">
                                 <label for="date"></label>
-                                <input type="text" class="form-control daterange" name="date" id="date" value="{{ !$date ? '' : $date }}" placeholder="Rentang Tanggal">
+                                <input type="text" class="form-control daterange" name="date" id="date" value="{{ !$date ? '' : $date }}" placeholder="Rentang Tanggal" required>
                             </div>
                             <button type="submit" class="btn btn-primary">Filter</button>
+                            <div class="float-end">
+                                <button type="submit" name="export" value="true" class="btn btn-outline-dark">Export</button>
+                            </div>
                         </form>
                     </div>
                     <hr>
@@ -31,7 +34,7 @@
                                     <th class="text-uppercase text-secondary text-xxser opacity-7 ps-2">Nama Pembeli</th>
                                     <th class="text-uppercase text-secondary text-xxser opacity-7 ps-2">Alamat</th>
                                     <th class="text-uppercase text-secondary text-xxser opacity-7 ps-2">No HP</th>
-                                    <th class="text-uppercase text-secondary text-xxser opacity-7 ps-2">Produk</th>
+                                    <th class="text-uppercase text-secondary text-xxser opacity-7 ps-2">Total Produk</th>
                                     <th class="text-uppercase text-secondary text-xxser opacity-7 ps-2">Order Via</th>
                                     <th class="text-uppercase text-secondary text-xxser opacity-7 ps-2">Tgl Order</th>
                                     <th class="text-uppercase text-secondary text-xxser opacity-7 ps-2">Tgl Kirim</th>
@@ -56,10 +59,10 @@
                                             <p class="mb-0 text-sm">{{ $order->alamat }}</p>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <span class="text-secondary text-sm">{{ $order->no_hp }}</span>
+                                            <p class="text-sm mb-0">{{ $order->no_hp }}</p>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <span class="badge bg-gradient-secondary" data-bs-toggle="modal" data-bs-target="#modal-detail-{{ $order->id }}" style="cursor: pointer">Lihat Detail Order</span>
+                                            <p class="text-sm mb-0">{{ $order->detail_orders_count }} Item</p>
                                         </td>
                                         <td>
                                             <p class="text-sm mb-0">{{ $order->order_via }}</p>

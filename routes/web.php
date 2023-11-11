@@ -76,7 +76,10 @@ Route::middleware('auth')->group(function() {
 
     Route::get('/proses-apriori', [ProsesAprioriController::class, 'index']);
 
-    Route::get('/laporan-penjualan', [LaporanPenjualanController::class, 'index']);
+    Route::prefix('laporan-penjualan')->group(function (){
+        Route::get('/', [LaporanPenjualanController::class, 'index'])->name('laporan-penjualan.index');
+        Route::get('/export', [LaporanPenjualanController::class, 'export'])->name('laporan-penjualan.export');
+    });
 
     Route::get('/hasil-apriori', [HasilAprioriController::class, 'index']);
 
