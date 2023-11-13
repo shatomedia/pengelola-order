@@ -92,7 +92,12 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{id}/delete', [PermissionController::class, 'destroy'])->name('permission.destroy');
     });
 
-    Route::get('/account', [AccountController::class, 'index']);
+    Route::prefix('account')->group(function () {
+        Route::get('/', [AccountController::class, 'index'])->name('account.index');
+        Route::put('/update', [AccountController::class, 'update'])->name('account.update');
+    });
+
+
 
 
     Route::prefix('users')->group(function () {
