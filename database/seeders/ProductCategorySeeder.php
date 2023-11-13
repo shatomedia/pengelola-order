@@ -16,10 +16,16 @@ class ProductCategorySeeder extends Seeder
         $productCategories = [
             'Kit Modul',
             'Barang Jadi',
-            
+            'Pcb',
+            'Papan Nama Akrilik',
+            'Box Jam',
+            'Pigura',
+            'Jam',
+            'Segment & Dot Matrix',
+
         ];
 
-        foreach ($productCategories as $productCategory){
+        foreach ($productCategories as $productCategory) {
             ProductCategory::create([
                 'nama_kategori' => $productCategory,
             ]);

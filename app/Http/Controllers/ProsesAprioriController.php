@@ -27,11 +27,12 @@ class ProsesAprioriController extends Controller
         $minConfidence = $request->input('min_confidence');
 
         if ($date) {
-            foreach (range(1,12) as $month){
+            foreach (range(1, 12) as $month) {
                 $products = DetailOrder::with('produk:id,nama')
-                    ->whereHas('order', function ($query) use ($date, $month){
+                    ->whereHas('order', function ($query) use ($date, $month) {
                         $query->whereYear('tgl_kirim', $date)
-                            ->whereMonth('tgl_kirim', $month);
+                            ->whereMonth('tgl_kirim', $month)
+                            ->where('status', 'Dikirim');
                     })
                     ->select('produk_id', DB::raw('SUM(qty) as total_qty'))
                     ->groupBy('produk_id')
@@ -39,9 +40,9 @@ class ProsesAprioriController extends Controller
                     ->take(3)
                     ->get();
 
-                if ($products->count() > 0){
+                if ($products->count() > 0) {
                     $tanggal = $date . '-' . $month . '-' . date('d');
-                    foreach ($products as $product){
+                    foreach ($products as $product) {
                         $prosesApriori = ProsesApriori::whereYear('date', $date)
                             ->whereMonth('date', $month)
                             ->productId($product->produk_id)
@@ -61,12 +62,12 @@ class ProsesAprioriController extends Controller
             /*hasil 1 setitem*/
             $satuSetItem = [];
 
-            foreach ($productAprioris as $productApriori){
+            foreach ($productAprioris as $productApriori) {
                 $productCounts = [];
-                foreach (range(1,12) as $month){
-                    $proApriori = ProsesApriori::join('products','proses_aprioris.product_id', 'products.id')
-                        ->join('detail_orders','detail_orders.produk_id', '=', 'products.id')
-                        ->join('orders','orders.id', '=', 'detail_orders.id')
+                foreach (range(1, 12) as $month) {
+                    $proApriori = ProsesApriori::join('products', 'proses_aprioris.product_id', 'products.id')
+                        ->join('detail_orders', 'detail_orders.produk_id', '=', 'products.id')
+                        ->join('orders', 'orders.id', '=', 'detail_orders.id')
                         ->whereYear('proses_aprioris.date', $date)
                         ->whereMonth('proses_aprioris.date', $month)
                         ->where('products.id', $productApriori->product_id)
@@ -78,7 +79,7 @@ class ProsesAprioriController extends Controller
                 $totalStatus1 = array_sum($productCounts);
                 $persentaseMinSupport = ($totalStatus1 / 12) * 100;
 
-                if ($persentaseMinSupport > $minSupport){
+                if ($persentaseMinSupport > $minSupport) {
                     $satuSetItem[] = [
                         'product_id' => $productApriori->product_id,
                         'product_name' => $productApriori->product->nama,
@@ -128,7 +129,7 @@ class ProsesAprioriController extends Controller
             $confidence = $this->confidence($date, $minConfidence, $satuSetItem);
 
             $tableConfidenceItemSets = $confidence['tableConfidenceItemSets'];
-        }else{
+        } else {
             $products = null;
             $satuSetItem = null;
 
@@ -155,10 +156,22 @@ class ProsesAprioriController extends Controller
         }
 
         return view('apriories.index', compact(
-            'title','products','years','satuSetItem',
-            'filtered2NameCombinations','filtered2Names','total2YesPerIndex','persentase2SetItems',
-            'filtered3NameCombinations','filtered3Names','total3YesPerIndex','persentase3SetItems',
-            'filtered4NameCombinations','filtered4Names','total4YesPerIndex','persentase4SetItems',
+            'title',
+            'products',
+            'years',
+            'satuSetItem',
+            'filtered2NameCombinations',
+            'filtered2Names',
+            'total2YesPerIndex',
+            'persentase2SetItems',
+            'filtered3NameCombinations',
+            'filtered3Names',
+            'total3YesPerIndex',
+            'persentase3SetItems',
+            'filtered4NameCombinations',
+            'filtered4Names',
+            'total4YesPerIndex',
+            'persentase4SetItems',
             'tableConfidenceItemSets'
         ));
     }
@@ -203,17 +216,17 @@ class ProsesAprioriController extends Controller
             $results = [];
 
             foreach ($combinations as $combination) {
-                $transaksiItem1 = ProsesApriori::join('products','proses_aprioris.product_id', 'products.id')
-                    ->join('detail_orders','detail_orders.produk_id', '=', 'products.id')
-                    ->join('orders','orders.id', '=', 'detail_orders.id')
+                $transaksiItem1 = ProsesApriori::join('products', 'proses_aprioris.product_id', 'products.id')
+                    ->join('detail_orders', 'detail_orders.produk_id', '=', 'products.id')
+                    ->join('orders', 'orders.id', '=', 'detail_orders.id')
                     ->whereYear('proses_aprioris.date', $date)
                     ->whereMonth('proses_aprioris.date', $month)
                     ->where('products.id', $combination['product_id_1'])
                     ->first();
 
-                $transaksiItem2 = ProsesApriori::join('products','proses_aprioris.product_id', 'products.id')
-                    ->join('detail_orders','detail_orders.produk_id', '=', 'products.id')
-                    ->join('orders','orders.id', '=', 'detail_orders.id')
+                $transaksiItem2 = ProsesApriori::join('products', 'proses_aprioris.product_id', 'products.id')
+                    ->join('detail_orders', 'detail_orders.produk_id', '=', 'products.id')
+                    ->join('orders', 'orders.id', '=', 'detail_orders.id')
                     ->whereYear('proses_aprioris.date', $date)
                     ->whereMonth('proses_aprioris.date', $month)
                     ->where('products.id', $combination['product_id_2'])
@@ -239,16 +252,16 @@ class ProsesAprioriController extends Controller
         }
 
         $persentase2SetItems = [];
-        foreach ($totalYesPerIndex as $persentaseTotalYes){
+        foreach ($totalYesPerIndex as $persentaseTotalYes) {
             $totalStatus = (int) $persentaseTotalYes;
             $persentase2SetItems[] = ($totalStatus / 12) * 100;
         }
 
-        $filteredNameCombinations = array_filter($uniqueCombinations, function($combination, $index) use ($persentase2SetItems, $minSupport) {
+        $filteredNameCombinations = array_filter($uniqueCombinations, function ($combination, $index) use ($persentase2SetItems, $minSupport) {
             return $persentase2SetItems[$index] >= $minSupport;
         }, ARRAY_FILTER_USE_BOTH);
 
-        $filteredNames = array_map(function($combination) {
+        $filteredNames = array_map(function ($combination) {
             return [
                 'product_name_1' => $combination['product_name_1'] . ' => ',
                 'product_name_2' => $combination['product_name_2'],
@@ -256,7 +269,7 @@ class ProsesAprioriController extends Controller
         }, $filteredNameCombinations);
 
         /*simpan ke database untuk kategori 2 itemset*/
-        foreach ($filteredNameCombinations as $key => $filteredNameCombination){
+        foreach ($filteredNameCombinations as $key => $filteredNameCombination) {
             $mergedName = [];
             foreach ($filteredNames as $index => $namesArray) {
                 $mergedName[$index] = Str::slug($namesArray['product_name_1'] . $namesArray['product_name_2']);
@@ -323,25 +336,25 @@ class ProsesAprioriController extends Controller
             $results = [];
 
             foreach ($combinations as $combination) {
-                $transaksiItem1 = ProsesApriori::join('products','proses_aprioris.product_id', 'products.id')
-                    ->join('detail_orders','detail_orders.produk_id', '=', 'products.id')
-                    ->join('orders','orders.id', '=', 'detail_orders.id')
+                $transaksiItem1 = ProsesApriori::join('products', 'proses_aprioris.product_id', 'products.id')
+                    ->join('detail_orders', 'detail_orders.produk_id', '=', 'products.id')
+                    ->join('orders', 'orders.id', '=', 'detail_orders.id')
                     ->whereYear('proses_aprioris.date', $date)
                     ->whereMonth('proses_aprioris.date', $month)
                     ->where('products.id', $combination['product_id_1'])
                     ->first();
 
-                $transaksiItem2 = ProsesApriori::join('products','proses_aprioris.product_id', 'products.id')
-                    ->join('detail_orders','detail_orders.produk_id', '=', 'products.id')
-                    ->join('orders','orders.id', '=', 'detail_orders.id')
+                $transaksiItem2 = ProsesApriori::join('products', 'proses_aprioris.product_id', 'products.id')
+                    ->join('detail_orders', 'detail_orders.produk_id', '=', 'products.id')
+                    ->join('orders', 'orders.id', '=', 'detail_orders.id')
                     ->whereYear('proses_aprioris.date', $date)
                     ->whereMonth('proses_aprioris.date', $month)
                     ->where('products.id', $combination['product_id_2'])
                     ->first();
 
-                $transaksiItem3 = ProsesApriori::join('products','proses_aprioris.product_id', 'products.id')
-                    ->join('detail_orders','detail_orders.produk_id', '=', 'products.id')
-                    ->join('orders','orders.id', '=', 'detail_orders.id')
+                $transaksiItem3 = ProsesApriori::join('products', 'proses_aprioris.product_id', 'products.id')
+                    ->join('detail_orders', 'detail_orders.produk_id', '=', 'products.id')
+                    ->join('orders', 'orders.id', '=', 'detail_orders.id')
                     ->whereYear('proses_aprioris.date', $date)
                     ->whereMonth('proses_aprioris.date', $month)
                     ->where('products.id', $combination['product_id_3'])
@@ -367,16 +380,16 @@ class ProsesAprioriController extends Controller
         }
 
         $persentase3SetItems = [];
-        foreach ($totalYesPerIndex as $persentaseTotalYes){
+        foreach ($totalYesPerIndex as $persentaseTotalYes) {
             $totalStatus = (int) $persentaseTotalYes;
             $persentase3SetItems[] = ($totalStatus / 12) * 100;
         }
 
-        $filteredNameCombinations = array_filter($uniqueCombinations, function($combination, $index) use ($persentase3SetItems, $minSupport) {
+        $filteredNameCombinations = array_filter($uniqueCombinations, function ($combination, $index) use ($persentase3SetItems, $minSupport) {
             return $persentase3SetItems[$index] >= $minSupport;
         }, ARRAY_FILTER_USE_BOTH);
 
-        $filteredNames = array_map(function($combination) {
+        $filteredNames = array_map(function ($combination) {
             return [
                 'product_name_1' => $combination['product_name_1'] . ' => ',
                 'product_name_2' => $combination['product_name_2'] . ' => ',
@@ -385,7 +398,7 @@ class ProsesAprioriController extends Controller
         }, $filteredNameCombinations);
 
         /*simpan ke database untuk kategori 3 itemset*/
-        foreach ($filteredNameCombinations as $key => $filteredNameCombination){
+        foreach ($filteredNameCombinations as $key => $filteredNameCombination) {
             $mergedName = [];
             foreach ($filteredNames as $index => $namesArray) {
                 $mergedName[$index] = Str::slug($namesArray['product_name_1'] . $namesArray['product_name_2'] . $namesArray['product_name_3']);
@@ -458,33 +471,33 @@ class ProsesAprioriController extends Controller
             $results = [];
 
             foreach ($combinations as $combination) {
-                $transaksiItem1 = ProsesApriori::join('products','proses_aprioris.product_id', 'products.id')
-                    ->join('detail_orders','detail_orders.produk_id', '=', 'products.id')
-                    ->join('orders','orders.id', '=', 'detail_orders.id')
+                $transaksiItem1 = ProsesApriori::join('products', 'proses_aprioris.product_id', 'products.id')
+                    ->join('detail_orders', 'detail_orders.produk_id', '=', 'products.id')
+                    ->join('orders', 'orders.id', '=', 'detail_orders.id')
                     ->whereYear('proses_aprioris.date', $date)
                     ->whereMonth('proses_aprioris.date', $month)
                     ->where('products.id', $combination['product_id_1'])
                     ->first();
 
-                $transaksiItem2 = ProsesApriori::join('products','proses_aprioris.product_id', 'products.id')
-                    ->join('detail_orders','detail_orders.produk_id', '=', 'products.id')
-                    ->join('orders','orders.id', '=', 'detail_orders.id')
+                $transaksiItem2 = ProsesApriori::join('products', 'proses_aprioris.product_id', 'products.id')
+                    ->join('detail_orders', 'detail_orders.produk_id', '=', 'products.id')
+                    ->join('orders', 'orders.id', '=', 'detail_orders.id')
                     ->whereYear('proses_aprioris.date', $date)
                     ->whereMonth('proses_aprioris.date', $month)
                     ->where('products.id', $combination['product_id_2'])
                     ->first();
 
-                $transaksiItem3 = ProsesApriori::join('products','proses_aprioris.product_id', 'products.id')
-                    ->join('detail_orders','detail_orders.produk_id', '=', 'products.id')
-                    ->join('orders','orders.id', '=', 'detail_orders.id')
+                $transaksiItem3 = ProsesApriori::join('products', 'proses_aprioris.product_id', 'products.id')
+                    ->join('detail_orders', 'detail_orders.produk_id', '=', 'products.id')
+                    ->join('orders', 'orders.id', '=', 'detail_orders.id')
                     ->whereYear('proses_aprioris.date', $date)
                     ->whereMonth('proses_aprioris.date', $month)
                     ->where('products.id', $combination['product_id_3'])
                     ->first();
 
-                $transaksiItem4 = ProsesApriori::join('products','proses_aprioris.product_id', 'products.id')
-                    ->join('detail_orders','detail_orders.produk_id', '=', 'products.id')
-                    ->join('orders','orders.id', '=', 'detail_orders.id')
+                $transaksiItem4 = ProsesApriori::join('products', 'proses_aprioris.product_id', 'products.id')
+                    ->join('detail_orders', 'detail_orders.produk_id', '=', 'products.id')
+                    ->join('orders', 'orders.id', '=', 'detail_orders.id')
                     ->whereYear('proses_aprioris.date', $date)
                     ->whereMonth('proses_aprioris.date', $month)
                     ->where('products.id', $combination['product_id_4'])
@@ -510,16 +523,16 @@ class ProsesAprioriController extends Controller
         }
 
         $persentase4SetItems = [];
-        foreach ($totalYesPerIndex as $persentaseTotalYes){
+        foreach ($totalYesPerIndex as $persentaseTotalYes) {
             $totalStatus = (int) $persentaseTotalYes;
             $persentase4SetItems[] = ($totalStatus / 12) * 100;
         }
 
-        $filteredNameCombinations = array_filter($uniqueCombinations, function($combination, $index) use ($persentase4SetItems, $minSupport) {
+        $filteredNameCombinations = array_filter($uniqueCombinations, function ($combination, $index) use ($persentase4SetItems, $minSupport) {
             return $persentase4SetItems[$index] >= $minSupport;
         }, ARRAY_FILTER_USE_BOTH);
 
-        $filteredNames = array_map(function($combination) {
+        $filteredNames = array_map(function ($combination) {
             return [
                 'product_name_1' => $combination['product_name_1'] . ' => ',
                 'product_name_2' => $combination['product_name_2'] . ' => ',
@@ -529,7 +542,7 @@ class ProsesAprioriController extends Controller
         }, $filteredNameCombinations);
 
         /*simpan ke database untuk kategori 4 itemset*/
-        foreach ($filteredNameCombinations as $key => $filteredNameCombination){
+        foreach ($filteredNameCombinations as $key => $filteredNameCombination) {
             $mergedName = [];
             foreach ($filteredNames as $index => $namesArray) {
                 $mergedName[$index] = Str::slug($namesArray['product_name_1'] . $namesArray['product_name_2'] . $namesArray['product_name_3'] . $namesArray['product_name_4']);
@@ -579,8 +592,8 @@ class ProsesAprioriController extends Controller
         $persentaseMinSupportConfidence = [];
         $tableConfidenceItemSets = [];
 
-        if (count($filtered4NameCombinations) > 0){
-            foreach ($filtered4NameCombinations as $key => $value){
+        if (count($filtered4NameCombinations) > 0) {
+            foreach ($filtered4NameCombinations as $key => $value) {
                 $totalYes = $total4YesPerIndex[$key];
 
                 /*product1 1 => 2 => 3*/
@@ -676,8 +689,8 @@ class ProsesAprioriController extends Controller
                     }
                 }
             }
-        }elseif (count($filtered3NameCombinations) > 0){
-            foreach ($filtered3NameCombinations as $key => $value){
+        } elseif (count($filtered3NameCombinations) > 0) {
+            foreach ($filtered3NameCombinations as $key => $value) {
                 $totalYes = $total3YesPerIndex[$key];
 
                 // product1 1 => 2
@@ -754,7 +767,7 @@ class ProsesAprioriController extends Controller
                     }
                 }
             }
-        }elseif (count($filtered2NameCombinations) > 0){
+        } elseif (count($filtered2NameCombinations) > 0) {
             foreach ($filtered2NameCombinations as $key => $value) {
                 $totalYes = $total2YesPerIndex[$key];
                 // item set ke 1
@@ -816,12 +829,12 @@ class ProsesAprioriController extends Controller
             }
         }
 
-        if (count($tableConfidenceItemSets) > 0){
+        if (count($tableConfidenceItemSets) > 0) {
             $lastBatchNumber = HasilApriori::max('no_urut');
             $lastSequenceNumber = $lastBatchNumber ?: 0;
 
-            foreach ($tableConfidenceItemSets as $tableConfidenceItemSet){
-                $hasilApriori = New HasilApriori();
+            foreach ($tableConfidenceItemSets as $tableConfidenceItemSet) {
+                $hasilApriori = new HasilApriori();
                 $hasilApriori->no_urut = $lastSequenceNumber + 1;
                 $hasilApriori->kode_pengujian = 'PNG' . str_pad($hasilApriori->no_urut, 5, '0', STR_PAD_LEFT);
                 $hasilApriori->penguji = auth()->user()->id;

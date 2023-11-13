@@ -2,46 +2,33 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 
 class PermissionSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $permissions = [
-            'dashboard',
-            'account',
-            'permission',
-            'permission-edit',
-            'permission-delete',
-            'role-edit',
-            'order',
-            'order-create',
-            'order-edit',
-            'order-delete',
-            'product',
-            'product-create',
-            'product-edit',
-            'product-delete',
-            'product-category',
-            'product-category-create',
-            'product-category-edit',
-            'product-category-delete',
-            'user-management',
-            'user-management-create',
-            'user-management-edit',
-            'user-management-delete',
-        ];
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('permissions')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        foreach ($permissions as $permission){
-            Permission::create([
-                'name' => $permission
-            ]);
+        $file = database_path('import/permissions.csv');
+        $handle = fopen($file, "r");
+
+        if ($handle) {
+            $header = fgetcsv($handle, 1000, ",");
+            while (($data = fgetcsv($handle, 1000, ",", '"')) !== FALSE) {
+                DB::table('permissions')->insert([
+                    'category' => $data[0],
+                    'name' => $data[1],
+                    'guard_name' => 'web',
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
+                ]);
+            }
+            fclose($handle);
         }
     }
 }
