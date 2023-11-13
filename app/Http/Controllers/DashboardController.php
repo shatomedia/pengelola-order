@@ -23,7 +23,11 @@ class DashboardController extends Controller
         $noUrut = HasilApriori::orderByDesc('no_urut')
             ->select('no_urut')
             ->first();
-        $hasilApriori = HasilApriori::noUrut($noUrut->no_urut)
+        
+        $hasilApriori = [];
+        
+        if($noUrut){
+        	$hasilApriori = HasilApriori::noUrut($noUrut->no_urut)
             ->select([
                 'nama_produk',
                 'persentase_hasil_support',
@@ -31,6 +35,7 @@ class DashboardController extends Controller
             ])
             ->get()
             ->toArray();
+        }
 
         $totalPenjualan = Order::statusOrder('Dikirim')
             ->sum('total_harga_jual');
