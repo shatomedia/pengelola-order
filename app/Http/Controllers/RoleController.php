@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Log;
+use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
@@ -31,7 +32,11 @@ class RoleController extends Controller
             $role->name = $request->input('name');
             $role->save();
 
-            $role->syncPermissions($request->input('permission'));
+            $permissions = Permission::whereIn('id', $request->input('permission'))
+                ->pluck('id', 'id')
+                ->all();
+
+            $role->syncPermissions($permissions);
 
             // alert()->success('Success', 'Role Berhasil Tersimpan');
             return redirect()->back()->with('success', 'Role berhasil disimpan');
@@ -40,6 +45,5 @@ class RoleController extends Controller
             // alert()->error('Oops', 'Data Error');
             return redirect()->back()->with('error', 'Error');
         }
-        
     }
 }
