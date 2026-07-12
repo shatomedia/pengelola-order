@@ -31,35 +31,35 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="supportInput" class="form-control-label">Min Support</label>
-                                    <input class="form-control" name="min_support" type="number" id="supportInput" value="{{ request('min_support') ? request('min_support') : null }}" required>
+                                    <input class="form-control" name="min_support" type="number" min="1" id="supportInput" value="{{ request('min_support') ? request('min_support') : null }}" required>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="supportConfidence" class="form-control-label">Min Confidence</label>
-                                    <input class="form-control" name="min_confidence" type="number" id="supportConfidence" value="{{ request('min_confidence') ? request('min_confidence') : null }}" required>
+                                    <input class="form-control" name="min_confidence" type="number" min="1" id="supportConfidence" value="{{ request('min_confidence') ? request('min_confidence') : null }}" required>
                                 </div>
                             </div>
                         </div>
                         <button type="submit" class="btn bg-gradient-warning w-100 mt-3">Proses</button>
                     </form>
 
-                    @if (!is_null($products) && $products->count() > 0)
-                        <div class="card mb-4 shadow-none">
-                            <div class="card-header p-0">
-                                <div class="card-body px-0 pt-0 pb-2">
-                                    <hr>
-                                    <div class="alert alert-light text-center" style="padding: 5px">1 ITEMSET</div>
-                                    <div class="table-responsive p-0">
-                                        <table class="table align-items-center mb-0">
-                                            <thead>
-                                            <tr>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Produk</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Transaksi</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Hasil Support</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
+                    <div class="card mb-4 shadow-none">
+                        <div class="card-header p-0">
+                            <div class="card-body px-0 pt-0 pb-2">
+                                <hr>
+                                <div class="alert alert-light text-center" style="padding: 5px">1 ITEMSET</div>
+                                <div class="table-responsive p-0">
+                                    <table class="table align-items-center mb-0">
+                                        <thead>
+                                        <tr>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Produk</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Transaksi</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Hasil Support</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @if(count($satuSetItem) > 0)
                                             @foreach ($satuSetItem as $satuItem)
                                                 <tr>
                                                     <td class="align-middle">
@@ -73,28 +73,29 @@
                                                     </td>
                                                 </tr>
                                             @endforeach
-                                            @if(count($satuSetItem) == 0)
-                                                <tr>
-                                                    <td colspan="3" class="text-center font-italic">Frequent Item Tidak Terbentuk</td>
-                                                </tr>
-                                            @endif
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    {{--========================--}}
-                                    {{--====== 2 set items =====--}}
-                                    <hr>
-                                    <div class="alert alert-light text-center" style="padding: 5px">2 ITEMSET</div>
-                                    <div class="table-responsive p-0">
-                                        <table class="table align-items-center mb-0">
-                                            <thead>
+                                        @else
                                             <tr>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Produk</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Transaksi</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Hasil Support</th>
+                                                <td colspan="3" class="text-center font-italic">Frequent Item Tidak Terbentuk</td>
                                             </tr>
-                                            </thead>
-                                            <tbody>
+                                        @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {{--========================--}}
+                                {{--====== 2 set items =====--}}
+                                <hr>
+                                <div class="alert alert-light text-center" style="padding: 5px">2 ITEMSET</div>
+                                <div class="table-responsive p-0">
+                                    <table class="table align-items-center mb-0">
+                                        <thead>
+                                        <tr>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Produk</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Transaksi</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Hasil Support</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @if(count($filtered2NameCombinations) > 0)
                                             @foreach($filtered2NameCombinations as $key => $filteredNameCombination)
                                                 <tr>
                                                     <td class="align-middle">
@@ -112,28 +113,29 @@
                                                     </td>
                                                 </tr>
                                             @endforeach
-                                            @if(count($filtered2NameCombinations) == 0)
-                                                <tr>
-                                                    <td colspan="3" class="text-center font-italic">Frequent Item Tidak Terbentuk</td>
-                                                </tr>
-                                            @endif
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    {{--========================--}}
-                                    {{--====== 3 set items =====--}}
-                                    <hr>
-                                    <div class="alert alert-light text-center" style="padding: 5px">3 ITEMSET</div>
-                                    <div class="table-responsive p-0">
-                                        <table class="table align-items-center mb-0">
-                                            <thead>
+                                        @else
                                             <tr>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Produk</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Transaksi</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Hasil Support</th>
+                                                <td colspan="3" class="text-center font-italic">Frequent Item Tidak Terbentuk</td>
                                             </tr>
-                                            </thead>
-                                            <tbody>
+                                        @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {{--========================--}}
+                                {{--====== 3 set items =====--}}
+                                <hr>
+                                <div class="alert alert-light text-center" style="padding: 5px">3 ITEMSET</div>
+                                <div class="table-responsive p-0">
+                                    <table class="table align-items-center mb-0">
+                                        <thead>
+                                        <tr>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Produk</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Transaksi</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Hasil Support</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @if(count($filtered3NameCombinations) > 0)
                                             @foreach($filtered3NameCombinations as $key => $filteredNameCombination)
                                                 <tr>
                                                     <td class="align-middle">
@@ -151,28 +153,29 @@
                                                     </td>
                                                 </tr>
                                             @endforeach
-                                            @if(count($filtered3NameCombinations) == 0)
-                                                <tr>
-                                                    <td colspan="3" class="text-center font-italic">Frequent Item Tidak Terbentuk</td>
-                                                </tr>
-                                            @endif
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    {{--========================--}}
-                                    {{--====== 4 set items =====--}}
-                                    <hr>
-                                    <div class="alert alert-light text-center" style="padding: 5px">4 ITEMSET</div>
-                                    <div class="table-responsive p-0">
-                                        <table class="table align-items-center mb-0">
-                                            <thead>
+                                        @else
                                             <tr>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Produk</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Transaksi</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Hasil Support</th>
+                                                <td colspan="3" class="text-center font-italic">Frequent Item Tidak Terbentuk</td>
                                             </tr>
-                                            </thead>
-                                            <tbody>
+                                        @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {{--========================--}}
+                                {{--====== 4 set items =====--}}
+                                <hr>
+                                <div class="alert alert-light text-center" style="padding: 5px">4 ITEMSET</div>
+                                <div class="table-responsive p-0">
+                                    <table class="table align-items-center mb-0">
+                                        <thead>
+                                        <tr>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Produk</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Transaksi</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Hasil Support</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @if(count($filtered4NameCombinations) > 0)
                                             @foreach($filtered4NameCombinations as $key => $filteredNameCombination)
                                                 <tr>
                                                     <td class="align-middle">
@@ -190,50 +193,49 @@
                                                     </td>
                                                 </tr>
                                             @endforeach
-                                            @if(count($filtered4NameCombinations) == 0)
-                                                <tr>
-                                                    <td colspan="3" class="text-center font-italic">Frequent Item Tidak Terbentuk</td>
-                                                </tr>
-                                            @endif
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    {{--========================--}}
-                                    {{--====== confidence 2 item sets =====--}}
-                                    <hr>
-                                    <div class="alert alert-success text-center text-light fw-bold" style="padding: 5px">CONFIDENCE</div>
-                                    <div class="table-responsive p-0">
-                                        <table class="table align-items-center mb-0">
-                                            <thead>
+                                        @else
                                             <tr>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Produk</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Hasil Support</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Confidence</th>
+                                                <td colspan="3" class="text-center font-italic">Frequent Item Tidak Terbentuk</td>
                                             </tr>
-                                            </thead>
-                                            <tbody>
-                                            @foreach($tableConfidenceItemSets as $key => $confidenceItemSet)
-                                                <tr>
-                                                    <td class="align-middle">
-                                                        <p class="text-xs font-weight-bold mb-0">
-                                                            {{ $confidenceItemSet['nama_product'] }}
-                                                        </p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="text-xs font-weight-bold mb-0">{{ $confidenceItemSet['persentase_hasil_support'] }} %</p>
-                                                    </td>
-                                                    <td class="align-middle">
-                                                        <p class="text-xs font-weight-bold mb-0">{{ $confidenceItemSet['persentase_hasil_confidence'] }} %</p>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                        @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {{--========================--}}
+                                {{--====== confidence 2 item sets =====--}}
+                                <hr>
+                                <div class="alert alert-success text-center text-light fw-bold" style="padding: 5px">CONFIDENCE</div>
+                                <div class="table-responsive p-0">
+                                    <table class="table align-items-center mb-0">
+                                        <thead>
+                                        <tr>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Produk</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Hasil Support</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Confidence</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach($tableConfidenceItemSets as $key => $confidenceItemSet)
+                                            <tr>
+                                                <td class="align-middle">
+                                                    <p class="text-xs font-weight-bold mb-0">
+                                                        {{ $confidenceItemSet['nama_product'] }}
+                                                    </p>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0">{{ $confidenceItemSet['persentase_hasil_support'] }} %</p>
+                                                </td>
+                                                <td class="align-middle">
+                                                    <p class="text-xs font-weight-bold mb-0">{{ $confidenceItemSet['persentase_hasil_confidence'] }} %</p>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
-                    @endif
+                    </div>
                 </div>
             </div>
         </div>

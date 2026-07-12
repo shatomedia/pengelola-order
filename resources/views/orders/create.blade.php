@@ -27,6 +27,7 @@
                                 <option value="Pending" {{ old('status') == 'Pending' ? 'selected' : '' }}>Pending</option>
                                 <option value="Diproses" {{ old('status') == 'Diproses' ? 'selected' : '' }}>Diproses</option>
                                 <option value="Dikirim" {{ old('status') == 'Dikirim' ? 'selected' : '' }}>Dikirim</option>
+                                <option value="Diambil" {{ old('status') == 'Diambil' ? 'selected' : '' }}>Diambil</option>
                                 <option value="Batal" {{ old('status') == 'Batal' ? 'selected' : '' }}>Batal</option>
                             </select>
                         </div>

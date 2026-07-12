@@ -7,8 +7,7 @@
                 <div class="card-header pb-0">
                     <h6>Data Penjualan</h6>
                     <div class="d-flex mb-2 float-end">
-                        <a class="btn bg-gradient-warning " href="/order/create"><i class="fas fa-plus"
-                                aria-hidden="true"></i>&nbsp;&nbsp;Tambah</a>
+                        <a class="btn bg-gradient-warning " href="/order/create"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Tambah</a>
                     </div>
                 </div>
                 <div class="card-body pt-0">
@@ -38,7 +37,9 @@
                         <table class="table table-bordered mb-0">
                             <thead>
                                 <tr>
+                                    <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Aksi</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Status</th>
+                                    <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">No. Faktur</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Nama Pembeli</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Alamat</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">No HP</th>
@@ -52,21 +53,33 @@
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Background</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Request</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Keterangan</th>
-                                    <th class="text-secondary opacity-7">Opsi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($orders as $order)
                                     <tr>
+                                        <td class="align-middle text-center">
+                                            <div>
+                                                <a href="/order/{{ $order->id }}/edit"
+                                                    class="btn btn-secondary btn-sm mb-0 px-2 btn-tooltip"
+                                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"
+                                                    data-container="body" data-animation="true" aria-pressed="true">
+                                                    <i class="fas fa-edit text-xs" aria-hidden="true"></i>
+                                                </a>
+                                            </div>
+                                        </td>
                                         <td>
                                             <span
-                                                class="badge badge-sm {{ $order->status == 'Pending' ? 'bg-gradient-warning' : ($order->status == 'Diproses' ? 'bg-gradient-primary' : ($order->status == 'Dikirim' ? 'bg-gradient-success' : 'bg-gradient-secondary')) }}">{{ $order->status }}</span>
+                                                class="badge badge-sm {{ $order->status == 'Pending' ? 'bg-gradient-warning' : ($order->status == 'Diproses' ? 'bg-gradient-primary' : ($order->status == 'Dikirim' || $order->status == 'Diambil' ? 'bg-gradient-success' : 'bg-gradient-secondary')) }}">{{ $order->status }}</span>
+                                        </td>
+                                        <td>
+                                            <p class="mb-0 text-sm">{{ $order->no_faktur }}</p>
                                         </td>
                                         <td>
                                             <p class="mb-0 text-sm">{{ $order->nama_pembeli }}</p>
                                         </td>
-                                        <td class="align-middle text-center">
-                                            <p class="mb-0 text-sm">{{ $order->alamat }}</p>
+                                        <td class="align-middle">
+                                            <p class="mb-0 text-sm">{{ Str::limit($order->alamat, 50) }}</p>
                                         </td>
                                         <td class="align-middle text-center">
                                             <span class="text-secondary text-sm">{{ $order->no_hp }}</span>
@@ -96,19 +109,17 @@
                                             <p class="text-sm mb-0">{{ $order->title }}</p>
                                         </td>
                                         <td>
-                                            <p class="text-sm mb-0">{{ $order->background }}</p>
+                                            <p class="text-sm mb-0">
+                                                @if($order->background)
+                                                    <a href="{{ url($order->background) }}" target="_blank">{{ $order->background }}</a>
+                                                @endif
+                                            </p>
                                         </td>
                                         <td>
                                             <p class="text-sm mb-0">{{ $order->request }}</p>
                                         </td>
                                         <td>
                                             <p class="text-sm mb-0">{{ $order->keterangan }}</p>
-                                        </td>
-                                        <td class="align-middle">
-                                            <a href="/order/{{ $order->id }}/edit" class="text-secondary text-xs"
-                                                data-toggle="tooltip" data-original-title="Edit user">
-                                                Edit
-                                            </a>
                                         </td>
                                     </tr>
                                     {{-- Modal --}}

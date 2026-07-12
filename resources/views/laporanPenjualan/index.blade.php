@@ -14,15 +14,36 @@
                     </div>
                     <div class="card-body">
                         <form action="{{ route('laporan-penjualan.index') }}" method="get">
-                            <div class="form-group">
-                                <label for="date"></label>
-                                <input type="text" class="form-control daterange" name="date" id="date"
-                                    value="{{ !$date ? '' : $date }}" placeholder="Rentang Tanggal" required>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="date">Pilih Rentang Tanggal Order</label>
+                                        <input type="text" class="form-control daterange" name="date" id="date" value="{{ !$date ? '' : $date }}" placeholder="Rentang Tanggal" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="select-list-products">Pilih Produk</label>
+                                        <select name="product_id" id="select-list-products" class="form-control select2" data-placeholder="Pilih" style="width: 100%">
+                                            <option value="{{ request('product_id') ? request('product_id') : '' }}">{{ request('product_id') ? $product->nama : '' }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="select-list-status">Pilih Status</label>
+                                        <select name="status" id="select-list-status" class="form-control select2" style="width: 100%">
+                                            <option value="">Semua</option>
+                                            @foreach($listStatus as $status)
+                                                <option value="{{ $status->status }}" {{ request('status') == $status->status ? 'selected' : '' }}>{{ $status->status }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                             <button type="submit" class="btn btn-primary">Filter</button>
                             <div class="float-end">
-                                <button type="submit" name="export" value="true"
-                                    class="btn btn-outline-dark">Export</button>
+                                <button type="submit" name="export" value="true" class="btn btn-outline-dark">Export</button>
                             </div>
                         </form>
                     </div>
@@ -53,14 +74,13 @@
                                     @foreach ($orders as $order)
                                         <tr>
                                             <td>
-                                                <span
-                                                    class="badge badge-sm {{ $order->status == 'Pending' ? 'bg-gradient-warning' : ($order->status == 'Diproses' ? 'bg-gradient-primary' : ($order->status == 'Dikirim' ? 'bg-gradient-success' : 'bg-gradient-secondary')) }}">{{ $order->status }}</span>
+                                                <span class="badge badge-sm {{ $order->status == 'Pending' ? 'bg-gradient-warning' : ($order->status == 'Diproses' ? 'bg-gradient-primary' : ($order->status == 'Dikirim' ? 'bg-gradient-success' : ($order->status == 'Diambil' ? 'bg-gradient-secondary' : 'bg-gradient-danger'))) }}">{{ $order->status }}</span>
                                             </td>
                                             <td>
                                                 <p class="mb-0 text-sm">{{ $order->nama_pembeli }}</p>
                                             </td>
-                                            <td class="align-middle text-center">
-                                                <p class="mb-0 text-sm">{{ $order->alamat }}</p>
+                                            <td class="align-middle">
+                                                <p class="mb-0 text-sm">{{ Str::limit($order->alamat, 50) }}</p>
                                             </td>
                                             <td class="align-middle text-center">
                                                 <p class="text-sm mb-0">{{ $order->no_hp }}</p>
@@ -106,7 +126,40 @@
                         {{ $orders->withQueryString()->links() }}
                     </div>
                 </div>
+                @if($product)
+                <div class="card mb-4 mx-4">
+                    <div class="card-header pb-0">
+                        <div class="d-flex flex-row justify-content-between">
+                            <div>
+                                <h5 class="mb-3">Laporan Penjualan {{ $product->nama }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped table-bordered" style="width: 100%">
+                            <thead>
+                            <tr>
+                                <th>Tgl Order</th>
+                                <th>Jumlah Qty</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($monthList as $key => $month)
+                                <tr>
+                                    <td>{{ $month }}</td>
+                                    <td>{{ $jumlahQty[$key] }} Qty</td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                @endif
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('js/product/product-list.js') }}"></script>
 @endsection

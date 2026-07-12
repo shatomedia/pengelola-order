@@ -24,6 +24,7 @@ class OrderController extends Controller
     {
         $title = 'Penjualan';
         $orders = Order::withCount('detailOrders')
+            ->orderByDesc('tgl_order')
             ->paginate(10);
 
         return view('orders.index', compact('title', 'orders'));

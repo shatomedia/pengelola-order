@@ -31,15 +31,20 @@
     @include('layouts.navbar')
     <!-- End Navbar -->
     <div class="container-fluid py-4">
-        @if(session()->has('success'))
-            <div class="row">
-                <div class="col-12">
-                    <div class="alert alert-success">
-                        {{ session('success') }}
+        @if (session()->has('success'))
+                <div class="row">
+                    <div class="col-12">
+                        <div id="alert" class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
                     </div>
                 </div>
-            </div>
-        @endif
+                <script>
+                    setTimeout(function() {
+                        document.getElementById('alert').style.display = 'none';
+                    }, 5000);
+                </script>
+            @endif
 
         @yield('content')
 

@@ -33,7 +33,7 @@ class OrderImport implements ToCollection, WithHeadingRow
                 $produk->save();
 
                 $tanggalOrder = Date::excelToDateTimeObject($row['tgl_order']);
-                $tanggalKirim = Date::excelToDateTimeObject($row['tgl_kirim']);
+                $tanggalKirim = $row['tgl_kirim'] ? Date::excelToDateTimeObject($row['tgl_kirim']) : null;
 
                 $order = Order::whereDate('tgl_kirim', $tanggalKirim)
                     ->where('nama_pembeli', $row['nama_pembeli'])
@@ -41,12 +41,12 @@ class OrderImport implements ToCollection, WithHeadingRow
 
                 $order->status = $row['status'];
                 $order->nama_pembeli = $row['nama_pembeli'];
-                $order->alamat = $row['alamat'];
+                $order->alamat = $row['alamat'] ?: '-';
                 $order->no_hp = $row['no_hp'];
-                $order->order_via = $row['order_via'];
+                $order->order_via = $row['order_via'] ?: '-';
                 $order->tgl_order = $tanggalOrder;
                 $order->tgl_kirim = $tanggalKirim;
-                $order->title = $row['title'];
+                $order->title = $row['title'] ?: '-';
                 $order->background = $row['background'];
                 $order->request = $row['request'];
                 $order->keterangan = $row['keterangan'];
@@ -64,9 +64,10 @@ class OrderImport implements ToCollection, WithHeadingRow
 
                 $detailOrderProduk = DetailOrder::orderId($order->id)
                     ->get();
-                $order->total_qty = $detailOrderProduk->sum('qty');
-                $order->total_harga_jual = $detailOrderProduk->sum('sub_total');
-                $order->save();
+                $sycnQty = Order::find($order->id);
+                $sycnQty->total_qty = $detailOrderProduk->sum('qty');
+                $sycnQty->total_harga_jual = $detailOrderProduk->sum('sub_total');
+                $sycnQty->save();
             }
         });
     }

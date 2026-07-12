@@ -114,4 +114,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/template-penjualan', [TemplateOrderController::class, 'export']);
 
     Route::get('/logout', [AuthController::class, 'logout']);
+
+    Route::get('list-products', [ProductController::class, 'listProducts'])->name('list-products');
 });

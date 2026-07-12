@@ -25,14 +25,15 @@ class ProsesAprioriController extends Controller
         $date = $request->input('date');
         $minSupport = $request->input('min_support');
         $minConfidence = $request->input('min_confidence');
-
+        /*$products = array();*/
         if ($date) {
             foreach (range(1, 12) as $month) {
+                // ubah jadi $products[$month] jika ingin menampilkan semua produk pada dd();
                 $products = DetailOrder::with('produk:id,nama')
                     ->whereHas('order', function ($query) use ($date, $month) {
-                        $query->whereYear('tgl_kirim', $date)
-                            ->whereMonth('tgl_kirim', $month)
-                            ->where('status', 'Dikirim');
+                        $query->whereYear('tgl_order', $date)
+                            ->whereMonth('tgl_order', $month);
+                        //  ->where('status', 'Dikirim');
                     })
                     ->select('produk_id', DB::raw('SUM(qty) as total_qty'))
                     ->groupBy('produk_id')
@@ -40,6 +41,7 @@ class ProsesAprioriController extends Controller
                     ->take(3)
                     ->get();
 
+                // jika di dd() maka data hitungan ini di komen
                 if ($products->count() > 0) {
                     $tanggal = $date . '-' . $month . '-' . date('d');
                     foreach ($products as $product) {
@@ -56,14 +58,14 @@ class ProsesAprioriController extends Controller
 
             $productAprioris = ProsesApriori::whereYear('date', $date)
                 ->select('product_id')
-                ->groupBy('product_id')
+                ->distinct()
                 ->get();
 
             /*hasil 1 setitem*/
-            $satuSetItem = [];
+            $satuSetItem = array();
 
             foreach ($productAprioris as $productApriori) {
-                $productCounts = [];
+                $productCounts = array();
                 foreach (range(1, 12) as $month) {
                     $proApriori = ProsesApriori::join('products', 'proses_aprioris.product_id', 'products.id')
                         ->join('detail_orders', 'detail_orders.produk_id', '=', 'products.id')
@@ -130,34 +132,33 @@ class ProsesAprioriController extends Controller
 
             $tableConfidenceItemSets = $confidence['tableConfidenceItemSets'];
         } else {
-            $products = null;
-            $satuSetItem = null;
+            $satuSetItem = array();
 
             /*2 set items*/
-            $filtered2NameCombinations = null;
-            $filtered2Names = null;
-            $total2YesPerIndex = null;
-            $persentase2SetItems = null;
+            $filtered2NameCombinations = array();
+            $filtered2Names = array();
+            $total2YesPerIndex = array();
+            $persentase2SetItems = array();
 
             /*3 set items*/
-            $filtered3NameCombinations = null;
-            $filtered3Names = null;
-            $total3YesPerIndex = null;
-            $persentase3SetItems = null;
+            $filtered3NameCombinations = array();
+            $filtered3Names = array();
+            $total3YesPerIndex = array();
+            $persentase3SetItems = array();
 
             /*4 set items*/
-            $filtered4NameCombinations = null;
-            $filtered4Names = null;
-            $total4YesPerIndex = null;
-            $persentase4SetItems = null;
+            $filtered4NameCombinations = array();
+            $filtered4Names = array();
+            $total4YesPerIndex = array();
+            $persentase4SetItems = array();
 
             /*confidence 2 item sets*/
-            $tableConfidenceItemSets = null;
+            $tableConfidenceItemSets = array();
         }
 
+        /*dd($products);*/
         return view('apriories.index', compact(
             'title',
-            'products',
             'years',
             'satuSetItem',
             'filtered2NameCombinations',

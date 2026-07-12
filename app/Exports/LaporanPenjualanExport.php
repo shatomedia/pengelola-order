@@ -16,22 +16,34 @@ class LaporanPenjualanExport implements FromQuery, WithHeadings, WithMapping, Sh
     use Exportable;
 
     private mixed $date;
+    protected mixed $productid;
+    protected mixed $status;
 
-    public function __construct($date = null)
+    public function __construct($date = null, $productid = null, $status = null)
     {
         $this->date = $date;
+        $this->productid = $productid;
+        $this->status = $status;
     }
 
     public function query(): \Illuminate\Database\Eloquent\Relations\Relation|\Illuminate\Database\Eloquent\Builder|\LaravelIdea\Helper\App\Models\_IH_DetailOrder_QB|\Illuminate\Database\Query\Builder
     {
         $date = $this->date;
+        $productid = $this->productid;
+        $status = $this->status;
 
         return DetailOrder::with('order','produk')
-            ->whereHas('order', function ($query) use ($date){
+            ->whereHas('order', function ($query) use ($date, $status){
                 [$startDate, $endDate] = explode(' - ', $date);
                 $startDate = date('Y-m-d', strtotime($startDate));
                 $endDate = date('Y-m-d', strtotime($endDate));
-                $query->whereBetween('tgl_kirim', [$startDate, $endDate]);
+                $query->whereBetween('tgl_order', [$startDate, $endDate])
+                    ->when($status != null, function ($query) use ($status){
+                        $query->where('status', $status);
+                    });
+            })
+            ->when($productid != null, function ($query) use ($productid){
+                $query->where('produk_id', $productid);
             })
             ->orderByDesc('created_at');
     }

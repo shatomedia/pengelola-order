@@ -74,22 +74,23 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nama' => 'required',
-            'kategori_id' => 'required',
-            'stok' => 'required',
-            'satuan' => 'required',
+            'nama' => 'sometimes|required',
+            'stok' => 'sometimes|required',
+            'satuan' => 'sometimes|required',
+            'harga' => 'sometimes|required',
+            'deskripsi' => 'sometimes|required',
         ]);
         $products = Product::findOrFail($id);
+        $fieldsToUpdate = ['nama', 'kategori_id', 'stok', 'satuan', 'harga', 'deskripsi'];
+        $data = [];
+
+        foreach ($fieldsToUpdate as $field) {
+            if ($request->has($field)) {
+                $data[$field] = $request->input($field);
+            }
+        }
         try {
-            $products->update([
-                "kode_produk" => Str::slug($request->input('nama')),
-                "nama" => $request->input('nama'),
-                "kategori_id" => $request->input('kategori'),
-                "harga" => $request->input('harga'),
-                "deskripsi" => $request->input('deskripsi'),
-                "stok" => $request->input('stok'),
-                "satuan" => $request->input('satuan'),
-            ]);
+            $products->update($data);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             return redirect()->back()->with('error','Data produk error.');
@@ -105,5 +106,23 @@ class ProductController extends Controller
         $products->delete();
 
         return redirect('/product')->with('success','Data produk berhasil dihapus.');
+    }
+
+    public function listProducts(Request $request)
+    {
+        $request = $request->input('q');
+
+        $products = array();
+        $products = Product::when($request, function ($query) use ($request){
+                $query->where('nama', 'LIKE', "%$request%");
+            })
+            ->select([
+                'id',
+                'nama',
+            ])
+            ->limit(10)
+            ->get();
+
+        return response()->json($products);
     }
 }

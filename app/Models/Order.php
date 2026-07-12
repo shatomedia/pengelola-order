@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Order extends Model
 {
@@ -15,7 +16,6 @@ class Order extends Model
         'nama_pembeli',
         'alamat',
         'no_hp',
-        'produk_id',
         'order_via',
         'tgl_order',
         'tgl_kirim',
@@ -46,5 +46,10 @@ class Order extends Model
     public function scopeStatusOrder(Builder $query, $status): Builder
     {
         return $query->where('status', $status);
+    }
+
+    public function detailOrder(): HasOne
+    {
+        return $this->hasOne(DetailOrder::class, 'order_id');
     }
 }

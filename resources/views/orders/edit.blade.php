@@ -111,45 +111,33 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="card-footer pb-0">
-                    <button type="button" class="btn btn-sm bg-gradient-success" data-bs-toggle="modal" data-bs-target="#modal-create">Tambah Item</button>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <h6>Tambah Baru</h6>
                 </div>
-                <div class="modal fade" id="modal-create" tabindex="-1" role="dialog" aria-labelledby="exampleModalMessageTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Tambah Produk Baru Ke {{ $order->no_faktur }}</h5>
-                                <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                            </div>
-                            <form action="{{ route('detail-order.store', $order->id) }}" method="post">
-                                @csrf
-                                <div class="modal-body">
-                                    <input type="hidden" name="order_id" value="{{ $order->id }}">
-                                    <div class="form-group">
-                                        <label for="produk_id" class="col-form-label">Pilih Produk</label>
-                                        <select name="produk_id" id="produk_id" class="form-control select2" style="width: 100%" required>
-                                            <option value="">Pilih</option>
-                                            @foreach($products as $product)
-                                                <option value="{{ $product->id }}" {{ old('produk_id') == $product->id ? 'selected' : '' }}>{{ $product->nama }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="qty" class="col-form-label">Qty</label>
-                                        <input type="number" name="qty" class="form-control" id="qty" value="{{ old('qty') }}" placeholder="Qty">
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn bg-gradient-primary">Submit</button>
-                                </div>
-                            </form>
+                <form action="{{ route('detail-order.store', $order->id) }}" method="post">
+                    @csrf
+                    <div class="card-body">
+                        <input type="hidden" name="order_id" value="{{ $order->id }}">
+                        <div class="form-group">
+                            <label for="select-list-products" class="col-form-label">Pilih Produk</label>
+                            <select name="produk_id" id="select-list-products" class="form-control" data-placeholder="Pilih" style="width: 100%" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="qty" class="col-form-label">Qty</label>
+                            <input type="number" name="qty" class="form-control" id="qty" value="{{ old('qty') }}" placeholder="Qty">
                         </div>
                     </div>
-                </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn bg-gradient-primary">Submit</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('js/product/product-list.js') }}"></script>
 @endsection

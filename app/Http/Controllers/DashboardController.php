@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\HasilApriori;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\ProductCategory;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -19,6 +21,11 @@ class DashboardController extends Controller
         $title = 'Dashboard';
         $orders = Order::get();
         $products = Product::get();
+        $category = ProductCategory::get();
+        
+        $today = Carbon::now()->format('Y-m-d');
+        $ordersToday = Order::whereDate('created_at', $today)
+            ->get();
 
         $noUrut = HasilApriori::orderByDesc('no_urut')
             ->select('no_urut')
@@ -40,6 +47,6 @@ class DashboardController extends Controller
         $totalPenjualan = Order::statusOrder('Dikirim')
             ->sum('total_harga_jual');
 
-        return view('dashboard.index', compact('title', 'products', 'orders','hasilApriori','totalPenjualan'));
+        return view('dashboard.index', compact('title', 'products', 'category', 'orders','hasilApriori','totalPenjualan', 'ordersToday'));
     }
 }
