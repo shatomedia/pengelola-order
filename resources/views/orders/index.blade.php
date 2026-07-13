@@ -12,15 +12,15 @@
                 </div>
                 <div class="card-body pt-0">
                     <div class="row">
-                        <div class="col-5">
+                        <div class="col-12 col-md-5 mb-2 mb-md-0">
                             <form action="{{ url('/template-penjualan') }}" method="GET">
                                 @csrf
-                                <button type="submit" class="btn btn-outline-info mb-0">
+                                <button type="submit" class="btn btn-outline-info mb-0 w-100 w-md-auto">
                                     <i class="fas fa-download"></i> Unduh Template Excel
                                 </button>
                             </form>
                         </div>
-                        <div class="col-7">
+                        <div class="col-12 col-md-7">
                             <form action="{{ url('/order-import') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="input-group">
@@ -45,7 +45,7 @@
                         </form>
                     </div>
                     <div class="table-responsive p-0">
-                        <table class="table table-bordered mb-0">
+                        <table class="table table-bordered mb-0 table-mobile-cards">
                             <thead>
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Aksi</th>
@@ -63,7 +63,7 @@
                             <tbody>
                                 @foreach ($orders as $order)
                                     <tr>
-                                        <td class="align-middle text-center">
+                                        <td class="align-middle text-center" data-label="Aksi">
                                             <div>
                                                 <a href="/order/{{ $order->id }}/edit"
                                                     class="btn btn-secondary btn-sm mb-0 px-2 btn-tooltip"
@@ -73,33 +73,33 @@
                                                 </a>
                                             </div>
                                         </td>
-                                        <td>
+                                        <td data-label="Status">
                                             <span
                                                 class="badge badge-sm {{ $order->status == 'Pending' ? 'bg-gradient-warning' : ($order->status == 'Diproses' ? 'bg-gradient-primary' : ($order->status == 'Dikirim' || $order->status == 'Diambil' ? 'bg-gradient-success' : 'bg-gradient-secondary')) }}">{{ $order->status }}</span>
                                         </td>
-                                        <td>
+                                        <td data-label="No. Faktur">
                                             <p class="mb-0 text-sm">{{ $order->no_faktur }}</p>
                                         </td>
-                                        <td>
+                                        <td data-label="Nama Pembeli">
                                             <p class="mb-0 text-sm">{{ $order->nama_pembeli }}</p>
                                         </td>
-                                        <td class="align-middle text-center">
+                                        <td class="align-middle text-center" data-label="No HP">
                                             <span class="text-secondary text-sm">{{ $order->no_hp }}</span>
                                         </td>
-                                        <td>
+                                        <td data-label="Tgl Order">
                                             <p class="text-sm mb-0">{{ $order->tgl_order }}</p>
                                         </td>
-                                        <td>
+                                        <td data-label="Tgl Kirim">
                                             <p class="text-sm mb-0">{{ $order->tgl_kirim }}</p>
                                         </td>
-                                        <td>
+                                        <td data-label="Total Qty">
                                             <p class="text-sm mb-0">{{ $order->total_qty }}</p>
                                         </td>
-                                        <td>
+                                        <td data-label="Total Harga Jual">
                                             <p class="text-sm mb-0">Rp
                                                 {{ number_format($order->total_harga_jual, 0, ',', '.') }}</p>
                                         </td>
-                                        <td class="align-middle text-center">
+                                        <td class="align-middle text-center" data-label="Detail">
                                             <span class="badge bg-gradient-secondary" data-bs-toggle="modal"
                                                 data-bs-target="#modal-detail-{{ $order->id }}"
                                                 style="cursor: pointer">Lihat Detail</span>
