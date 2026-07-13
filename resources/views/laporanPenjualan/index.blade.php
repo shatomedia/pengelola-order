@@ -48,6 +48,38 @@
                         </form>
                     </div>
                     <hr>
+                    <div class="card-body pt-0">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card bg-gradient-info text-white">
+                                    <div class="card-body p-3">
+                                        <p class="mb-0 text-sm opacity-8">Total Pendapatan</p>
+                                        <h5 class="text-white mb-0">Rp {{ number_format($totalPendapatan, 0, ',', '.') }}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card bg-gradient-secondary text-white">
+                                    <div class="card-body p-3">
+                                        <p class="mb-0 text-sm opacity-8">Estimasi Modal</p>
+                                        <h5 class="text-white mb-0">Rp {{ number_format($totalModal, 0, ',', '.') }}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card {{ $totalLaba >= 0 ? 'bg-gradient-success' : 'bg-gradient-danger' }} text-white">
+                                    <div class="card-body p-3">
+                                        <p class="mb-0 text-sm opacity-8">Estimasi Laba</p>
+                                        <h5 class="text-white mb-0">Rp {{ number_format($totalLaba, 0, ',', '.') }}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-secondary mt-2 mb-0">
+                            * Estimasi modal dihitung dari harga modal produk saat ini dikali qty terjual pada periode ini.
+                            Produk yang belum diisi harga modalnya akan dianggap Rp 0 pada perhitungan ini.
+                        </p>
+                    </div>
                     <div class="card-body px-0 pt-0 pb-2">
                         <div class="table-responsive p-0">
                             <table class="table align-items-center mb-0">

@@ -10,6 +10,8 @@ class CreateOrderRequest extends FormRequest
     {
         return [
             'status' => ['required'],
+            'payment_status' => ['required', 'in:Belum Bayar,DP,Lunas'],
+            'jumlah_dibayar' => ['nullable', 'integer', 'min:0'],
             'nama_pembeli' => ['required'],
             'alamat' => ['required'],
             'no_hp' => ['required'],

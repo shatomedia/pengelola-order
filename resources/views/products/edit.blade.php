@@ -31,8 +31,12 @@
               <input name="kategori" type="text" class="form-control" id="inputKategori" aria-describedby="inputNamaKategori" placeholder="Nama Kategori" value="{{ $products->kategori_id }}">
             </div>
             <div class="form-group">
-              <label for="inputHarga">Harga</label>
-              <input name="harga" type="text" class="form-control" id="inputHarga" aria-describedby="inputNamaKategori" placeholder="Nama Kategori" value="{{ $products->harga }}">
+              <label for="inputHargaModal">Harga Modal</label>
+              <input name="harga_modal" type="text" class="form-control" id="inputHargaModal" placeholder="Harga Modal" value="{{ $products->harga_modal }}">
+            </div>
+            <div class="form-group">
+              <label for="inputHarga">Harga Jual</label>
+              <input name="harga" type="text" class="form-control" id="inputHarga" aria-describedby="inputNamaKategori" placeholder="Harga Jual" value="{{ $products->harga }}">
             </div>
             <div class="form-group">
               <label for="inputDeskripsi">Deskripsi</label>

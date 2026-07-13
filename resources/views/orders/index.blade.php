@@ -50,6 +50,7 @@
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Aksi</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Status</th>
+                                    <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Pembayaran</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">No. Faktur</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Nama Pembeli</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">No HP</th>
@@ -76,6 +77,10 @@
                                         <td data-label="Status">
                                             <span
                                                 class="badge badge-sm {{ $order->status == 'Pending' ? 'bg-gradient-warning' : ($order->status == 'Diproses' ? 'bg-gradient-primary' : ($order->status == 'Dikirim' || $order->status == 'Diambil' ? 'bg-gradient-success' : 'bg-gradient-secondary')) }}">{{ $order->status }}</span>
+                                        </td>
+                                        <td data-label="Pembayaran">
+                                            <span
+                                                class="badge badge-sm {{ $order->payment_status == 'Lunas' ? 'bg-gradient-success' : ($order->payment_status == 'DP' ? 'bg-gradient-warning' : 'bg-gradient-secondary') }}">{{ $order->payment_status }}</span>
                                         </td>
                                         <td data-label="No. Faktur">
                                             <p class="mb-0 text-sm">{{ $order->no_faktur }}</p>

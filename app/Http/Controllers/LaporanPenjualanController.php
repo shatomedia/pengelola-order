@@ -58,31 +58,42 @@ class LaporanPenjualanController extends Controller
 
         $product = Product::find($productid);
 
+        $filterOrders = function ($query) use ($date, $year, $month, $productid, $status) {
+            $query->when($date, function ($query) use ($date){
+                    [$startDate, $endDate] = explode(' - ', $date);
+                    $startDate = date('Y-m-d', strtotime($startDate));
+                    $endDate = date('Y-m-d', strtotime($endDate));
+                    $query->whereBetween('tgl_order', [$startDate, $endDate]);
+                }, function ($query) use ($year, $month){
+                    $query->whereYear('tgl_order', $year)
+                        ->whereMonth('tgl_order', $month);
+                })
+                ->when($productid != null, function ($query) use ($productid){
+                    $query->whereHas('detailOrder', function ($query) use ($productid){
+                        $query->where('produk_id', $productid);
+                    });
+                })
+                ->when($status != null, function ($query) use ($status){
+                    $query->where('status', $status);
+                });
+        };
+
         $orders = Order::withCount('detailOrders')
             ->with('detailOrder')
-            ->when($date, function ($query) use ($date){
-                [$startDate, $endDate] = explode(' - ', $date);
-                $startDate = date('Y-m-d', strtotime($startDate));
-                $endDate = date('Y-m-d', strtotime($endDate));
-                $query->whereBetween('tgl_order', [$startDate, $endDate]);
-            }, function ($query) use ($year, $month){
-                $query->whereYear('tgl_order', $year)
-                    ->whereMonth('tgl_order', $month);
-            })
-            ->when($productid != null, function ($query) use ($productid){
-                $query->whereHas('detailOrder', function ($query) use ($productid){
-                    $query->where('produk_id', $productid);
-                });
-            })
-            ->when($status != null, function ($query) use ($status){
-                $query->where('status', $status);
-            })
+            ->tap($filterOrders)
             ->paginate(10);
+
+        $totalPendapatan = (int) Order::tap($filterOrders)->sum('total_harga_jual');
+        $totalModal = (int) DetailOrder::whereHas('order', $filterOrders)
+            ->join('products', 'products.id', '=', 'detail_orders.produk_id')
+            ->selectRaw('SUM(detail_orders.qty * products.harga_modal) as total')
+            ->value('total');
+        $totalLaba = $totalPendapatan - $totalModal;
 
         if (request('export') == 'true'){
             return Excel::download(New LaporanPenjualanExport($date, $productid, $status), 'laporan-penjualan-' . $date . '.xlsx');
         }
 
-        return view('laporanPenjualan.index', compact('title','date','orders','product','jumlahQty','monthList','listStatus'));
+        return view('laporanPenjualan.index', compact('title','date','orders','product','jumlahQty','monthList','listStatus','totalPendapatan','totalModal','totalLaba'));
     }
 }

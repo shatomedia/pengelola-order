@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Models\Customer;
 use App\Models\DetailOrder;
 use App\Models\Order;
 use App\Models\Product;
@@ -58,8 +59,16 @@ class OrderController extends Controller
             }
 
             DB::transaction(function () use ($produkIds, $qtys, $products, $request){
+                $customer = Customer::updateOrCreate(
+                    ['no_hp' => $request->input('no_hp')],
+                    ['nama' => $request->input('nama_pembeli'), 'alamat' => $request->input('alamat')]
+                );
+
                 $order = New Order();
+                $order->customer_id = $customer->id;
                 $order->status = $request->input('status');
+                $order->payment_status = $request->input('payment_status');
+                $order->jumlah_dibayar = $request->input('jumlah_dibayar', 0);
                 $order->nama_pembeli = $request->input('nama_pembeli');
                 $order->alamat = $request->input('alamat');
                 $order->no_hp = $request->input('no_hp');
@@ -131,7 +140,16 @@ class OrderController extends Controller
     {
         try {
             $order = Order::findOrFail($id);
+
+            $customer = Customer::updateOrCreate(
+                ['no_hp' => $request->input('no_hp')],
+                ['nama' => $request->input('nama_pembeli'), 'alamat' => $request->input('alamat')]
+            );
+
+            $order->customer_id = $customer->id;
             $order->status = $request->input('status');
+            $order->payment_status = $request->input('payment_status');
+            $order->jumlah_dibayar = $request->input('jumlah_dibayar');
             $order->nama_pembeli = $request->input('nama_pembeli');
             $order->alamat = $request->input('alamat');
             $order->no_hp = $request->input('no_hp');

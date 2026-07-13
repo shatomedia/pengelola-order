@@ -39,6 +39,7 @@ class ProductController extends Controller
             'nama' => 'required',
             'kategori_id' => 'required',
             'harga'=> 'required',
+            'harga_modal' => 'nullable',
             'deskripsi' => 'nullable',
             'stok' => 'required',
             'satuan' => 'required',
@@ -50,6 +51,7 @@ class ProductController extends Controller
                 "nama" => $request->input('nama'),
                 "kategori_id" => $request->input('kategori_id'),
                 "harga" => $request->input('harga'),
+                "harga_modal" => $request->input('harga_modal'),
                 "deskripsi" => $request->input('deskripsi'),
                 "stok" => $request->input('stok'),
                 "satuan" => $request->input('satuan'),
@@ -81,7 +83,7 @@ class ProductController extends Controller
             'deskripsi' => 'sometimes|required',
         ]);
         $products = Product::findOrFail($id);
-        $fieldsToUpdate = ['nama', 'kategori_id', 'stok', 'satuan', 'harga', 'deskripsi'];
+        $fieldsToUpdate = ['nama', 'kategori_id', 'stok', 'satuan', 'harga', 'harga_modal', 'deskripsi'];
         $data = [];
 
         foreach ($fieldsToUpdate as $field) {

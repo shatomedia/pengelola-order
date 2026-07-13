@@ -2,17 +2,24 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Order extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
+        'customer_id',
         'no_urut',
         'no_faktur',
         'status',
+        'payment_status',
+        'jumlah_dibayar',
         'nama_pembeli',
         'alamat',
         'no_hp',
@@ -26,6 +33,11 @@ class Order extends Model
         'total_qty',
         'total_harga_jual'
     ];
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
+    }
 
     public function detailOrders(): HasMany
     {

@@ -32,6 +32,18 @@
                             </select>
                         </div>
                         <div class="form-group">
+                            <label for="inputPaymentStatus">Status Pembayaran</label>
+                            <select name="payment_status" class="form-control select2" id="inputPaymentStatus" required>
+                                <option value="Belum Bayar" {{ $order->payment_status == 'Belum Bayar' ? 'selected' : '' }}>Belum Bayar</option>
+                                <option value="DP" {{ $order->payment_status == 'DP' ? 'selected' : '' }}>DP</option>
+                                <option value="Lunas" {{ $order->payment_status == 'Lunas' ? 'selected' : '' }}>Lunas</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputJumlahDibayar">Jumlah Dibayar</label>
+                            <input name="jumlah_dibayar" type="number" class="form-control" id="inputJumlahDibayar" placeholder="Jumlah Dibayar" value="{{ $order->jumlah_dibayar }}">
+                        </div>
+                        <div class="form-group">
                             <label for="inputNamaPembeli">Nama Pembeli</label>
                             <input name="nama_pembeli" type="text" class="form-control" id="inputNamaPembeli" aria-describedby="inputNamaPembeli" placeholder="Nama Pembeli"  value="{{ $order->nama_pembeli }}" required>
                         </div>

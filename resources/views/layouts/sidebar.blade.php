@@ -71,6 +71,28 @@
                 </li>
             @endcan
 
+            @can('order')
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('customers*') ? 'active' : '' }}" href="{{ route('customers.index') }}">
+                        <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-users text-dark text-sm"></i>
+                        </div>
+                        <span class="nav-link-text ms-1">Pelanggan</span>
+                    </a>
+                </li>
+            @endcan
+
+            @role('admin|owner')
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('activity-logs') ? 'active' : '' }}" href="{{ route('activity-logs.index') }}">
+                        <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-history text-dark text-sm"></i>
+                        </div>
+                        <span class="nav-link-text ms-1">Log Aktivitas</span>
+                    </a>
+                </li>
+            @endrole
+
 
             <li class="nav-item">
                 <a class="nav-link  {{ Request::is('product') ? 'active' : '' }}" href="/product">

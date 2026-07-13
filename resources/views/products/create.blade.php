@@ -35,8 +35,12 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="inputHarga">Harga</label>
-            <input name="harga" type="number" class="form-control" id="inputHarga" aria-describedby="inputHarga" placeholder="Harga">
+            <label for="inputHargaModal">Harga Modal</label>
+            <input name="harga_modal" type="number" class="form-control" id="inputHargaModal" aria-describedby="inputHargaModal" placeholder="Harga Modal">
+          </div>
+          <div class="form-group">
+            <label for="inputHarga">Harga Jual</label>
+            <input name="harga" type="number" class="form-control" id="inputHarga" aria-describedby="inputHarga" placeholder="Harga Jual">
           </div>
           <div class="form-group">
             <label for="inputDeskripsi">Deskripsi</label>
