@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateOrderRequest;
 use App\Models\DetailOrder;
 use App\Models\Order;
 use App\Models\Product;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -20,14 +21,18 @@ class OrderController extends Controller
         $this->middleware('permission:order-delete', ['only' => ['destroy']]);
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $title = 'Penjualan';
+        $perPage = (int) $request->input('per_page', 25);
+        $perPage = in_array($perPage, [10, 25, 50, 100]) ? $perPage : 25;
+
         $orders = Order::withCount('detailOrders')
             ->orderByDesc('tgl_order')
-            ->paginate(10);
+            ->paginate($perPage)
+            ->withQueryString();
 
-        return view('orders.index', compact('title', 'orders'));
+        return view('orders.index', compact('title', 'orders', 'perPage'));
     }
 
     public function create()

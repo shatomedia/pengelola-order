@@ -33,6 +33,17 @@
                     </div>
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
+                    <div class="d-flex align-items-center px-3 mb-2">
+                        <form method="GET" class="d-flex align-items-center">
+                            <label for="per_page" class="text-sm mb-0 me-2">Tampilkan</label>
+                            <select name="per_page" id="per_page" class="form-control form-control-sm" style="width: auto" onchange="this.form.submit()">
+                                @foreach ([10, 25, 50, 100] as $option)
+                                    <option value="{{ $option }}" {{ $perPage == $option ? 'selected' : '' }}>{{ $option }}</option>
+                                @endforeach
+                            </select>
+                            <span class="text-sm ms-2">order per halaman</span>
+                        </form>
+                    </div>
                     <div class="table-responsive p-0">
                         <table class="table table-bordered mb-0">
                             <thead>
@@ -41,18 +52,12 @@
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Status</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">No. Faktur</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Nama Pembeli</th>
-                                    <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Alamat</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">No HP</th>
-                                    <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Produk</th>
-                                    <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Order Via</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Tgl Order</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Tgl Kirim</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Total Qty</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Total Harga Jual</th>
-                                    <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Title</th>
-                                    <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Background</th>
-                                    <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Request</th>
-                                    <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Keterangan</th>
+                                    <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Detail</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -78,19 +83,8 @@
                                         <td>
                                             <p class="mb-0 text-sm">{{ $order->nama_pembeli }}</p>
                                         </td>
-                                        <td class="align-middle">
-                                            <p class="mb-0 text-sm">{{ Str::limit($order->alamat, 50) }}</p>
-                                        </td>
                                         <td class="align-middle text-center">
                                             <span class="text-secondary text-sm">{{ $order->no_hp }}</span>
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            <span class="badge bg-gradient-secondary" data-bs-toggle="modal"
-                                                data-bs-target="#modal-detail-{{ $order->id }}"
-                                                style="cursor: pointer">Lihat Detail Order</span>
-                                        </td>
-                                        <td>
-                                            <p class="text-sm mb-0">{{ $order->order_via }}</p>
                                         </td>
                                         <td>
                                             <p class="text-sm mb-0">{{ $order->tgl_order }}</p>
@@ -105,21 +99,10 @@
                                             <p class="text-sm mb-0">Rp
                                                 {{ number_format($order->total_harga_jual, 0, ',', '.') }}</p>
                                         </td>
-                                        <td>
-                                            <p class="text-sm mb-0">{{ $order->title }}</p>
-                                        </td>
-                                        <td>
-                                            <p class="text-sm mb-0">
-                                                @if($order->background)
-                                                    <a href="{{ url($order->background) }}" target="_blank">{{ $order->background }}</a>
-                                                @endif
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <p class="text-sm mb-0">{{ $order->request }}</p>
-                                        </td>
-                                        <td>
-                                            <p class="text-sm mb-0">{{ $order->keterangan }}</p>
+                                        <td class="align-middle text-center">
+                                            <span class="badge bg-gradient-secondary" data-bs-toggle="modal"
+                                                data-bs-target="#modal-detail-{{ $order->id }}"
+                                                style="cursor: pointer">Lihat Detail</span>
                                         </td>
                                     </tr>
                                     {{-- Modal --}}
@@ -137,9 +120,26 @@
                                                 </div>
                                                 <div class="modal-body">
                                                     <dl>
+                                                        <dt>Alamat</dt>
+                                                        <dd>{{ $order->alamat }}</dd>
+                                                        <dt>Order Via</dt>
+                                                        <dd>{{ $order->order_via }}</dd>
+                                                        <dt>Title</dt>
+                                                        <dd>{{ $order->title }}</dd>
+                                                        <dt>Background</dt>
+                                                        <dd>
+                                                            @if($order->background)
+                                                                <a href="{{ url($order->background) }}" target="_blank">{{ $order->background }}</a>
+                                                            @endif
+                                                        </dd>
+                                                        <dt>Request</dt>
+                                                        <dd>{{ $order->request }}</dd>
+                                                        <dt>Keterangan</dt>
+                                                        <dd>{{ $order->keterangan }}</dd>
+                                                        <hr>
+                                                        <dt>Produk</dt>
                                                         @foreach ($order->detailOrders as $detailOrder)
-                                                            <dt>Nama Item : {{ optional($detailOrder->produk)->nama }}</dt>
-                                                            <dd>Qty : {{ $detailOrder->qty }}
+                                                            <dd>{{ optional($detailOrder->produk)->nama }} &mdash; Qty : {{ $detailOrder->qty }}
                                                                 {{ optional($detailOrder->produk)->satuan }}</dd>
                                                         @endforeach
                                                     </dl>
