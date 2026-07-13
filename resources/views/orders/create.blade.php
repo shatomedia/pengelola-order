@@ -44,12 +44,21 @@
                             <textarea name="alamat" id="alamat" class="form-control" placeholder="Alamat Lengkap" required>{{ old('alamat') }}</textarea>
                         </div>
                         <div class="form-group">
-                            <label for="select-product">Produk</label>
-                            <select id="select-product" name="produk_id" data-placeholder="Pilih & Cari" class="form-control select2" style="width: 100%" required></select>
-                        </div>
-                        <div class="form-group">
-                            <label for="qty">Qty</label>
-                            <input name="qty" type="number" class="form-control" id="qty" aria-describedby="qty" placeholder="Qty" value="{{ old('qty') }}" required>
+                            <label>Produk</label>
+                            <div id="product-rows">
+                                <div class="row product-row mb-2">
+                                    <div class="col-7">
+                                        <select name="produk_id[]" class="form-control select-product" data-placeholder="Pilih & Cari Produk" style="width: 100%" required></select>
+                                    </div>
+                                    <div class="col-3">
+                                        <input name="qty[]" type="number" min="1" class="form-control" placeholder="Qty" required>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-sm bg-gradient-danger remove-product-row" style="display:none;">&times;</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" id="add-product-row" class="btn btn-sm bg-gradient-info mt-2">+ Tambah Produk</button>
                         </div>
                         <div class="form-group">
                             <label for="inputOrderVia">Order Via</label>

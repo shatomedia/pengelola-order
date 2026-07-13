@@ -39,16 +39,20 @@ class OrderController extends Controller
     public function store(CreateOrderRequest $request)
     {
         try {
-            $productId = $request->input('produk_id');
-            $qty = $request->input('qty');
-            $product = Product::findOrFail($productId);
+            $produkIds = $request->input('produk_id');
+            $qtys = $request->input('qty');
 
-            if ($qty > $product->stok){
-                alert()->warning('Oops..', 'Stok tidak mencukupi');
-                return redirect()->back();
+            $products = Product::whereIn('id', $produkIds)->get()->keyBy('id');
+
+            foreach ($produkIds as $index => $produkId) {
+                $product = $products->get($produkId);
+                if (!$product || $qtys[$index] > $product->stok) {
+                    alert()->warning('Oops..', 'Stok ' . optional($product)->nama . ' tidak mencukupi');
+                    return redirect()->back()->withInput();
+                }
             }
 
-            DB::transaction(function () use ($qty, $product, $request){
+            DB::transaction(function () use ($produkIds, $qtys, $products, $request){
                 $order = New Order();
                 $order->status = $request->input('status');
                 $order->nama_pembeli = $request->input('nama_pembeli');
@@ -63,30 +67,32 @@ class OrderController extends Controller
                 $order->keterangan = $request->input('keterangan');
                 $order->save();
 
-                $detailOrder = New DetailOrder();
-                $detailOrder->order_id = $order->id;
-                $detailOrder->produk_id = $product->id;
-                $detailOrder->qty = $qty;
+                $totalQty = 0;
+                $totalHargaJual = 0;
 
-                $subTotal = $detailOrder->qty * intval($product->harga);
+                foreach ($produkIds as $index => $produkId) {
+                    $qty = (int) $qtys[$index];
+                    $product = $products->get($produkId);
 
-                $detailOrder->sub_total = $subTotal;
-                $detailOrder->save();
+                    $detailOrder = New DetailOrder();
+                    $detailOrder->order_id = $order->id;
+                    $detailOrder->produk_id = $product->id;
+                    $detailOrder->qty = $qty;
 
-                /*rekap total qty dan harga jual*/
-                $updateOrder = Order::with('detailOrders')
-                    ->withSum('detailOrders', 'qty')
-                    ->withSum('detailOrders', 'sub_total')
-                    ->find($order->id);
+                    $subTotal = $qty * intval($product->harga);
+                    $detailOrder->sub_total = $subTotal;
+                    $detailOrder->save();
 
-                $updateOrder->total_qty = $detailOrder->qty;
-                $updateOrder->total_harga_jual = $detailOrder->sub_total;
-                $updateOrder->save();
+                    $totalQty += $qty;
+                    $totalHargaJual += $subTotal;
 
-                /*update stok produk*/
-                $stok = $product->stok - $updateOrder->total_qty;
-                $product->stok = $stok;
-                $product->save();
+                    $product->stok = $product->stok - $qty;
+                    $product->save();
+                }
+
+                $order->total_qty = $totalQty;
+                $order->total_harga_jual = $totalHargaJual;
+                $order->save();
             });
 
             alert()->success('success','Data Penjualan berhasil ditambahkan.');
