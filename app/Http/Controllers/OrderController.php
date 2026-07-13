@@ -153,7 +153,7 @@ class OrderController extends Controller
                     foreach ($order->detailOrders as $detailOrder){
                         $product = Product::find($detailOrder->produk_id);
 
-                        $stok = $detailOrder->sub_total + $product->stok;
+                        $stok = $detailOrder->qty + $product->stok;
 
                         $product->stok = $stok;
                         $product->save();
@@ -166,7 +166,7 @@ class OrderController extends Controller
             alert()->success('Success', 'Pesanan Berhasil Terhapus');
         }catch (\Throwable $throwable){
             Log::error($throwable->getMessage());
-            alert()->erro('Oops', 'Data error');
+            alert()->error('Oops', 'Data error');
         }
 
         return redirect()->back();

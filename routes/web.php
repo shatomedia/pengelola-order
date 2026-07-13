@@ -43,7 +43,7 @@ Route::middleware('auth')->group(function () {
         return redirect('/dashboard');
     });
 
-    Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
     Route::prefix('order')->group(function () {
         Route::get('/', [OrderController::class, 'index'])->name('order.index');
