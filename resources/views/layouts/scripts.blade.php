@@ -269,6 +269,10 @@
                 format: 'yyyy-mm-dd'
             });
         });
+
+        $('form[method="POST"], form[method="post"]').on('submit', function () {
+            $(this).find('button[type="submit"]').prop('disabled', true);
+        });
     });
 </script>
 

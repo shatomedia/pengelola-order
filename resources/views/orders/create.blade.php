@@ -37,7 +37,7 @@
                         </div>
                         <div class="form-group">
                             <label for="inputNoHp">No HP</label>
-                            <input name="no_hp" type="number" class="form-control" id="inputNoHp" aria-describedby="inputNoHp" placeholder="No Hp" value="{{ old('no_hp') }}" required>
+                            <input name="no_hp" type="tel" inputmode="numeric" pattern="[0-9]+" class="form-control" id="inputNoHp" aria-describedby="inputNoHp" placeholder="No Hp" value="{{ old('no_hp') }}" required>
                         </div>
                         <div class="form-group">
                             <label for="alamat">Alamat</label>
@@ -57,11 +57,11 @@
                         </div>
                         <div class="form-group">
                             <label for="inputTglOrder">Tgl Order</label>
-                            <input name="tgl_order" type="text" class="form-control datepicker" id="inputTglOrder" aria-describedby="inputTglOrder"value="{{ old('tgl_order') }}" placeholder="Tgl Order" required>
+                            <input name="tgl_order" type="text" class="form-control datepicker" id="inputTglOrder" aria-describedby="inputTglOrder" value="{{ old('tgl_order') }}" placeholder="Tgl Order" readonly required>
                         </div>
                         <div class="form-group">
                             <label for="inputTglKirim">Tgl Kirim</label>
-                            <input name="tgl_kirim" type="text" class="form-control datepicker" id="inputTglKirim" aria-describedby="inputTglKirim" value="{{ old('tgl_kirim') }}" placeholder="Tgl Kirim" required>
+                            <input name="tgl_kirim" type="text" class="form-control datepicker" id="inputTglKirim" aria-describedby="inputTglKirim" value="{{ old('tgl_kirim') }}" placeholder="Tgl Kirim" readonly required>
                         </div>
                         <div class="form-group">
                             <label for="inputTitle">Title</label>
