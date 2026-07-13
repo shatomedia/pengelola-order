@@ -294,7 +294,7 @@
     {{-- <div class="sidenav-footer mx-1 ">
         <div class="card card-background shadow-none card-background-mask-secondary" id="sidenavCard">
             <div class="full-background"
-                style="background-image: url('../assets/img/curved-images/white-curved.jpg')">
+                style="background-image: url('{{ asset('img/curved-images/white-curved.jpg') }}')">
             </div>
             <div class="card-body text-start p-3 w-100">
                 <div
