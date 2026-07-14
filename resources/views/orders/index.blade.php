@@ -53,7 +53,6 @@
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Pembayaran</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">No. Faktur</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Nama Pembeli</th>
-                                    <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">No HP</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Tgl Order</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Tgl Kirim</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Total Qty</th>
@@ -91,9 +90,6 @@
                                         </td>
                                         <td data-label="Nama Pembeli">
                                             <p class="mb-0 text-sm">{{ $order->nama_pembeli }}</p>
-                                        </td>
-                                        <td class="align-middle text-center" data-label="No HP">
-                                            <span class="text-secondary text-sm">{{ $order->no_hp }}</span>
                                         </td>
                                         <td data-label="Tgl Order">
                                             <p class="text-sm mb-0">{{ $order->tgl_order }}</p>
