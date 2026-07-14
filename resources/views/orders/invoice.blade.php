@@ -20,6 +20,15 @@
             padding-bottom: 16px;
             margin-bottom: 24px;
         }
+        .invoice-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .invoice-brand img {
+            height: 48px;
+            width: auto;
+        }
         .invoice-header h1 {
             margin: 0;
             font-size: 22px;
@@ -87,9 +96,12 @@
     </div>
 
     <div class="invoice-header">
-        <div>
-            <h1>Shatomedia</h1>
-            <p>sales.shatomedia.com</p>
+        <div class="invoice-brand">
+            <img src="{{ asset('img/sidebar-logo.png') }}" alt="Shatomedia">
+            <div>
+                <h1>Shatomedia</h1>
+                <p>sales.shatomedia.com</p>
+            </div>
         </div>
         <div class="invoice-title">
             <h2>INVOICE</h2>
