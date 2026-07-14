@@ -65,18 +65,16 @@
                                 @foreach ($orders as $order)
                                     <tr>
                                         <td class="align-middle text-center" data-label="Aksi">
-                                            <div class="d-flex justify-content-center gap-2 action-buttons">
+                                            <div class="d-flex justify-content-center flex-wrap gap-2 action-buttons">
                                                 <a href="/order/{{ $order->id }}/edit"
-                                                    class="btn btn-secondary mb-0 btn-tooltip"
-                                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"
+                                                    class="btn btn-secondary mb-0"
                                                     data-container="body" data-animation="true" aria-pressed="true">
-                                                    <i class="fas fa-edit" aria-hidden="true"></i>
+                                                    <i class="fas fa-edit me-1" aria-hidden="true"></i> Edit
                                                 </a>
                                                 <a href="{{ route('order.invoice', $order->id) }}" target="_blank"
-                                                    class="btn btn-dark mb-0 btn-tooltip"
-                                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Invoice"
+                                                    class="btn btn-dark mb-0"
                                                     data-container="body" data-animation="true" aria-pressed="true">
-                                                    <i class="fas fa-file-invoice" aria-hidden="true"></i>
+                                                    <i class="fas fa-file-invoice me-1" aria-hidden="true"></i> Invoice
                                                 </a>
                                             </div>
                                         </td>
