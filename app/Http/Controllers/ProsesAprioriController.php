@@ -25,15 +25,12 @@ class ProsesAprioriController extends Controller
         $date = $request->input('date');
         $minSupport = $request->input('min_support');
         $minConfidence = $request->input('min_confidence');
-        /*$products = array();*/
         if ($date) {
             foreach (range(1, 12) as $month) {
-                // ubah jadi $products[$month] jika ingin menampilkan semua produk pada dd();
                 $products = DetailOrder::with('produk:id,nama')
                     ->whereHas('order', function ($query) use ($date, $month) {
                         $query->whereYear('tgl_order', $date)
                             ->whereMonth('tgl_order', $month);
-                        //  ->where('status', 'Dikirim');
                     })
                     ->select('produk_id', DB::raw('SUM(qty) as total_qty'))
                     ->groupBy('produk_id')
@@ -41,7 +38,6 @@ class ProsesAprioriController extends Controller
                     ->take(3)
                     ->get();
 
-                // jika di dd() maka data hitungan ini di komen
                 if ($products->count() > 0) {
                     $tanggal = $date . '-' . $month . '-' . date('d');
                     foreach ($products as $product) {
@@ -156,7 +152,6 @@ class ProsesAprioriController extends Controller
             $tableConfidenceItemSets = array();
         }
 
-        /*dd($products);*/
         return view('apriories.index', compact(
             'title',
             'years',

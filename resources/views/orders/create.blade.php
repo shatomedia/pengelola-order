@@ -32,24 +32,45 @@
                             </select>
                         </div>
                         <div class="form-group">
+                            <label for="inputPaymentStatus">Status Pembayaran</label>
+                            <select name="payment_status" class="form-control select2" id="inputPaymentStatus" required>
+                                <option value="Belum Bayar" {{ old('payment_status') == 'Belum Bayar' ? 'selected' : '' }}>Belum Bayar</option>
+                                <option value="DP" {{ old('payment_status') == 'DP' ? 'selected' : '' }}>DP</option>
+                                <option value="Lunas" {{ old('payment_status') == 'Lunas' ? 'selected' : '' }}>Lunas</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputJumlahDibayar">Jumlah Dibayar</label>
+                            <input name="jumlah_dibayar" type="number" class="form-control" id="inputJumlahDibayar" placeholder="Jumlah Dibayar" value="{{ old('jumlah_dibayar', 0) }}">
+                        </div>
+                        <div class="form-group">
                             <label for="inputNamaPembeli">Nama Pembeli</label>
                             <input name="nama_pembeli" type="text" class="form-control" id="inputNamaPembeli" aria-describedby="inputNamaPembeli" placeholder="Nama Pembeli"  value="{{ old('nama_pembeli') }}" required>
                         </div>
                         <div class="form-group">
                             <label for="inputNoHp">No HP</label>
-                            <input name="no_hp" type="number" class="form-control" id="inputNoHp" aria-describedby="inputNoHp" placeholder="No Hp" value="{{ old('no_hp') }}" required>
+                            <input name="no_hp" type="tel" inputmode="numeric" pattern="[0-9]+" class="form-control" id="inputNoHp" aria-describedby="inputNoHp" placeholder="No Hp" value="{{ old('no_hp') }}" required>
                         </div>
                         <div class="form-group">
                             <label for="alamat">Alamat</label>
                             <textarea name="alamat" id="alamat" class="form-control" placeholder="Alamat Lengkap" required>{{ old('alamat') }}</textarea>
                         </div>
                         <div class="form-group">
-                            <label for="select-product">Produk</label>
-                            <select id="select-product" name="produk_id" data-placeholder="Pilih & Cari" class="form-control select2" style="width: 100%" required></select>
-                        </div>
-                        <div class="form-group">
-                            <label for="qty">Qty</label>
-                            <input name="qty" type="number" class="form-control" id="qty" aria-describedby="qty" placeholder="Qty" value="{{ old('qty') }}" required>
+                            <label>Produk</label>
+                            <div id="product-rows">
+                                <div class="row product-row mb-2">
+                                    <div class="col-7">
+                                        <select name="produk_id[]" class="form-control select-product" data-placeholder="Pilih & Cari Produk" style="width: 100%" required></select>
+                                    </div>
+                                    <div class="col-3">
+                                        <input name="qty[]" type="number" min="1" class="form-control" placeholder="Qty" required>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-sm bg-gradient-danger remove-product-row" style="display:none;">&times;</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" id="add-product-row" class="btn btn-sm bg-gradient-info mt-2">+ Tambah Produk</button>
                         </div>
                         <div class="form-group">
                             <label for="inputOrderVia">Order Via</label>
@@ -57,11 +78,11 @@
                         </div>
                         <div class="form-group">
                             <label for="inputTglOrder">Tgl Order</label>
-                            <input name="tgl_order" type="text" class="form-control datepicker" id="inputTglOrder" aria-describedby="inputTglOrder"value="{{ old('tgl_order') }}" placeholder="Tgl Order" required>
+                            <input name="tgl_order" type="text" class="form-control datepicker" id="inputTglOrder" aria-describedby="inputTglOrder" value="{{ old('tgl_order') }}" placeholder="Tgl Order" readonly required>
                         </div>
                         <div class="form-group">
                             <label for="inputTglKirim">Tgl Kirim</label>
-                            <input name="tgl_kirim" type="text" class="form-control datepicker" id="inputTglKirim" aria-describedby="inputTglKirim" value="{{ old('tgl_kirim') }}" placeholder="Tgl Kirim" required>
+                            <input name="tgl_kirim" type="text" class="form-control datepicker" id="inputTglKirim" aria-describedby="inputTglKirim" value="{{ old('tgl_kirim') }}" placeholder="Tgl Kirim" readonly required>
                         </div>
                         <div class="form-group">
                             <label for="inputTitle">Title</label>

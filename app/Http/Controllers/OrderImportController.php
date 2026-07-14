@@ -31,7 +31,7 @@ class OrderImportController extends Controller
             \alert()->success('Success', 'Import Penjualan berhasil tersimpan');
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
-            toast('Data Penjualan gagal diimport', 'error');
+            \alert()->error('Oops', 'Data Penjualan gagal diimport');
         }
 
         return redirect()->back();

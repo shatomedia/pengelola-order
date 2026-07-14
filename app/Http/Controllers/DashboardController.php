@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DetailOrder;
 use App\Models\HasilApriori;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -47,6 +49,54 @@ class DashboardController extends Controller
         $totalPenjualan = Order::statusOrder('Dikirim')
             ->sum('total_harga_jual');
 
-        return view('dashboard.index', compact('title', 'products', 'category', 'orders','hasilApriori','totalPenjualan', 'ordersToday'));
+        $bulanIni = Carbon::now();
+        $totalOrderBulanIni = Order::whereYear('tgl_order', $bulanIni->year)
+            ->whereMonth('tgl_order', $bulanIni->month)
+            ->count();
+        $pendapatanBulanIni = Order::whereYear('tgl_order', $bulanIni->year)
+            ->whereMonth('tgl_order', $bulanIni->month)
+            ->sum('total_harga_jual');
+        $piutang = (int) Order::where('payment_status', '!=', 'Lunas')
+            ->selectRaw('SUM(GREATEST(total_harga_jual - jumlah_dibayar, 0)) as total')
+            ->value('total');
+        $stokMenipisCount = Product::where('stok', '<=', 5)->count();
+
+        $trenLabels = [];
+        $trenData = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $bulan = Carbon::now()->subMonths($i);
+            $trenLabels[] = $bulan->isoFormat('MMM YYYY');
+            $trenData[] = (int) Order::whereYear('tgl_order', $bulan->year)
+                ->whereMonth('tgl_order', $bulan->month)
+                ->sum('total_harga_jual');
+        }
+
+        $paymentStatusCounts = Order::select('payment_status')
+            ->selectRaw('COUNT(*) as total')
+            ->groupBy('payment_status')
+            ->pluck('total', 'payment_status');
+
+        $produkTerlaris = DetailOrder::join('products', 'products.id', '=', 'detail_orders.produk_id')
+            ->select('products.nama')
+            ->selectRaw('SUM(detail_orders.qty) as total_qty')
+            ->groupBy('products.id', 'products.nama')
+            ->orderByDesc('total_qty')
+            ->take(5)
+            ->get()
+            ->map(function ($item) {
+                $item->total_qty = (int) $item->total_qty;
+                return $item;
+            });
+
+        $produkStokMenipis = Product::where('stok', '<=', 5)
+            ->orderBy('stok')
+            ->take(5)
+            ->get(['nama', 'stok']);
+
+        return view('dashboard.index', compact(
+            'title', 'products', 'category', 'orders', 'hasilApriori', 'totalPenjualan', 'ordersToday',
+            'totalOrderBulanIni', 'pendapatanBulanIni', 'piutang', 'stokMenipisCount',
+            'trenLabels', 'trenData', 'paymentStatusCounts', 'produkTerlaris', 'produkStokMenipis'
+        ));
     }
 }

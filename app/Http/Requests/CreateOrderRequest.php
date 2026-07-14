@@ -10,6 +10,8 @@ class CreateOrderRequest extends FormRequest
     {
         return [
             'status' => ['required'],
+            'payment_status' => ['required', 'in:Belum Bayar,DP,Lunas'],
+            'jumlah_dibayar' => ['nullable', 'integer', 'min:0'],
             'nama_pembeli' => ['required'],
             'alamat' => ['required'],
             'no_hp' => ['required'],
@@ -20,8 +22,17 @@ class CreateOrderRequest extends FormRequest
             'background' => ['required'],
             'request' => ['required'],
             'keterangan' => ['required'],
-            'qty' => ['required', 'integer'],
-            'produk_id' => ['required', 'integer'],
+            'produk_id' => ['required', 'array', 'min:1'],
+            'produk_id.*' => ['required', 'integer', 'exists:products,id', 'distinct'],
+            'qty' => ['required', 'array', 'min:1'],
+            'qty.*' => ['required', 'integer', 'min:1'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'produk_id.*.distinct' => 'Produk tidak boleh dipilih lebih dari sekali dalam satu pesanan.',
         ];
     }
 

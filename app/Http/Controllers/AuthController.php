@@ -39,7 +39,6 @@ class AuthController extends Controller
             return redirect()->intended('dashboard');
         }
 
-        // toast('Email/Kata Sandi yang Anda masukkan salah','error');
         return redirect()->back()->with('error', 'Login error');
     }
 
@@ -50,12 +49,9 @@ class AuthController extends Controller
             request()->session()->invalidate();
             request()->session()->regenerateToken();
 
-            // toast('Anda Berhasil Keluar', 'success');
-
             return redirect()->route('login.index');
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
-            // toast('Anda Gagal Keluar', 'error');
 
             return back();
         }

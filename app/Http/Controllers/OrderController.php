@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Models\Customer;
 use App\Models\DetailOrder;
 use App\Models\Order;
 use App\Models\Product;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -14,20 +16,24 @@ class OrderController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:order', ['only' => ['index']]);
+        $this->middleware('permission:order', ['only' => ['index', 'invoice', 'invoiceThermal']]);
         $this->middleware('permission:order-create', ['only' => ['create', 'store']]);
         $this->middleware('permission:order-edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:order-delete', ['only' => ['destroy']]);
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $title = 'Penjualan';
+        $perPage = (int) $request->input('per_page', 25);
+        $perPage = in_array($perPage, [10, 25, 50, 100]) ? $perPage : 25;
+
         $orders = Order::withCount('detailOrders')
             ->orderByDesc('tgl_order')
-            ->paginate(10);
+            ->paginate($perPage)
+            ->withQueryString();
 
-        return view('orders.index', compact('title', 'orders'));
+        return view('orders.index', compact('title', 'orders', 'perPage'));
     }
 
     public function create()
@@ -39,18 +45,30 @@ class OrderController extends Controller
     public function store(CreateOrderRequest $request)
     {
         try {
-            $productId = $request->input('produk_id');
-            $qty = $request->input('qty');
-            $product = Product::findOrFail($productId);
+            $produkIds = $request->input('produk_id');
+            $qtys = $request->input('qty');
 
-            if ($qty > $product->stok){
-                alert()->warning('Oops..', 'Stok tidak mencukupi');
-                return redirect()->back();
+            $products = Product::whereIn('id', $produkIds)->get()->keyBy('id');
+
+            foreach ($produkIds as $index => $produkId) {
+                $product = $products->get($produkId);
+                if (!$product || $qtys[$index] > $product->stok) {
+                    alert()->warning('Oops..', 'Stok ' . optional($product)->nama . ' tidak mencukupi');
+                    return redirect()->back()->withInput();
+                }
             }
 
-            DB::transaction(function () use ($qty, $product, $request){
+            DB::transaction(function () use ($produkIds, $qtys, $products, $request){
+                $customer = Customer::updateOrCreate(
+                    ['no_hp' => $request->input('no_hp')],
+                    ['nama' => $request->input('nama_pembeli'), 'alamat' => $request->input('alamat')]
+                );
+
                 $order = New Order();
+                $order->customer_id = $customer->id;
                 $order->status = $request->input('status');
+                $order->payment_status = $request->input('payment_status');
+                $order->jumlah_dibayar = $request->input('jumlah_dibayar', 0);
                 $order->nama_pembeli = $request->input('nama_pembeli');
                 $order->alamat = $request->input('alamat');
                 $order->no_hp = $request->input('no_hp');
@@ -63,30 +81,32 @@ class OrderController extends Controller
                 $order->keterangan = $request->input('keterangan');
                 $order->save();
 
-                $detailOrder = New DetailOrder();
-                $detailOrder->order_id = $order->id;
-                $detailOrder->produk_id = $product->id;
-                $detailOrder->qty = $qty;
+                $totalQty = 0;
+                $totalHargaJual = 0;
 
-                $subTotal = $detailOrder->qty * intval($product->harga);
+                foreach ($produkIds as $index => $produkId) {
+                    $qty = (int) $qtys[$index];
+                    $product = $products->get($produkId);
 
-                $detailOrder->sub_total = $subTotal;
-                $detailOrder->save();
+                    $detailOrder = New DetailOrder();
+                    $detailOrder->order_id = $order->id;
+                    $detailOrder->produk_id = $product->id;
+                    $detailOrder->qty = $qty;
 
-                /*rekap total qty dan harga jual*/
-                $updateOrder = Order::with('detailOrders')
-                    ->withSum('detailOrders', 'qty')
-                    ->withSum('detailOrders', 'sub_total')
-                    ->find($order->id);
+                    $subTotal = $qty * intval($product->harga);
+                    $detailOrder->sub_total = $subTotal;
+                    $detailOrder->save();
 
-                $updateOrder->total_qty = $detailOrder->qty;
-                $updateOrder->total_harga_jual = $detailOrder->sub_total;
-                $updateOrder->save();
+                    $totalQty += $qty;
+                    $totalHargaJual += $subTotal;
 
-                /*update stok produk*/
-                $stok = $product->stok - $updateOrder->total_qty;
-                $product->stok = $stok;
-                $product->save();
+                    $product->stok = $product->stok - $qty;
+                    $product->save();
+                }
+
+                $order->total_qty = $totalQty;
+                $order->total_harga_jual = $totalHargaJual;
+                $order->save();
             });
 
             alert()->success('success','Data Penjualan berhasil ditambahkan.');
@@ -98,6 +118,20 @@ class OrderController extends Controller
 
             return redirect()->back();
         }
+    }
+
+    public function invoice($id)
+    {
+        $order = Order::with('detailOrders.produk', 'customer')->findOrFail($id);
+
+        return view('orders.invoice', compact('order'));
+    }
+
+    public function invoiceThermal($id)
+    {
+        $order = Order::with('detailOrders.produk', 'customer')->findOrFail($id);
+
+        return view('orders.invoice-thermal', compact('order'));
     }
 
     public function edit($id)
@@ -120,7 +154,16 @@ class OrderController extends Controller
     {
         try {
             $order = Order::findOrFail($id);
+
+            $customer = Customer::updateOrCreate(
+                ['no_hp' => $request->input('no_hp')],
+                ['nama' => $request->input('nama_pembeli'), 'alamat' => $request->input('alamat')]
+            );
+
+            $order->customer_id = $customer->id;
             $order->status = $request->input('status');
+            $order->payment_status = $request->input('payment_status');
+            $order->jumlah_dibayar = $request->input('jumlah_dibayar');
             $order->nama_pembeli = $request->input('nama_pembeli');
             $order->alamat = $request->input('alamat');
             $order->no_hp = $request->input('no_hp');
@@ -149,11 +192,11 @@ class OrderController extends Controller
                 $order = Order::with('detailOrders')
                     ->findOrFail($id);
 
-                if ($order->detail_orders_count > 0 && $order->status != 'Dikirim'){
+                if ($order->detailOrders->count() > 0 && $order->status != 'Dikirim'){
                     foreach ($order->detailOrders as $detailOrder){
                         $product = Product::find($detailOrder->produk_id);
 
-                        $stok = $detailOrder->sub_total + $product->stok;
+                        $stok = $detailOrder->qty + $product->stok;
 
                         $product->stok = $stok;
                         $product->save();
@@ -166,7 +209,7 @@ class OrderController extends Controller
             alert()->success('Success', 'Pesanan Berhasil Terhapus');
         }catch (\Throwable $throwable){
             Log::error($throwable->getMessage());
-            alert()->erro('Oops', 'Data error');
+            alert()->error('Oops', 'Data error');
         }
 
         return redirect()->back();

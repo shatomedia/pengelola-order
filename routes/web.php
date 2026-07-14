@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DetailOrderController;
 use App\Http\Controllers\HasilAprioriController;
@@ -46,13 +48,15 @@ Route::middleware('auth')->group(function () {
         return redirect('/dashboard');
     });
 
-    Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
     Route::prefix('order')->group(function () {
         Route::get('/', [OrderController::class, 'index'])->name('order.index');
         Route::post('/store', [OrderController::class, 'store'])->name('order.store');
         Route::get('/create', [OrderController::class, 'create'])->name('order.create');
         Route::get('/{id}/edit', [OrderController::class, 'edit'])->name('order.edit');
+        Route::get('/{id}/invoice', [OrderController::class, 'invoice'])->name('order.invoice');
+        Route::get('/{id}/invoice/thermal', [OrderController::class, 'invoiceThermal'])->name('order.invoice.thermal');
         Route::put('/{id}/update', [OrderController::class, 'update'])->name('order.update');
         Route::delete('/{id}/delete', [OrderController::class, 'destroy'])->name('order.destroy');
     });
@@ -141,4 +145,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
 
     Route::get('list-products', [ProductController::class, 'listProducts'])->name('list-products');
+
+    Route::prefix('customers')->group(function () {
+        Route::get('/', [CustomerController::class, 'index'])->name('customers.index');
+        Route::get('/{id}', [CustomerController::class, 'show'])->name('customers.show');
+    });
+
+    Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
 });

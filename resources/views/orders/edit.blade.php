@@ -2,10 +2,13 @@
 
 @section('content')
     <div class="row">
-        <div class="col-8">
+        <div class="col-12 col-md-8">
             <div class="card mb-4">
-                <div class="card-header pb-0">
+                <div class="card-header pb-0 d-flex justify-content-between align-items-center">
                     <h6>{{ $title }}</h6>
+                    <a href="{{ route('order.invoice', $order->id) }}" target="_blank" class="btn btn-dark btn-sm mb-0">
+                        <i class="fas fa-file-invoice"></i> Invoice
+                    </a>
                 </div>
                 <div class="card-body px-3 pt-0 pb-2">
                     @if($errors->any())
@@ -32,12 +35,24 @@
                             </select>
                         </div>
                         <div class="form-group">
+                            <label for="inputPaymentStatus">Status Pembayaran</label>
+                            <select name="payment_status" class="form-control select2" id="inputPaymentStatus" required>
+                                <option value="Belum Bayar" {{ $order->payment_status == 'Belum Bayar' ? 'selected' : '' }}>Belum Bayar</option>
+                                <option value="DP" {{ $order->payment_status == 'DP' ? 'selected' : '' }}>DP</option>
+                                <option value="Lunas" {{ $order->payment_status == 'Lunas' ? 'selected' : '' }}>Lunas</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputJumlahDibayar">Jumlah Dibayar</label>
+                            <input name="jumlah_dibayar" type="number" class="form-control" id="inputJumlahDibayar" placeholder="Jumlah Dibayar" value="{{ $order->jumlah_dibayar }}">
+                        </div>
+                        <div class="form-group">
                             <label for="inputNamaPembeli">Nama Pembeli</label>
                             <input name="nama_pembeli" type="text" class="form-control" id="inputNamaPembeli" aria-describedby="inputNamaPembeli" placeholder="Nama Pembeli"  value="{{ $order->nama_pembeli }}" required>
                         </div>
                         <div class="form-group">
                             <label for="inputNoHp">No HP</label>
-                            <input name="no_hp" type="number" class="form-control" id="inputNoHp" aria-describedby="inputNoHp" placeholder="No Hp" value="{{ $order->no_hp }}" required>
+                            <input name="no_hp" type="tel" inputmode="numeric" pattern="[0-9]+" class="form-control" id="inputNoHp" aria-describedby="inputNoHp" placeholder="No Hp" value="{{ $order->no_hp }}" required>
                         </div>
                         <div class="form-group">
                             <label for="alamat">Alamat</label>
@@ -49,11 +64,11 @@
                         </div>
                         <div class="form-group">
                             <label for="inputTglOrder">Tgl Order</label>
-                            <input name="tgl_order" type="text" class="form-control datepicker" id="inputTglOrder" aria-describedby="inputTglOrder"value="{{ $order->tgl_order }}" placeholder="Tgl Order" required>
+                            <input name="tgl_order" type="text" class="form-control datepicker" id="inputTglOrder" aria-describedby="inputTglOrder" value="{{ $order->tgl_order }}" placeholder="Tgl Order" readonly required>
                         </div>
                         <div class="form-group">
                             <label for="inputTglKirim">Tgl Kirim</label>
-                            <input name="tgl_kirim" type="text" class="form-control datepicker" id="inputTglKirim" aria-describedby="inputTglKirim" value="{{ $order->tgl_kirim }}" placeholder="Tgl Kirim" required>
+                            <input name="tgl_kirim" type="text" class="form-control datepicker" id="inputTglKirim" aria-describedby="inputTglKirim" value="{{ $order->tgl_kirim }}" placeholder="Tgl Kirim" readonly required>
                         </div>
                         <div class="form-group">
                             <label for="inputTitle">Title</label>

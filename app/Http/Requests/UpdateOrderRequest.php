@@ -10,6 +10,8 @@ class UpdateOrderRequest extends FormRequest
     {
         return [
             'status' => ['required'],
+            'payment_status' => ['required', 'in:Belum Bayar,DP,Lunas'],
+            'jumlah_dibayar' => ['required', 'integer', 'min:0'],
             'nama_pembeli' => ['required'],
             'alamat' => ['required'],
             'no_hp' => ['required'],
