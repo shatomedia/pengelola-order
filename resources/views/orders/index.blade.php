@@ -63,8 +63,8 @@
                             <tbody>
                                 @foreach ($orders as $order)
                                     <tr>
-                                        <td class="align-middle text-center" data-label="Aksi">
-                                            <div class="d-flex justify-content-center flex-wrap gap-2">
+                                        <td class="align-middle text-center" data-label="Aksi" style="min-width: 110px;">
+                                            <div class="d-grid gap-1">
                                                 <a href="/order/{{ $order->id }}/edit"
                                                     class="btn btn-sm btn-secondary mb-0"
                                                     data-container="body" data-animation="true" aria-pressed="true">
