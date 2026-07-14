@@ -182,7 +182,9 @@
                     <h6>Tren Penjualan 6 Bulan Terakhir</h6>
                 </div>
                 <div class="card-body p-3">
-                    <div id="chartTrenPenjualan"></div>
+                    <div class="chart">
+                        <div id="chartTrenPenjualan" style="min-height: 300px;"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -192,7 +194,9 @@
                     <h6>Status Pembayaran</h6>
                 </div>
                 <div class="card-body p-3">
-                    <div id="chartPaymentStatus"></div>
+                    <div class="chart">
+                        <div id="chartPaymentStatus" style="min-height: 300px;"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -205,7 +209,9 @@
                     <h6>Produk Terlaris</h6>
                 </div>
                 <div class="card-body p-3">
-                    <div id="chartProdukTerlaris"></div>
+                    <div class="chart">
+                        <div id="chartProdukTerlaris" style="min-height: 300px;"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -362,7 +368,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             Highcharts.chart('chartTrenPenjualan', {
-                chart: { type: 'areaspline', backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+                chart: { type: 'areaspline', backgroundColor: 'rgba(255, 255, 255, 0.1)', height: 300 },
                 title: { text: null },
                 xAxis: { categories: {!! json_encode($trenLabels) !!} },
                 yAxis: { title: { text: 'Rp' }, min: 0 },
@@ -379,7 +385,7 @@
             });
 
             Highcharts.chart('chartPaymentStatus', {
-                chart: { type: 'pie', backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+                chart: { type: 'pie', backgroundColor: 'rgba(255, 255, 255, 0.1)', height: 300 },
                 title: { text: null },
                 tooltip: { pointFormat: '{series.name}: <b>{point.y} order ({point.percentage:.1f}%)</b>' },
                 series: [{
@@ -394,7 +400,7 @@
             });
 
             Highcharts.chart('chartProdukTerlaris', {
-                chart: { type: 'bar', backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+                chart: { type: 'bar', backgroundColor: 'rgba(255, 255, 255, 0.1)', height: 300 },
                 title: { text: null },
                 xAxis: { categories: {!! json_encode($produkTerlaris->pluck('nama')) !!} },
                 yAxis: { title: { text: 'Qty Terjual' }, min: 0 },
