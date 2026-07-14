@@ -154,7 +154,7 @@
                 </a>
             </li>
 
-            @canany(['pemasukan', 'pengeluaran', 'laporan-keuangan'])
+            @canany(['pemasukan', 'pengeluaran', 'pengeluaran-berulang', 'laporan-keuangan'])
                 <li class="nav-item mt-3">
                     <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Keuangan</h6>
                 </li>
@@ -178,6 +178,17 @@
                             <i class="fas fa-arrow-up text-dark text-sm"></i>
                         </div>
                         <span class="nav-link-text ms-1">Pengeluaran</span>
+                    </a>
+                </li>
+            @endcan
+
+            @can('pengeluaran-berulang')
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('pengeluaran-berulang') || $title == 'Edit Pengeluaran Berulang' || $title == 'Tambah Pengeluaran Berulang' ? 'active' : '' }}" href="/pengeluaran-berulang">
+                        <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-sync-alt text-dark text-sm"></i>
+                        </div>
+                        <span class="nav-link-text ms-1">Pengeluaran Berulang</span>
                     </a>
                 </li>
             @endcan

@@ -1,6 +1,15 @@
 @extends('layouts.master')
 
 @section('content')
+    @can('pengeluaran-berulang')
+        @if ($pengeluaranBerulangPendingCount > 0)
+            <div class="alert alert-warning d-flex justify-content-between align-items-center" role="alert">
+                <span>Ada {{ $pengeluaranBerulangPendingCount }} tagihan bulanan berulang yang belum di-generate bulan ini.</span>
+                <a href="/pengeluaran-berulang" class="btn btn-sm bg-gradient-dark mb-0">Lihat Pengeluaran Berulang</a>
+            </div>
+        @endif
+    @endcan
+
     <div class="row">
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
             <div class="card">
@@ -174,6 +183,83 @@
             </div>
         </div>
     </div>
+
+    @can('laporan-keuangan')
+        <div class="row mt-4">
+            <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-body p-3">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="numbers">
+                                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Total Pemasukan Bulan Ini</p>
+                                    <h5 class="font-weight-bolder mb-0">Rp {{ number_format($totalPemasukanBulanIni, 0, ',', '.') }}</h5>
+                                </div>
+                            </div>
+                            <div class="col-4 text-end">
+                                <div class="icon icon-shape bg-gradient-success shadow text-center border-radius-md">
+                                    <i class="fas fa-arrow-down text-lg opacity-10"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-body p-3">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="numbers">
+                                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Total Pengeluaran Bulan Ini</p>
+                                    <h5 class="font-weight-bolder mb-0">Rp {{ number_format($totalPengeluaranBulanIni, 0, ',', '.') }}</h5>
+                                </div>
+                            </div>
+                            <div class="col-4 text-end">
+                                <div class="icon icon-shape bg-gradient-danger shadow text-center border-radius-md">
+                                    <i class="fas fa-arrow-up text-lg opacity-10"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-body p-3">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="numbers">
+                                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Laba Bersih Bulan Ini</p>
+                                    <h5 class="font-weight-bolder mb-0 {{ $labaBersihBulanIni < 0 ? 'text-danger' : '' }}">Rp {{ number_format($labaBersihBulanIni, 0, ',', '.') }}</h5>
+                                </div>
+                            </div>
+                            <div class="col-4 text-end">
+                                <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                                    <i class="fas fa-scale-balanced text-lg opacity-10"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-1">
+            <div class="col-lg-12 mb-4">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <h6>Pemasukan vs Pengeluaran 6 Bulan Terakhir</h6>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="chart">
+                            <div id="chartKeuangan" style="min-height: 300px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endcan
 
     <div class="row mt-1">
         <div class="col-lg-8 mb-4">
@@ -383,6 +469,24 @@
                     color: '#17c1e8'
                 }]
             });
+
+            @can('laporan-keuangan')
+            Highcharts.chart('chartKeuangan', {
+                chart: { type: 'column', backgroundColor: 'rgba(255, 255, 255, 0.1)', height: 300 },
+                title: { text: null },
+                xAxis: { categories: {!! json_encode($keuanganTrenLabels) !!} },
+                yAxis: { title: { text: 'Rp' }, min: 0 },
+                tooltip: {
+                    formatter: function () {
+                        return '<b>' + this.x + '</b><br/>' + this.series.name + ': Rp ' + Highcharts.numberFormat(this.y, 0, ',', '.');
+                    }
+                },
+                series: [
+                    { name: 'Pemasukan', data: {!! json_encode($keuanganTrenPemasukan) !!}, color: '#82d616' },
+                    { name: 'Pengeluaran', data: {!! json_encode($keuanganTrenPengeluaran) !!}, color: '#ea0606' }
+                ]
+            });
+            @endcan
 
             Highcharts.chart('chartPaymentStatus', {
                 chart: { type: 'pie', backgroundColor: 'rgba(255, 255, 255, 0.1)', height: 300 },

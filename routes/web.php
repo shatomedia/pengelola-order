@@ -12,6 +12,7 @@ use App\Http\Controllers\LaporanPenjualanController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderImportController;
 use App\Http\Controllers\PemasukanController;
+use App\Http\Controllers\PengeluaranBerulangController;
 use App\Http\Controllers\PengeluaranController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProductCategoryController;
@@ -108,6 +109,17 @@ Route::middleware('auth')->group(function () {
         Route::get('/{id}/edit', [PengeluaranController::class, 'edit'])->name('pengeluaran.edit');
         Route::put('/{id}/update', [PengeluaranController::class, 'update'])->name('pengeluaran.update');
         Route::delete('/{id}/delete', [PengeluaranController::class, 'destroy'])->name('pengeluaran.destroy');
+        Route::put('/{id}/confirm', [PengeluaranController::class, 'confirm'])->name('pengeluaran.confirm');
+    });
+
+    Route::prefix('pengeluaran-berulang')->group(function () {
+        Route::get('/', [PengeluaranBerulangController::class, 'index'])->name('pengeluaran-berulang.index');
+        Route::post('/store', [PengeluaranBerulangController::class, 'store'])->name('pengeluaran-berulang.store');
+        Route::get('/create', [PengeluaranBerulangController::class, 'create'])->name('pengeluaran-berulang.create');
+        Route::get('/{id}/edit', [PengeluaranBerulangController::class, 'edit'])->name('pengeluaran-berulang.edit');
+        Route::put('/{id}/update', [PengeluaranBerulangController::class, 'update'])->name('pengeluaran-berulang.update');
+        Route::delete('/{id}/delete', [PengeluaranBerulangController::class, 'destroy'])->name('pengeluaran-berulang.destroy');
+        Route::post('/generate', [PengeluaranBerulangController::class, 'generate'])->name('pengeluaran-berulang.generate');
     });
 
     Route::prefix('laporan-keuangan')->group(function () {

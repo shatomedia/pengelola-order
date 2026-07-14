@@ -22,6 +22,7 @@
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Kategori</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Jumlah</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Keterangan</th>
+                                    <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -35,6 +36,15 @@
                                                         data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
                                                         <i class="fas fa-edit text-xs" aria-hidden="true"></i>
                                                     </a>
+                                                    @if($pengeluaran->status == 'draft')
+                                                        <form action="/pengeluaran/{{ $pengeluaran->id }}/confirm" method="POST" class="d-inline" onsubmit="return confirm('Konfirmasi pengeluaran ini?')">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <button type="submit" class="btn btn-success btn-sm mb-0 px-2" title="Konfirmasi">
+                                                                <i class="fas fa-check text-xs" aria-hidden="true"></i>
+                                                            </button>
+                                                        </form>
+                                                    @endif
                                                 @endcan
                                                 @can('pengeluaran-delete')
                                                     <form action="/pengeluaran/{{ $pengeluaran->id }}/delete" method="POST" class="d-inline" onsubmit="return confirm('Hapus data ini?')">
@@ -51,6 +61,11 @@
                                         <td><p class="mb-0 text-sm">{{ optional($pengeluaran->kategori)->nama_kategori }}</p></td>
                                         <td><p class="mb-0 text-sm">Rp {{ number_format($pengeluaran->jumlah, 0, ',', '.') }}</p></td>
                                         <td><p class="mb-0 text-sm">{{ $pengeluaran->keterangan }}</p></td>
+                                        <td>
+                                            <span class="badge badge-sm {{ $pengeluaran->status == 'draft' ? 'bg-gradient-warning' : 'bg-gradient-success' }}">
+                                                {{ $pengeluaran->status == 'draft' ? 'Draft' : 'Terkonfirmasi' }}
+                                            </span>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>

@@ -23,6 +23,10 @@ class FinanceModuleSeeder extends Seeder
             'pengeluaran-edit',
             'pengeluaran-delete',
             'laporan-keuangan',
+            'pengeluaran-berulang',
+            'pengeluaran-berulang-create',
+            'pengeluaran-berulang-edit',
+            'pengeluaran-berulang-delete',
         ];
 
         foreach ($permissions as $permission) {

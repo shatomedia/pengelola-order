@@ -30,3 +30,7 @@ keuangan,pengeluaran-create
 keuangan,pengeluaran-edit
 keuangan,pengeluaran-delete
 keuangan,laporan-keuangan
+keuangan,pengeluaran-berulang
+keuangan,pengeluaran-berulang-create
+keuangan,pengeluaran-berulang-edit
+keuangan,pengeluaran-berulang-delete

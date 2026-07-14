@@ -14,7 +14,7 @@ class PengeluaranController extends Controller
     {
         $this->middleware('permission:pengeluaran', ['only' => ['index']]);
         $this->middleware('permission:pengeluaran-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:pengeluaran-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:pengeluaran-edit', ['only' => ['edit', 'update', 'confirm']]);
         $this->middleware('permission:pengeluaran-delete', ['only' => ['destroy']]);
     }
 
@@ -68,6 +68,22 @@ class PengeluaranController extends Controller
             $pengeluaran->update($request->validated());
 
             alert()->success('Success', 'Data Pengeluaran berhasil diupdate.');
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            alert()->error('Oops', 'Data Error');
+        }
+
+        return redirect()->back();
+    }
+
+    public function confirm($id)
+    {
+        try {
+            $pengeluaran = Pengeluaran::findOrFail($id);
+            $pengeluaran->status = 'terkonfirmasi';
+            $pengeluaran->save();
+
+            alert()->success('Success', 'Pengeluaran berhasil dikonfirmasi.');
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             alert()->error('Oops', 'Data Error');

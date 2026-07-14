@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\DetailOrder;
 use App\Models\HasilApriori;
 use App\Models\Order;
+use App\Models\Pemasukan;
+use App\Models\Pengeluaran;
+use App\Models\PengeluaranBerulang;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Carbon\Carbon;
@@ -93,10 +96,54 @@ class DashboardController extends Controller
             ->take(5)
             ->get(['nama', 'stok']);
 
+        $totalPemasukanNonOrderBulanIni = Pemasukan::whereYear('tanggal', $bulanIni->year)
+            ->whereMonth('tanggal', $bulanIni->month)
+            ->sum('jumlah');
+        $totalPemasukanBulanIni = $pendapatanBulanIni + $totalPemasukanNonOrderBulanIni;
+        $totalPengeluaranBulanIni = (int) Pengeluaran::terkonfirmasi()
+            ->whereYear('tanggal', $bulanIni->year)
+            ->whereMonth('tanggal', $bulanIni->month)
+            ->sum('jumlah');
+        $labaBersihBulanIni = $totalPemasukanBulanIni - $totalPengeluaranBulanIni;
+
+        $keuanganTrenLabels = [];
+        $keuanganTrenPemasukan = [];
+        $keuanganTrenPengeluaran = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $bulan = Carbon::now()->subMonths($i);
+            $keuanganTrenLabels[] = $bulan->isoFormat('MMM YYYY');
+
+            $penjualanBulan = (int) Order::whereYear('tgl_order', $bulan->year)
+                ->whereMonth('tgl_order', $bulan->month)
+                ->sum('total_harga_jual');
+            $pemasukanLainBulan = (int) Pemasukan::whereYear('tanggal', $bulan->year)
+                ->whereMonth('tanggal', $bulan->month)
+                ->sum('jumlah');
+            $keuanganTrenPemasukan[] = $penjualanBulan + $pemasukanLainBulan;
+
+            $keuanganTrenPengeluaran[] = (int) Pengeluaran::terkonfirmasi()
+                ->whereYear('tanggal', $bulan->year)
+                ->whereMonth('tanggal', $bulan->month)
+                ->sum('jumlah');
+        }
+
+        $pengeluaranBerulangPendingCount = PengeluaranBerulang::aktif()
+            ->get()
+            ->reject(function ($template) use ($bulanIni) {
+                return Pengeluaran::where('pengeluaran_berulang_id', $template->id)
+                    ->whereYear('tanggal', $bulanIni->year)
+                    ->whereMonth('tanggal', $bulanIni->month)
+                    ->exists();
+            })
+            ->count();
+
         return view('dashboard.index', compact(
             'title', 'products', 'category', 'orders', 'hasilApriori', 'totalPenjualan', 'ordersToday',
             'totalOrderBulanIni', 'pendapatanBulanIni', 'piutang', 'stokMenipisCount',
-            'trenLabels', 'trenData', 'paymentStatusCounts', 'produkTerlaris', 'produkStokMenipis'
+            'trenLabels', 'trenData', 'paymentStatusCounts', 'produkTerlaris', 'produkStokMenipis',
+            'totalPemasukanBulanIni', 'totalPengeluaranBulanIni', 'labaBersihBulanIni',
+            'keuanganTrenLabels', 'keuanganTrenPemasukan', 'keuanganTrenPengeluaran',
+            'pengeluaranBerulangPendingCount'
         ));
     }
 }
