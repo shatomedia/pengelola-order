@@ -5,9 +5,12 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DetailOrderController;
 use App\Http\Controllers\HasilAprioriController;
+use App\Http\Controllers\LaporanKeuanganController;
 use App\Http\Controllers\LaporanPenjualanController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderImportController;
+use App\Http\Controllers\PemasukanController;
+use App\Http\Controllers\PengeluaranController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
@@ -84,6 +87,28 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/hasil-apriori', [HasilAprioriController::class, 'index']);
+
+    Route::prefix('pemasukan')->group(function () {
+        Route::get('/', [PemasukanController::class, 'index'])->name('pemasukan.index');
+        Route::post('/store', [PemasukanController::class, 'store'])->name('pemasukan.store');
+        Route::get('/create', [PemasukanController::class, 'create'])->name('pemasukan.create');
+        Route::get('/{id}/edit', [PemasukanController::class, 'edit'])->name('pemasukan.edit');
+        Route::put('/{id}/update', [PemasukanController::class, 'update'])->name('pemasukan.update');
+        Route::delete('/{id}/delete', [PemasukanController::class, 'destroy'])->name('pemasukan.destroy');
+    });
+
+    Route::prefix('pengeluaran')->group(function () {
+        Route::get('/', [PengeluaranController::class, 'index'])->name('pengeluaran.index');
+        Route::post('/store', [PengeluaranController::class, 'store'])->name('pengeluaran.store');
+        Route::get('/create', [PengeluaranController::class, 'create'])->name('pengeluaran.create');
+        Route::get('/{id}/edit', [PengeluaranController::class, 'edit'])->name('pengeluaran.edit');
+        Route::put('/{id}/update', [PengeluaranController::class, 'update'])->name('pengeluaran.update');
+        Route::delete('/{id}/delete', [PengeluaranController::class, 'destroy'])->name('pengeluaran.destroy');
+    });
+
+    Route::prefix('laporan-keuangan')->group(function () {
+        Route::get('/', [LaporanKeuanganController::class, 'index'])->name('laporan-keuangan.index');
+    });
 
     Route::prefix("permission")->group(function () {
         Route::get('/', [PermissionController::class, 'index'])->name('permission.index');

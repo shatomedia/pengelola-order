@@ -21,3 +21,12 @@ user,user-management
 user,user-management-create
 user,user-management-edit
 user,user-management-delete
+keuangan,pemasukan
+keuangan,pemasukan-create
+keuangan,pemasukan-edit
+keuangan,pemasukan-delete
+keuangan,pengeluaran
+keuangan,pengeluaran-create
+keuangan,pengeluaran-edit
+keuangan,pengeluaran-delete
+keuangan,laporan-keuangan

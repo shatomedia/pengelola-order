@@ -132,6 +132,45 @@
                 </a>
             </li>
 
+            @canany(['pemasukan', 'pengeluaran', 'laporan-keuangan'])
+                <li class="nav-item mt-3">
+                    <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Keuangan</h6>
+                </li>
+            @endcanany
+
+            @can('pemasukan')
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('pemasukan') || $title == 'Edit Pemasukan' || $title == 'Tambah Pemasukan' ? 'active' : '' }}" href="/pemasukan">
+                        <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-arrow-down text-dark text-sm"></i>
+                        </div>
+                        <span class="nav-link-text ms-1">Pemasukan</span>
+                    </a>
+                </li>
+            @endcan
+
+            @can('pengeluaran')
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('pengeluaran') || $title == 'Edit Pengeluaran' || $title == 'Tambah Pengeluaran' ? 'active' : '' }}" href="/pengeluaran">
+                        <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-arrow-up text-dark text-sm"></i>
+                        </div>
+                        <span class="nav-link-text ms-1">Pengeluaran</span>
+                    </a>
+                </li>
+            @endcan
+
+            @can('laporan-keuangan')
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('laporan-keuangan') ? 'active' : '' }}" href="/laporan-keuangan">
+                        <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-file-invoice-dollar text-dark text-sm"></i>
+                        </div>
+                        <span class="nav-link-text ms-1">Laporan Keuangan</span>
+                    </a>
+                </li>
+            @endcan
+
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Data Mining</h6>
             </li>

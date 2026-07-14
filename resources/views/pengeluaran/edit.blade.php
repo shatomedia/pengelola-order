@@ -1,0 +1,51 @@
+@extends('layouts.master')
+
+@section('content')
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <h6>Edit Pengeluaran</h6>
+                </div>
+                <div class="card-body px-3 pt-0 pb-2">
+                    @if($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                    <form action="{{ route('pengeluaran.update', $pengeluaran->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="form-group">
+                            <label for="kategori_id">Kategori</label>
+                            <select name="kategori_id" class="form-control select2" id="kategori_id" required>
+                                <option value="">Pilih</option>
+                                @foreach ($kategoris as $kategori)
+                                    <option value="{{ $kategori->id }}" {{ old('kategori_id', $pengeluaran->kategori_id) == $kategori->id ? 'selected' : '' }}>{{ $kategori->nama_kategori }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="jumlah">Jumlah (Rp)</label>
+                            <input name="jumlah" type="number" class="form-control" id="jumlah" value="{{ old('jumlah', $pengeluaran->jumlah) }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tanggal">Tanggal</label>
+                            <input name="tanggal" type="text" class="form-control datepicker" id="tanggal" value="{{ old('tanggal', $pengeluaran->tanggal) }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="keterangan">Keterangan</label>
+                            <textarea name="keterangan" id="keterangan" class="form-control">{{ old('keterangan', $pengeluaran->keterangan) }}</textarea>
+                        </div>
+
+                        <button type="submit" class="btn bg-gradient-warning">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
