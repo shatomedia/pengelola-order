@@ -192,7 +192,7 @@ class OrderController extends Controller
                 $order = Order::with('detailOrders')
                     ->findOrFail($id);
 
-                if ($order->detail_orders_count > 0 && $order->status != 'Dikirim'){
+                if ($order->detailOrders->count() > 0 && $order->status != 'Dikirim'){
                     foreach ($order->detailOrders as $detailOrder){
                         $product = Product::find($detailOrder->produk_id);
 
