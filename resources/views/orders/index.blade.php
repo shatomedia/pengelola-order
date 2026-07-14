@@ -65,18 +65,18 @@
                                 @foreach ($orders as $order)
                                     <tr>
                                         <td class="align-middle text-center" data-label="Aksi">
-                                            <div>
+                                            <div class="d-flex justify-content-center gap-2 action-buttons">
                                                 <a href="/order/{{ $order->id }}/edit"
-                                                    class="btn btn-secondary btn-sm mb-0 px-2 btn-tooltip"
+                                                    class="btn btn-secondary mb-0 btn-tooltip"
                                                     data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"
                                                     data-container="body" data-animation="true" aria-pressed="true">
-                                                    <i class="fas fa-edit text-xs" aria-hidden="true"></i>
+                                                    <i class="fas fa-edit" aria-hidden="true"></i>
                                                 </a>
                                                 <a href="{{ route('order.invoice', $order->id) }}" target="_blank"
-                                                    class="btn btn-dark btn-sm mb-0 px-2 btn-tooltip"
+                                                    class="btn btn-dark mb-0 btn-tooltip"
                                                     data-bs-toggle="tooltip" data-bs-placement="top" title="Invoice"
                                                     data-container="body" data-animation="true" aria-pressed="true">
-                                                    <i class="fas fa-file-invoice text-xs" aria-hidden="true"></i>
+                                                    <i class="fas fa-file-invoice" aria-hidden="true"></i>
                                                 </a>
                                             </div>
                                         </td>

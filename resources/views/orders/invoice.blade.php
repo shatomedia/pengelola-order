@@ -35,6 +35,7 @@
             color: #344767;
         }
         .invoice-header p { margin: 2px 0; font-size: 13px; color: #67748e; }
+        .invoice-brand div { max-width: 320px; }
         .invoice-title { text-align: right; }
         .invoice-title h2 { margin: 0; font-size: 26px; letter-spacing: 2px; color: #344767; }
         .invoice-title p { margin: 4px 0; font-size: 13px; }
@@ -100,6 +101,7 @@
             <img src="{{ asset('img/sidebar-logo.png') }}" alt="Shatomedia">
             <div>
                 <p>shatomedia.com</p>
+                <p>Jl. Wates KM.11 Perum GKP Blok BC.2/11, Sedayu, Kabupaten Bantul, Daerah Istimewa Yogyakarta, 55752</p>
             </div>
         </div>
         <div class="invoice-title">
