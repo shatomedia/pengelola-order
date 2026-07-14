@@ -72,6 +72,12 @@
                                                     data-container="body" data-animation="true" aria-pressed="true">
                                                     <i class="fas fa-edit text-xs" aria-hidden="true"></i>
                                                 </a>
+                                                <a href="{{ route('order.invoice', $order->id) }}" target="_blank"
+                                                    class="btn btn-dark btn-sm mb-0 px-2 btn-tooltip"
+                                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Invoice"
+                                                    data-container="body" data-animation="true" aria-pressed="true">
+                                                    <i class="fas fa-file-invoice text-xs" aria-hidden="true"></i>
+                                                </a>
                                             </div>
                                         </td>
                                         <td data-label="Status">
