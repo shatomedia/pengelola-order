@@ -99,8 +99,7 @@
         <div class="invoice-brand">
             <img src="{{ asset('img/sidebar-logo.png') }}" alt="Shatomedia">
             <div>
-                <h1>Shatomedia</h1>
-                <p>sales.shatomedia.com</p>
+                <p>shatomedia.com</p>
             </div>
         </div>
         <div class="invoice-title">
