@@ -224,7 +224,7 @@
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">
                         <div class="table-responsive p-0">
-                            <table class="table align-items-center mb-0">
+                            <table class="table align-items-center mb-0 table-mobile-cards">
                                 <thead>
                                     <tr>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -252,21 +252,21 @@
                                 <tbody>
                                     @foreach ($users as $nomor => $user)
                                         <tr>
-                                            <td class="ps-4">
+                                            <td class="ps-4" data-label="No">
                                                 <p class="text-xs font-weight-bold mb-0">{{ $nomor + 1 }}</p>
                                             </td>
 
-                                            <td class="text-center">
+                                            <td class="text-center" data-label="Nama">
                                                 <p class="text-xs font-weight-bold mb-0">{{ $user->name }}</p>
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center" data-label="Email">
                                                 <p class="text-xs font-weight-bold mb-0">{{ $user->email }}</p>
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center" data-label="Role">
                                                 <p class="text-xs font-weight-bold mb-0">
                                                     {{ Str::title($user->modelHasRole->role->name) }}</p>
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center" data-label="Aksi">
 
                                                 <form action="{{ route('users.destroy', $user->id) }}" method="POST">
                                                     @csrf

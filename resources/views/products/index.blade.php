@@ -12,7 +12,7 @@
     </div>
     <div class="card-body px-0 pt-0 pb-2">
       <div class="table-responsive p-0">
-        <table class="table align-items-center justify-content-center mb-0">
+        <table class="table align-items-center justify-content-center mb-0 table-mobile-cards">
           <thead>
             <tr>
               <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Kode Produk</th>
@@ -28,39 +28,39 @@
           <tbody>
             @foreach ($products as $product)
             <tr>
-              <td>
+              <td data-label="Kode Produk">
                 <div class="d-flex px-3">
                     <h6 class="mb-0 text-sm">{{ $product->kode_produk }}</h6>
                 </div>
               </td>
-              
-              <td>
+
+              <td data-label="Nama Produk">
                 <div class="d-flex px-3">
                     <h6 class="mb-0 text-sm">{{ $product->nama }}</h6>
                 </div>
               </td>
-              <td>
+              <td data-label="Kategori">
                 <p class="text-xs font-weight-bold mb-0">{{ optional($product->category)->nama_kategori }}
                 </p>
               </td>
-              <td>
+              <td data-label="Harga">
                 <span class="text-xs font-weight-bold">{{ $product->harga }}</span>
               </td>
-              <td>
+              <td data-label="Deskripsi">
                 <span class="text-xs font-weight-bold">{{ $product->deskripsi }}</span>
               </td>
-              <td class="align-middle text-center">
+              <td class="align-middle text-center" data-label="Stok">
                 <div class="d-flex align-items-center justify-content-center">
                   <span class="text-xs font-weight-bold">{{ $product->stok }}</span>
                 </div>
               </td>
-              <td class="align-middle text-center">
+              <td class="align-middle text-center" data-label="Satuan">
                 <div class="d-flex align-items-center justify-content-center">
                   <span class="me-2 text-xs font-weight-bold">{{ $product->satuan }}</span>
                 </div>
               </td>
-                <td class="align-middle text-center">
-                  <div class="d-flex align-items-center justify-content-center">
+                <td class="align-middle text-center" data-label="Aksi">
+                  <div class="d-flex flex-wrap align-items-center justify-content-center action-buttons">
                     <a class="btn btn-link text-dark px-3 mb-0" href="/product/{{ $product->id }}/edit"><i class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</a>
                     <form action="/product/{{ $product->id }}" method="POST">
                       @method('DELETE')
@@ -70,11 +70,11 @@
                       </button>
                   </form>
                   </div>
-                  
+
                 </td>
-            </tr>    
+            </tr>
             @endforeach
-          
+
           </tbody>
         </table>
       </div>

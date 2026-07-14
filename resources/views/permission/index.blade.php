@@ -76,7 +76,7 @@
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">
                         <div class="table-responsive p-0">
-                            <table class="table align-items-center mb-0">
+                            <table class="table align-items-center mb-0 table-mobile-cards">
                                 <thead>
                                     <tr>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -100,19 +100,19 @@
                                 <tbody>
                                     @foreach ($permissions as $no => $permission)
                                         <tr>
-                                            <td>
+                                            <td data-label="No">
                                                 <p class="text-sm font-weight-bold mb-0 px-3">{{ $no + 1 }}</p>
                                             </td>
-                                            <td>
+                                            <td data-label="Nama">
                                                 <p class="text-center text-sm font-weight-bold mb-0">{{ $permission->name }}
                                                 </p>
                                             </td>
-                                            <td>
+                                            <td data-label="Kategori">
                                                 <p class="text-center text-sm font-weight-bold mb-0">
                                                     {{ $permission->category }}</p>
                                             </td>
-                                            <td>
-                                                <div class="d-flex justify-content-center">
+                                            <td data-label="Aksi">
+                                                <div class="d-flex flex-wrap justify-content-center action-buttons">
                                                     <button type="button" class="btn bg-gradient-warning btn-sm mx-1"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#modalEdit{{ $permission->id }}">
