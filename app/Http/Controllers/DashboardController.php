@@ -82,7 +82,11 @@ class DashboardController extends Controller
             ->groupBy('products.id', 'products.nama')
             ->orderByDesc('total_qty')
             ->take(5)
-            ->get();
+            ->get()
+            ->map(function ($item) {
+                $item->total_qty = (int) $item->total_qty;
+                return $item;
+            });
 
         $produkStokMenipis = Product::where('stok', '<=', 5)
             ->orderBy('stok')
