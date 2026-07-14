@@ -57,3 +57,25 @@
     justify-content: center;
     font-size: 1rem;
 }
+
+/* Wide tables (many columns) need a horizontal scroll on laptop/tablet widths.
+   macOS/trackpad users get an overlay scrollbar that's invisible until actively
+   scrolling, so the extra columns look "cut off" instead of just needing a swipe.
+   Force a permanently visible scrollbar so it's obvious there's more to see. */
+.table-responsive {
+    scrollbar-width: thin;
+    scrollbar-color: #adb5bd #f0f2f5;
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f0f2f5;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background-color: #adb5bd;
+    border-radius: 6px;
+}
