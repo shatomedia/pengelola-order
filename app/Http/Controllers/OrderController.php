@@ -16,7 +16,7 @@ class OrderController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:order', ['only' => ['index', 'invoice']]);
+        $this->middleware('permission:order', ['only' => ['index', 'invoice', 'invoiceThermal']]);
         $this->middleware('permission:order-create', ['only' => ['create', 'store']]);
         $this->middleware('permission:order-edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:order-delete', ['only' => ['destroy']]);
@@ -125,6 +125,13 @@ class OrderController extends Controller
         $order = Order::with('detailOrders.produk', 'customer')->findOrFail($id);
 
         return view('orders.invoice', compact('order'));
+    }
+
+    public function invoiceThermal($id)
+    {
+        $order = Order::with('detailOrders.produk', 'customer')->findOrFail($id);
+
+        return view('orders.invoice-thermal', compact('order'));
     }
 
     public function edit($id)

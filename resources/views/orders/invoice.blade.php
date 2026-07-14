@@ -93,6 +93,7 @@
 </head>
 <body>
     <div class="print-bar">
+        <a href="{{ route('order.invoice.thermal', $order->id) }}" style="margin-right: 8px; color: #344767; font-size: 13px; text-decoration: underline;">Versi Thermal 100x100</a>
         <button onclick="window.print()">Cetak / Simpan PDF</button>
     </div>
 
