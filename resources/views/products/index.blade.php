@@ -29,15 +29,11 @@
             @foreach ($products as $product)
             <tr>
               <td data-label="Kode Produk">
-                <div class="d-flex px-3">
-                    <h6 class="mb-0 text-sm">{{ $product->kode_produk }}</h6>
-                </div>
+                <h6 class="mb-0 text-sm">{{ $product->kode_produk }}</h6>
               </td>
 
               <td data-label="Nama Produk">
-                <div class="d-flex px-3">
-                    <h6 class="mb-0 text-sm">{{ $product->nama }}</h6>
-                </div>
+                <h6 class="mb-0 text-sm">{{ $product->nama }}</h6>
               </td>
               <td data-label="Kategori">
                 <p class="text-xs font-weight-bold mb-0">{{ optional($product->category)->nama_kategori }}
@@ -60,13 +56,13 @@
                 </div>
               </td>
                 <td class="align-middle text-center" data-label="Aksi">
-                  <div class="d-flex flex-wrap align-items-center justify-content-center action-buttons">
-                    <a class="btn btn-link text-dark px-3 mb-0" href="/product/{{ $product->id }}/edit"><i class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</a>
+                  <div class="d-flex flex-wrap align-items-center justify-content-center gap-1">
+                    <a class="btn btn-sm btn-link text-dark px-2 mb-0" href="/product/{{ $product->id }}/edit"><i class="fas fa-pencil-alt text-dark me-1" aria-hidden="true"></i>Edit</a>
                     <form action="/product/{{ $product->id }}" method="POST">
                       @method('DELETE')
                       @csrf
-                      <button type="submit" class="btn btn-link text-danger text-danger px-3 mb-0">
-                        <i class="far fa-trash-alt me-2" aria-hidden="true"></i>Delete
+                      <button type="submit" class="btn btn-sm btn-link text-danger px-2 mb-0">
+                        <i class="far fa-trash-alt me-1" aria-hidden="true"></i>Delete
                       </button>
                   </form>
                   </div>
