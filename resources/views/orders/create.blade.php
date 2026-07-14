@@ -70,7 +70,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="button" id="add-product-row" class="btn btn-sm bg-gradient-info mt-2">+ Tambah Produk</button>
+                            <button type="button" id="add-product-row" class="btn btn-sm bg-gradient-info mt-2"><i class="fas fa-plus" aria-hidden="true"></i> Tambah Produk</button>
                         </div>
                         <div class="form-group">
                             <label for="inputOrderVia">Order Via</label>
@@ -101,7 +101,7 @@
                             <input name="keterangan" type="text" class="form-control" id="inputKeterangan" aria-describedby="inputKeterangan" placeholder="Keterangan" value="{{ old('keterangan') }}" required>
                         </div>
 
-                        <button type="submit" class="btn bg-gradient-warning">Submit</button>
+                        <button type="submit" class="btn bg-gradient-warning"><i class="fas fa-save" aria-hidden="true"></i> Submit</button>
                     </form>
                 </div>
             </div>

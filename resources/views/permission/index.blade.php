@@ -13,7 +13,7 @@
                             <!-- Button trigger modal -->
                             <button type="button" class="btn bg-gradient-warning" data-bs-toggle="modal"
                                 data-bs-target="#exampleModal">
-                                Tambah Permission
+                                <i class="fas fa-plus" aria-hidden="true"></i> Tambah Permission
                             </button>
 
                             <!-- Modal -->
@@ -65,8 +65,8 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn bg-gradient-secondary"
-                                                    data-bs-dismiss="modal">Tutup</button>
-                                                <button type="submit" class="btn bg-gradient-primary">Simpan</button>
+                                                    data-bs-dismiss="modal"><i class="fas fa-times" aria-hidden="true"></i> Tutup</button>
+                                                <button type="submit" class="btn bg-gradient-primary"><i class="fas fa-save" aria-hidden="true"></i> Simpan</button>
                                             </div>
                                         </form>
                                     </div>
@@ -116,7 +116,7 @@
                                                     <button type="button" class="btn bg-gradient-warning btn-sm mx-1"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#modalEdit{{ $permission->id }}">
-                                                        Edit
+                                                        <i class="fas fa-edit" aria-hidden="true"></i> Edit
                                                     </button>
                                                     <!-- Modal -->
                                                     <div class="modal fade" id="modalEdit{{ $permission->id }}"
@@ -164,9 +164,9 @@
                                                                     <div class="modal-footer">
                                                                         <button type="button"
                                                                             class="btn bg-gradient-secondary"
-                                                                            data-bs-dismiss="modal">Tutup</button>
+                                                                            data-bs-dismiss="modal"><i class="fas fa-times" aria-hidden="true"></i> Tutup</button>
                                                                         <button type="submit"
-                                                                            class="btn bg-gradient-primary">Simpan</button>
+                                                                            class="btn bg-gradient-primary"><i class="fas fa-save" aria-hidden="true"></i> Simpan</button>
                                                                     </div>
                                                                 </form>
                                                             </div>
@@ -177,7 +177,7 @@
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit"
-                                                            class="btn bg-gradient-danger btn-sm mx-1">Hapus</button>
+                                                            class="btn bg-gradient-danger btn-sm mx-1"><i class="fas fa-trash" aria-hidden="true"></i> Hapus</button>
                                                     </form>
                                                 </div>
                                             </td>

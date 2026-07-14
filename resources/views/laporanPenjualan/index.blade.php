@@ -41,9 +41,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary">Filter</button>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-filter" aria-hidden="true"></i> Filter</button>
                             <div class="float-end">
-                                <button type="submit" name="export" value="true" class="btn btn-outline-dark">Export</button>
+                                <button type="submit" name="export" value="true" class="btn btn-outline-dark"><i class="fas fa-file-export" aria-hidden="true"></i> Export</button>
                             </div>
                         </form>
                     </div>

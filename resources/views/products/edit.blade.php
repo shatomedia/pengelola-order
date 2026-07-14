@@ -50,7 +50,7 @@
               <label for="inputSatuan">Satuan</label>
               <input name="satuan" type="text" class="form-control" id="inputSatuan" aria-describedby="inputSatuan" placeholder="Satuan" value="{{ $products->satuan }}">
             </div>
-            <button type="submit" class="btn bg-gradient-warning">Submit</button>
+            <button type="submit" class="btn bg-gradient-warning"><i class="fas fa-save" aria-hidden="true"></i> Submit</button>
           </form>
         </div>
       </div>

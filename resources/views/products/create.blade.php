@@ -54,7 +54,7 @@
             <label for="inputSatuan">Satuan</label>
             <input name="satuan" type="text" class="form-control" id="inputSatuan" aria-describedby="inputSatuan" placeholder="Satuan">
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save" aria-hidden="true"></i> Submit</button>
         </form>
       </div>
     </div>

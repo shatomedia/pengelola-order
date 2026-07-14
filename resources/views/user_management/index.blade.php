@@ -115,8 +115,8 @@
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn bg-gradient-secondary"
-                                                                data-bs-dismiss="modal">Close</button>
-                                                            <button type="submit" class="btn bg-gradient-primary">Save
+                                                                data-bs-dismiss="modal"><i class="fas fa-times" aria-hidden="true"></i> Close</button>
+                                                            <button type="submit" class="btn bg-gradient-primary"><i class="fas fa-save" aria-hidden="true"></i> Save
                                                                 changes</button>
                                                         </div>
                                                     </form>
@@ -149,7 +149,7 @@
                             <!-- Button trigger modal -->
                             <button type="button" class="btn bg-gradient-warning" data-bs-toggle="modal"
                                 data-bs-target="#exampleModal">
-                                Tambah
+                                <i class="fas fa-plus" aria-hidden="true"></i> Tambah
                             </button>
 
                             <!-- Modal -->
@@ -211,8 +211,8 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn bg-gradient-secondary"
-                                                        data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn bg-gradient-primary">Save
+                                                        data-bs-dismiss="modal"><i class="fas fa-times" aria-hidden="true"></i> Close</button>
+                                                    <button type="submit" class="btn bg-gradient-primary"><i class="fas fa-save" aria-hidden="true"></i> Save
                                                         changes</button>
                                                 </div>
                                         </form>

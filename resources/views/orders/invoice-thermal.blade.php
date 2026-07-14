@@ -48,7 +48,7 @@
 <body>
     <div class="print-bar">
         <a href="{{ route('order.invoice', $order->id) }}" style="margin-right: 8px; color: #344767; font-size: 13px; text-decoration: underline;">Versi A4</a>
-        <button onclick="window.print()">Cetak / Simpan PDF</button>
+        <button onclick="window.print()"><i class="fas fa-print" aria-hidden="true"></i> Cetak / Simpan PDF</button>
     </div>
 
     <div class="center">

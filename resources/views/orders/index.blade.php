@@ -26,7 +26,7 @@
                                 <div class="input-group">
                                     <input name="template" type="file" required class="form-control"
                                         placeholder="Upload File" aria-label="Upload" aria-describedby="button-addon4">
-                                    <button class="btn bg-gradient-info mb-0" type="submit">Upload</button>
+                                    <button class="btn bg-gradient-info mb-0" type="submit"><i class="fas fa-upload" aria-hidden="true"></i> Upload</button>
                                 </div>
                             </form>
                         </div>
@@ -151,7 +151,7 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn bg-gradient-secondary"
-                                                        data-bs-dismiss="modal">Close</button>
+                                                        data-bs-dismiss="modal"><i class="fas fa-times" aria-hidden="true"></i> Close</button>
                                                 </div>
                                             </div>
                                         </div>

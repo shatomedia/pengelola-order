@@ -34,7 +34,7 @@
                                         <td data-label="Tgl Order"><p class="mb-0 text-sm">{{ $order->tgl_order }}</p></td>
                                         <td data-label="Total Harga Jual"><p class="mb-0 text-sm">Rp {{ number_format($order->total_harga_jual, 0, ',', '.') }}</p></td>
                                         <td data-label="Aksi">
-                                            <a href="/order/{{ $order->id }}/edit" class="btn btn-secondary btn-sm mb-0">Lihat</a>
+                                            <a href="/order/{{ $order->id }}/edit" class="btn btn-secondary btn-sm mb-0"><i class="fas fa-eye" aria-hidden="true"></i> Lihat</a>
                                         </td>
                                     </tr>
                                 @empty

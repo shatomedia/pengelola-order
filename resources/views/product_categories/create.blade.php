@@ -28,7 +28,7 @@
             <label for="inputDeskripsi">Deskripsi</label>
             <input name="deskripsi" type="text" class="form-control" id="inputDeskripsi" aria-describedby="inputDeskripsi" placeholder="Deskripsi">
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save" aria-hidden="true"></i> Submit</button>
         </form>
       </div>
     </div>

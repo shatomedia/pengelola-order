@@ -22,10 +22,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary">Filter</button>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-filter" aria-hidden="true"></i> Filter</button>
                             <div class="float-end">
-                                <button type="submit" name="export" value="excel" class="btn btn-outline-dark">Export Excel</button>
-                                <button type="submit" name="export" value="pdf" class="btn btn-outline-dark">Export PDF</button>
+                                <button type="submit" name="export" value="excel" class="btn btn-outline-dark"><i class="fas fa-file-excel" aria-hidden="true"></i> Export Excel</button>
+                                <button type="submit" name="export" value="pdf" class="btn btn-outline-dark"><i class="fas fa-file-pdf" aria-hidden="true"></i> Export PDF</button>
                             </div>
                         </form>
                     </div>

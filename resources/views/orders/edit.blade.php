@@ -87,7 +87,7 @@
                             <input name="keterangan" type="text" class="form-control" id="inputKeterangan" aria-describedby="inputKeterangan" placeholder="Keterangan" value="{{ $order->keterangan }}" required>
                         </div>
 
-                        <button type="submit" class="btn bg-gradient-warning">Submit</button>
+                        <button type="submit" class="btn bg-gradient-warning"><i class="fas fa-save" aria-hidden="true"></i> Submit</button>
                     </form>
                 </div>
             </div>
@@ -118,7 +118,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <input type="hidden" name="order_id" value="{{ $order->id }}">
-                                        <button type="submit" class="btn btn-sm btn-danger btn-delete-confirm">Hapus</button>
+                                        <button type="submit" class="btn btn-sm btn-danger btn-delete-confirm"><i class="fas fa-trash" aria-hidden="true"></i> Hapus</button>
                                     </form>
                                 </td>
                             </tr>
@@ -145,7 +145,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <button type="submit" class="btn bg-gradient-primary">Submit</button>
+                        <button type="submit" class="btn bg-gradient-primary"><i class="fas fa-save" aria-hidden="true"></i> Submit</button>
                     </div>
                 </form>
             </div>

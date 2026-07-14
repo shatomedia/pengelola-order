@@ -49,7 +49,7 @@
                             <textarea name="keterangan" id="keterangan" class="form-control" placeholder="Keterangan">{{ old('keterangan') }}</textarea>
                         </div>
 
-                        <button type="submit" class="btn bg-gradient-warning">Submit</button>
+                        <button type="submit" class="btn bg-gradient-warning"><i class="fas fa-save" aria-hidden="true"></i> Submit</button>
                     </form>
                 </div>
             </div>

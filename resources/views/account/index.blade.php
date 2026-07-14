@@ -160,8 +160,8 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn bg-gradient-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
-                                                <button type="button" class="btn bg-gradient-primary">Save
+                                                    data-bs-dismiss="modal"><i class="fas fa-times" aria-hidden="true"></i> Close</button>
+                                                <button type="button" class="btn bg-gradient-primary"><i class="fas fa-save" aria-hidden="true"></i> Save
                                                     changes</button>
                                             </div>
                                         </div>

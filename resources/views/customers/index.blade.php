@@ -13,7 +13,7 @@
                             <input type="text" name="search" class="form-control" placeholder="Cari nama / no HP" value="{{ $search }}">
                         </div>
                         <div class="col-md-2">
-                            <button type="submit" class="btn bg-gradient-info mb-0 w-100">Cari</button>
+                            <button type="submit" class="btn bg-gradient-info mb-0 w-100"><i class="fas fa-search" aria-hidden="true"></i> Cari</button>
                         </div>
                     </form>
                 </div>
@@ -39,7 +39,7 @@
                                         <td data-label="Jumlah Order"><p class="mb-0 text-sm">{{ $customer->orders_count }}</p></td>
                                         <td data-label="Total Belanja"><p class="mb-0 text-sm">Rp {{ number_format($customer->orders_sum_total_harga_jual ?? 0, 0, ',', '.') }}</p></td>
                                         <td data-label="Aksi">
-                                            <a href="{{ route('customers.show', $customer->id) }}" class="btn btn-secondary btn-sm mb-0">Riwayat</a>
+                                            <a href="{{ route('customers.show', $customer->id) }}" class="btn btn-secondary btn-sm mb-0"><i class="fas fa-history" aria-hidden="true"></i> Riwayat</a>
                                         </td>
                                     </tr>
                                 @endforeach
