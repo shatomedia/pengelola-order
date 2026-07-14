@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\LaporanKeuanganExport;
+use App\Models\Order;
 use App\Models\Pemasukan;
 use App\Models\Pengeluaran;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -44,7 +45,12 @@ class LaporanKeuanganController extends Controller
             ->orderByDesc('tanggal')
             ->get();
 
-        $totalPemasukan = $pemasukans->sum('jumlah');
+        $ordersDenganPembayaran = Order::whereBetween('tgl_order', [$startDate, $endDate])
+            ->where('jumlah_dibayar', '>', 0)
+            ->orderByDesc('tgl_order')
+            ->get();
+
+        $totalPemasukan = $pemasukans->sum('jumlah') + $ordersDenganPembayaran->sum('jumlah_dibayar');
         $totalPengeluaran = $pengeluarans->sum('jumlah');
         $saldo = $totalPemasukan - $totalPengeluaran;
 
@@ -54,14 +60,14 @@ class LaporanKeuanganController extends Controller
 
         if (request('export') == 'pdf') {
             $pdf = Pdf::loadView('laporanKeuangan.pdf', compact(
-                'pemasukans', 'pengeluarans', 'totalPemasukan', 'totalPengeluaran', 'saldo', 'date'
+                'pemasukans', 'pengeluarans', 'ordersDenganPembayaran', 'totalPemasukan', 'totalPengeluaran', 'saldo', 'date'
             ));
 
             return $pdf->download('laporan-keuangan-' . $date . '.pdf');
         }
 
         return view('laporanKeuangan.index', compact(
-            'title', 'date', 'pemasukans', 'pengeluarans', 'totalPemasukan', 'totalPengeluaran', 'saldo'
+            'title', 'date', 'pemasukans', 'pengeluarans', 'ordersDenganPembayaran', 'totalPemasukan', 'totalPengeluaran', 'saldo'
         ));
     }
 }

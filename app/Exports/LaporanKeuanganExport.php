@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Models\Order;
 use App\Models\Pemasukan;
 use App\Models\Pengeluaran;
 use Illuminate\Support\Carbon;
@@ -49,7 +50,20 @@ class LaporanKeuanganExport implements FromCollection, WithHeadings, WithMapping
                 return $row;
             });
 
-        return $pemasukans->concat($pengeluarans)->sortByDesc('tanggal')->values();
+        $ordersDenganPembayaran = Order::whereBetween('tgl_order', [$startDate, $endDate])
+            ->where('jumlah_dibayar', '>', 0)
+            ->get()
+            ->map(function ($row) {
+                $row->jenis = 'Pemasukan (Order)';
+                $row->tanggal = $row->tgl_order;
+                $row->jumlah = $row->jumlah_dibayar;
+                $row->kategori = null;
+                $row->keterangan_tampil = $row->no_faktur . ' - ' . $row->nama_pembeli;
+
+                return $row;
+            });
+
+        return $pemasukans->concat($pengeluarans)->concat($ordersDenganPembayaran)->sortByDesc('tanggal')->values();
     }
 
     public function headings(): array

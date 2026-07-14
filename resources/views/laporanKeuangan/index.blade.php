@@ -71,6 +71,15 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach ($ordersDenganPembayaran as $orderBayar)
+                                        <tr>
+                                            <td><p class="mb-0 text-sm">{{ \Illuminate\Support\Carbon::parse($orderBayar->tgl_order)->isoFormat('DD MMM YYYY') }}</p></td>
+                                            <td><span class="badge badge-sm bg-gradient-info">Pemasukan (Order)</span></td>
+                                            <td><p class="mb-0 text-sm">-</p></td>
+                                            <td><p class="mb-0 text-sm">{{ $orderBayar->no_faktur }} - {{ $orderBayar->nama_pembeli }}</p></td>
+                                            <td><p class="mb-0 text-sm">Rp {{ number_format($orderBayar->jumlah_dibayar, 0, ',', '.') }}</p></td>
+                                        </tr>
+                                    @endforeach
                                     @foreach ($pemasukans as $pemasukan)
                                         <tr>
                                             <td><p class="mb-0 text-sm">{{ \Illuminate\Support\Carbon::parse($pemasukan->tanggal)->isoFormat('DD MMM YYYY') }}</p></td>

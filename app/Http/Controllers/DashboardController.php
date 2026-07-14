@@ -99,7 +99,10 @@ class DashboardController extends Controller
         $totalPemasukanNonOrderBulanIni = Pemasukan::whereYear('tanggal', $bulanIni->year)
             ->whereMonth('tanggal', $bulanIni->month)
             ->sum('jumlah');
-        $totalPemasukanBulanIni = $pendapatanBulanIni + $totalPemasukanNonOrderBulanIni;
+        $totalPembayaranOrderBulanIni = (int) Order::whereYear('tgl_order', $bulanIni->year)
+            ->whereMonth('tgl_order', $bulanIni->month)
+            ->sum('jumlah_dibayar');
+        $totalPemasukanBulanIni = $totalPembayaranOrderBulanIni + $totalPemasukanNonOrderBulanIni;
         $totalPengeluaranBulanIni = (int) Pengeluaran::terkonfirmasi()
             ->whereYear('tanggal', $bulanIni->year)
             ->whereMonth('tanggal', $bulanIni->month)
@@ -113,13 +116,13 @@ class DashboardController extends Controller
             $bulan = Carbon::now()->subMonths($i);
             $keuanganTrenLabels[] = $bulan->isoFormat('MMM YYYY');
 
-            $penjualanBulan = (int) Order::whereYear('tgl_order', $bulan->year)
+            $pembayaranOrderBulan = (int) Order::whereYear('tgl_order', $bulan->year)
                 ->whereMonth('tgl_order', $bulan->month)
-                ->sum('total_harga_jual');
+                ->sum('jumlah_dibayar');
             $pemasukanLainBulan = (int) Pemasukan::whereYear('tanggal', $bulan->year)
                 ->whereMonth('tanggal', $bulan->month)
                 ->sum('jumlah');
-            $keuanganTrenPemasukan[] = $penjualanBulan + $pemasukanLainBulan;
+            $keuanganTrenPemasukan[] = $pembayaranOrderBulan + $pemasukanLainBulan;
 
             $keuanganTrenPengeluaran[] = (int) Pengeluaran::terkonfirmasi()
                 ->whereYear('tanggal', $bulan->year)
