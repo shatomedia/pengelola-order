@@ -21,6 +21,7 @@ use App\Http\Controllers\ProsesAprioriController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SelectProductController;
 use App\Http\Controllers\TemplateOrderController;
+use App\Http\Controllers\TransactionCategoryController;
 use App\Http\Controllers\UserManageController;
 use Illuminate\Support\Facades\Route;
 
@@ -121,6 +122,13 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{id}/delete', [PengeluaranBerulangController::class, 'destroy'])->name('pengeluaran-berulang.destroy');
         Route::post('/generate', [PengeluaranBerulangController::class, 'generate'])->name('pengeluaran-berulang.generate');
     });
+
+    Route::get('/kategori-keuangan', [TransactionCategoryController::class, 'index']);
+    Route::post('/kategori-keuangan', [TransactionCategoryController::class, 'store']);
+    Route::get('/kategori-keuangan/create', [TransactionCategoryController::class, 'create']);
+    Route::get('/kategori-keuangan/{id}/edit', [TransactionCategoryController::class, 'edit']);
+    Route::put('/kategori-keuangan/{id}', [TransactionCategoryController::class, 'update']);
+    Route::delete('/kategori-keuangan/{id}', [TransactionCategoryController::class, 'destroy']);
 
     Route::prefix('laporan-keuangan')->group(function () {
         Route::get('/', [LaporanKeuanganController::class, 'index'])->name('laporan-keuangan.index');

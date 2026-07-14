@@ -154,7 +154,7 @@
                 </a>
             </li>
 
-            @canany(['pemasukan', 'pengeluaran', 'pengeluaran-berulang', 'laporan-keuangan'])
+            @canany(['pemasukan', 'pengeluaran', 'pengeluaran-berulang', 'laporan-keuangan', 'kategori-keuangan'])
                 <li class="nav-item mt-3">
                     <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Keuangan</h6>
                 </li>
@@ -200,6 +200,17 @@
                             <i class="fas fa-file-invoice-dollar text-dark text-sm"></i>
                         </div>
                         <span class="nav-link-text ms-1">Laporan Keuangan</span>
+                    </a>
+                </li>
+            @endcan
+
+            @can('kategori-keuangan')
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('kategori-keuangan') || $title == 'Edit Kategori Keuangan' || $title == 'Tambah Kategori Keuangan' ? 'active' : '' }}" href="/kategori-keuangan">
+                        <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-tags text-dark text-sm"></i>
+                        </div>
+                        <span class="nav-link-text ms-1">Kategori Keuangan</span>
                     </a>
                 </li>
             @endcan
