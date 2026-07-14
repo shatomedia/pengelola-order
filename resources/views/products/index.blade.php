@@ -46,8 +46,8 @@
               <td data-label="Harga">
                 <span class="text-xs font-weight-bold">{{ $product->harga }}</span>
               </td>
-              <td data-label="Deskripsi">
-                <span class="text-xs font-weight-bold">{{ $product->deskripsi }}</span>
+              <td data-label="Deskripsi" style="max-width: 220px;">
+                <span class="text-xs font-weight-bold" title="{{ $product->deskripsi }}">{{ Str::limit($product->deskripsi, 60) }}</span>
               </td>
               <td class="align-middle text-center" data-label="Stok">
                 <div class="d-flex align-items-center justify-content-center">
