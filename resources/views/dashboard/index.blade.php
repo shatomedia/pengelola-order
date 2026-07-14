@@ -1,7 +1,28 @@
 @extends('layouts.master')
 
 @section('content')
+    @if ($orderPiutangList->count() > 0)
+        <div class="alert alert-danger d-flex justify-content-between align-items-center" role="alert">
+            <span>Ada {{ $orderPiutangList->count() }} order belum lunas, total piutang Rp {{ number_format($piutang, 0, ',', '.') }}.</span>
+            <a href="#tabel-piutang" class="btn btn-sm bg-gradient-dark mb-0">Lihat Detail Piutang</a>
+        </div>
+    @endif
+
+    @if ($stokMenipisCount > 0)
+        <div class="alert alert-danger d-flex justify-content-between align-items-center" role="alert">
+            <span>Ada {{ $stokMenipisCount }} produk dengan stok menipis (&le;5).</span>
+            <a href="/product" class="btn btn-sm bg-gradient-dark mb-0">Lihat Produk</a>
+        </div>
+    @endif
+
     @can('pengeluaran-berulang')
+        @if ($pengeluaranBerulangOverBudgetCount > 0)
+            <div class="alert alert-danger d-flex justify-content-between align-items-center" role="alert">
+                <span>Ada {{ $pengeluaranBerulangOverBudgetCount }} tagihan bulanan yang melebihi estimasi bulan ini.</span>
+                <a href="/pengeluaran-berulang" class="btn btn-sm bg-gradient-dark mb-0">Lihat Pengeluaran Berulang</a>
+            </div>
+        @endif
+
         @if ($pengeluaranBerulangPendingCount > 0)
             <div class="alert alert-warning d-flex justify-content-between align-items-center" role="alert">
                 <span>Ada {{ $pengeluaranBerulangPendingCount }} tagihan bulanan berulang yang belum di-generate bulan ini.</span>
@@ -329,6 +350,56 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 py-4" id="tabel-piutang">
+        <div class="card mb-4">
+            <div class="card-header pb-0">
+                <h6>Piutang / Order Belum Lunas</h6>
+            </div>
+            <div class="card-body px-0 pt-0 pb-2">
+                <div class="table-responsive p-0">
+                    <table class="table table-bordered mb-0 table-mobile-cards">
+                        <thead>
+                            <tr>
+                                <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">No. Faktur</th>
+                                <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Nama Pembeli</th>
+                                <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">No HP</th>
+                                <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Tgl Order</th>
+                                <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Umur (hari)</th>
+                                <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Total</th>
+                                <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Dibayar</th>
+                                <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Sisa</th>
+                                <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($orderPiutangList as $orderPiutang)
+                                <tr>
+                                    <td data-label="No. Faktur"><p class="mb-0 text-sm">{{ $orderPiutang->no_faktur }}</p></td>
+                                    <td data-label="Nama Pembeli"><p class="mb-0 text-sm">{{ $orderPiutang->nama_pembeli }}</p></td>
+                                    <td data-label="No HP" class="align-middle text-center"><span class="text-secondary text-sm">{{ $orderPiutang->no_hp }}</span></td>
+                                    <td data-label="Tgl Order"><p class="mb-0 text-sm">{{ $orderPiutang->tgl_order }}</p></td>
+                                    <td data-label="Umur (hari)" class="align-middle text-center">
+                                        <span class="text-sm">{{ \Illuminate\Support\Carbon::parse($orderPiutang->tgl_order)->diffInDays(now()) }}</span>
+                                    </td>
+                                    <td data-label="Total"><p class="mb-0 text-sm">Rp {{ number_format($orderPiutang->total_harga_jual, 0, ',', '.') }}</p></td>
+                                    <td data-label="Dibayar"><p class="mb-0 text-sm">Rp {{ number_format($orderPiutang->jumlah_dibayar, 0, ',', '.') }}</p></td>
+                                    <td data-label="Sisa"><p class="mb-0 text-sm text-danger font-weight-bold">Rp {{ number_format($orderPiutang->total_harga_jual - $orderPiutang->jumlah_dibayar, 0, ',', '.') }}</p></td>
+                                    <td data-label="Status">
+                                        <span class="badge badge-sm {{ $orderPiutang->payment_status == 'DP' ? 'bg-gradient-warning' : 'bg-gradient-danger' }}">{{ $orderPiutang->payment_status }}</span>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="9" class="text-center">Tidak ada piutang, semua order sudah lunas.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

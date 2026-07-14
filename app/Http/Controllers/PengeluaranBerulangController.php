@@ -35,6 +35,14 @@ class PengeluaranBerulangController extends Controller
                     ->whereYear('tanggal', $tahun)
                     ->exists();
 
+                $template->realisasi_bulan_ini = (int) Pengeluaran::terkonfirmasi()
+                    ->where('pengeluaran_berulang_id', $template->id)
+                    ->whereMonth('tanggal', $bulan)
+                    ->whereYear('tanggal', $tahun)
+                    ->sum('jumlah');
+
+                $template->over_budget = $template->realisasi_bulan_ini > $template->jumlah_estimasi;
+
                 return $template;
             });
 

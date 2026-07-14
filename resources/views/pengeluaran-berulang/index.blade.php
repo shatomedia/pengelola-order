@@ -30,6 +30,7 @@
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Jatuh Tempo</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Status</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Bulan Ini</th>
+                                    <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Realisasi Bulan Ini</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -68,6 +69,14 @@
                                             <span class="badge badge-sm {{ $template->sudah_generate ? 'bg-gradient-info' : 'bg-gradient-warning' }}">
                                                 {{ $template->sudah_generate ? 'Sudah Dibuat' : 'Belum Dibuat' }}
                                             </span>
+                                        </td>
+                                        <td>
+                                            <p class="mb-0 text-sm {{ $template->over_budget ? 'text-danger font-weight-bold' : '' }}">
+                                                Rp {{ number_format($template->realisasi_bulan_ini, 0, ',', '.') }}
+                                            </p>
+                                            @if($template->over_budget)
+                                                <span class="badge badge-sm bg-gradient-danger">Melebihi Estimasi</span>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

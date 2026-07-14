@@ -137,13 +137,30 @@ class DashboardController extends Controller
             })
             ->count();
 
+        $pengeluaranBerulangOverBudgetCount = PengeluaranBerulang::aktif()
+            ->get()
+            ->filter(function ($template) use ($bulanIni) {
+                $realisasi = (int) Pengeluaran::terkonfirmasi()
+                    ->where('pengeluaran_berulang_id', $template->id)
+                    ->whereYear('tanggal', $bulanIni->year)
+                    ->whereMonth('tanggal', $bulanIni->month)
+                    ->sum('jumlah');
+
+                return $realisasi > $template->jumlah_estimasi;
+            })
+            ->count();
+
+        $orderPiutangList = Order::where('payment_status', '!=', 'Lunas')
+            ->orderBy('tgl_order')
+            ->get();
+
         return view('dashboard.index', compact(
             'title', 'products', 'category', 'orders', 'hasilApriori', 'totalPenjualan', 'ordersToday',
             'totalOrderBulanIni', 'pendapatanBulanIni', 'piutang', 'stokMenipisCount',
             'trenLabels', 'trenData', 'paymentStatusCounts', 'produkTerlaris', 'produkStokMenipis',
             'totalPemasukanBulanIni', 'totalPengeluaranBulanIni', 'labaBersihBulanIni',
             'keuanganTrenLabels', 'keuanganTrenPemasukan', 'keuanganTrenPengeluaran',
-            'pengeluaranBerulangPendingCount'
+            'pengeluaranBerulangPendingCount', 'pengeluaranBerulangOverBudgetCount', 'orderPiutangList'
         ));
     }
 }
