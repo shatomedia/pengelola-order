@@ -61,6 +61,7 @@
                                         </td>
                                         <td data-label="Aksi">
                                             <a href="{{ route('customers.show', $customer->id) }}" class="btn btn-secondary btn-sm mb-0"><i class="fas fa-history" aria-hidden="true"></i> Riwayat</a>
+                                            <a href="{{ $customer->whatsappPromoUrl() }}" target="_blank" rel="noopener" class="btn btn-sm mb-0 bg-gradient-success text-white"><i class="fab fa-whatsapp" aria-hidden="true"></i> Chat WA</a>
                                             <form action="{{ route('customers.toggle-promo', $customer->id) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('PUT')

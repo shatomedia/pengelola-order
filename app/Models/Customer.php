@@ -24,4 +24,30 @@ class Customer extends Model
     {
         return $this->hasMany(Order::class);
     }
+
+    /**
+     * wa.me requires international format without leading '+' or '0'
+     * (e.g. 0812... -> 62812...). Assumes Indonesian numbers.
+     */
+    public function whatsappNumber(): string
+    {
+        $digits = preg_replace('/\D/', '', $this->no_hp);
+
+        if (str_starts_with($digits, '0')) {
+            return '62' . substr($digits, 1);
+        }
+
+        if (str_starts_with($digits, '62')) {
+            return $digits;
+        }
+
+        return '62' . $digits;
+    }
+
+    public function whatsappPromoUrl(): string
+    {
+        $message = "Halo {$this->nama}, kami dari Shatomedia mau kabari ada promo produk terbaru nih. Boleh kami info detailnya?";
+
+        return 'https://wa.me/' . $this->whatsappNumber() . '?text=' . rawurlencode($message);
+    }
 }
