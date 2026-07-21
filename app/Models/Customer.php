@@ -11,6 +11,13 @@ class Customer extends Model
         'nama',
         'alamat',
         'no_hp',
+        'promo_ditawarkan',
+        'promo_ditawarkan_at',
+    ];
+
+    protected $casts = [
+        'promo_ditawarkan' => 'boolean',
+        'promo_ditawarkan_at' => 'datetime',
     ];
 
     public function orders(): HasMany

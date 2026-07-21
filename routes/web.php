@@ -169,6 +169,8 @@ Route::middleware('auth')->group(function () {
     Route::prefix('customers')->group(function () {
         Route::get('/', [CustomerController::class, 'index'])->name('customers.index');
         Route::get('/{id}', [CustomerController::class, 'show'])->name('customers.show');
+        Route::get('/export/csv', [CustomerController::class, 'export'])->name('customers.export');
+        Route::put('/{id}/toggle-promo', [CustomerController::class, 'togglePromo'])->name('customers.toggle-promo');
     });
 
     Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
