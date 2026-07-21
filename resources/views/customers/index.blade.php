@@ -22,11 +22,17 @@
                                 <option value="sudah" {{ $promoStatus === 'sudah' ? 'selected' : '' }}>Sudah ditawarkan</option>
                             </select>
                         </div>
+                        <div class="col-md-3">
+                            <select name="sort" class="form-control">
+                                <option value="total_belanja" {{ $sort === 'total_belanja' ? 'selected' : '' }}>Urutkan: Total belanja terbesar</option>
+                                <option value="terlama-order" {{ $sort === 'terlama-order' ? 'selected' : '' }}>Urutkan: Paling lama tidak order</option>
+                            </select>
+                        </div>
                         <div class="col-md-2">
                             <button type="submit" class="btn bg-gradient-info mb-0 w-100"><i class="fas fa-search" aria-hidden="true"></i> Cari</button>
                         </div>
-                        <div class="col-md-3">
-                            <a href="{{ route('customers.export', request()->query()) }}" class="btn bg-gradient-success mb-0 w-100"><i class="fas fa-file-csv" aria-hidden="true"></i> Export CSV</a>
+                        <div class="col-md-1">
+                            <a href="{{ route('customers.export', request()->query()) }}" class="btn bg-gradient-success mb-0 w-100"><i class="fas fa-file-csv" aria-hidden="true"></i></a>
                         </div>
                     </form>
                 </div>
@@ -40,6 +46,7 @@
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Alamat</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Jumlah Order</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Total Belanja</th>
+                                    <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Terakhir Order</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Status Promo</th>
                                     <th class="text-uppercase text-secondary text-xxs opacity-7 ps-2">Aksi</th>
                                 </tr>
@@ -52,6 +59,17 @@
                                         <td data-label="Alamat"><p class="mb-0 text-sm">{{ Str::limit($customer->alamat, 50) }}</p></td>
                                         <td data-label="Jumlah Order"><p class="mb-0 text-sm">{{ $customer->orders_count }}</p></td>
                                         <td data-label="Total Belanja"><p class="mb-0 text-sm">Rp {{ number_format($customer->orders_sum_total_harga_jual ?? 0, 0, ',', '.') }}</p></td>
+                                        <td data-label="Terakhir Order">
+                                            @php $lastOrder = $customer->orders_max_tgl_order ? \Carbon\Carbon::parse($customer->orders_max_tgl_order) : null; @endphp
+                                            @if ($lastOrder)
+                                                <p class="mb-0 text-sm">{{ $lastOrder->isoFormat('DD MMM YYYY') }}</p>
+                                                @if ($lastOrder->lt(now()->subDays(90)))
+                                                    <span class="badge badge-sm bg-gradient-warning">Sudah lama tidak order</span>
+                                                @endif
+                                            @else
+                                                <span class="badge badge-sm bg-gradient-warning">Belum pernah order</span>
+                                            @endif
+                                        </td>
                                         <td data-label="Status Promo">
                                             @if ($customer->promo_ditawarkan)
                                                 <span class="badge badge-sm bg-gradient-success">Sudah ditawarkan</span>

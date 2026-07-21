@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 class Customer extends Model
 {
@@ -46,8 +47,77 @@ class Customer extends Model
 
     public function whatsappPromoUrl(): string
     {
-        $message = "Halo {$this->nama}, kami dari Shatomedia mau kabari ada promo produk terbaru nih. Boleh kami info detailnya?";
+        $recommended = $this->recommendedProductName();
+
+        $message = $recommended
+            ? "Halo {$this->nama}, kami dari Shatomedia mau kabari ada promo produk terbaru nih. Berdasarkan pembelian Anda sebelumnya, produk *{$recommended}* mungkin cocok untuk Anda. Boleh kami info detailnya?"
+            : "Halo {$this->nama}, kami dari Shatomedia mau kabari ada promo produk terbaru nih. Boleh kami info detailnya?";
 
         return 'https://wa.me/' . $this->whatsappNumber() . '?text=' . rawurlencode($message);
+    }
+
+    /**
+     * Distinct products this customer has bought before, newest order first.
+     */
+    public function boughtProductNames(): array
+    {
+        return DetailOrder::whereHas('order', fn ($query) => $query->where('customer_id', $this->id))
+            ->with('produk:id,nama')
+            ->get()
+            ->pluck('produk.nama')
+            ->filter()
+            ->unique()
+            ->values()
+            ->toArray();
+    }
+
+    /**
+     * Cross-sell suggestion from the latest Apriori run: the highest-confidence
+     * rule "{a product this customer already bought} => {recommended product}".
+     */
+    public function recommendedProductName(): ?string
+    {
+        $boughtProducts = $this->boughtProductNames();
+
+        if (empty($boughtProducts)) {
+            return null;
+        }
+
+        $latestBatch = HasilApriori::max('no_urut');
+
+        if (! $latestBatch) {
+            return null;
+        }
+
+        $rule = HasilApriori::noUrut($latestBatch)
+            ->where(function ($query) use ($boughtProducts) {
+                foreach ($boughtProducts as $productName) {
+                    $query->orWhere('nama_produk', 'LIKE', $productName . ' =>%');
+                }
+            })
+            ->orderByDesc('persentase_hasil_confidence')
+            ->first();
+
+        if (! $rule) {
+            return null;
+        }
+
+        [, $recommended] = array_pad(explode('=>', $rule->nama_produk, 2), 2, null);
+
+        return $recommended ? trim($recommended) : null;
+    }
+
+    public function lastOrderDate(): ?Carbon
+    {
+        $tglOrder = $this->orders()->max('tgl_order');
+
+        return $tglOrder ? Carbon::parse($tglOrder) : null;
+    }
+
+    public function isChurned(): bool
+    {
+        $lastOrder = $this->lastOrderDate();
+
+        return ! $lastOrder || $lastOrder->lt(now()->subDays(90));
     }
 }
