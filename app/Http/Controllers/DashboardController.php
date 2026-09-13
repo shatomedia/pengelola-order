@@ -60,7 +60,7 @@ class DashboardController extends Controller
             ->whereMonth('tgl_order', $bulanIni->month)
             ->sum('total_harga_jual');
         $piutang = (int) Order::where('payment_status', '!=', 'Lunas')
-            ->selectRaw('SUM(GREATEST(total_harga_jual - jumlah_dibayar, 0)) as total')
+            ->selectRaw('SUM(CASE WHEN total_harga_jual - jumlah_dibayar < 0 THEN 0 ELSE total_harga_jual - jumlah_dibayar END) as total')
             ->value('total');
         $stokMenipisCount = Product::where('stok', '<=', 5)->count();
 

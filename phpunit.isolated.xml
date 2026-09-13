@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd" bootstrap="tests/bootstrap-isolated.php" colors="true" cacheDirectory="/tmp/phpunit-cache">
+  <testsuites>
+    <testsuite name="Unit">
+      <directory>tests/Unit</directory>
+    </testsuite>
+    <testsuite name="Feature">
+      <directory>tests/Feature</directory>
+    </testsuite>
+  </testsuites>
+  <source>
+    <include>
+      <directory>app</directory>
+    </include>
+  </source>
+  <php>
+    <env name="BCRYPT_ROUNDS" value="4" />
+    <env name="TELESCOPE_ENABLED" value="false" />
+    <env name="APP_ENV" value="testing" force="true" />
+    <env name="APP_KEY" value="base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=" force="true" />
+    <env name="DB_CONNECTION" value="sqlite" force="true" />
+    <env name="DB_DATABASE" value=":memory:" force="true" />
+    <env name="DB_URL" value="" force="true" />
+    <env name="DATABASE_URL" value="" force="true" />
+    <env name="CACHE_DRIVER" value="array" force="true" />
+    <env name="SESSION_DRIVER" value="array" force="true" />
+    <env name="MAIL_MAILER" value="array" force="true" />
+    <env name="QUEUE_CONNECTION" value="sync" force="true" />
+    <env name="LOG_CHANNEL" value="stderr" force="true" />
+    <env name="APP_CONFIG_CACHE" value="/tmp/order-test-config.php" force="true" />
+  </php>
+</phpunit>
