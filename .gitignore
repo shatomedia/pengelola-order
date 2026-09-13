@@ -17,3 +17,6 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+
+# Isolated development dependencies; never deploy or commit.
+/.test-deps/
