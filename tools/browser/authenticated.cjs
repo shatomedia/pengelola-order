@@ -26,7 +26,9 @@ const {chromium}=require('/tmp/sales-browser-audit/node_modules/playwright');con
   await page.locator('[name=kategori_id]').selectOption({label:'Browser income'});
   await page.locator('[name=sumber]').fill('Browser submission '+name);
   await page.locator('[name=jumlah]').fill('10000');
-  await page.locator('[name=tanggal]').fill('2026-09-14');
+  await page.locator('[name=tanggal]').click();
+  await page.locator('.datepicker-dropdown:visible td.day:not(.old):not(.new)').filter({hasText:/^14$/}).click();
+  assert.notEqual(await page.locator('[name=tanggal]').inputValue(),'');
   await page.locator('[name=keterangan]').fill('Synthetic browser test');
   await page.screenshot({path:'/tmp/sales-browser-audit/'+name+'-income-before.png',fullPage:true});
   const posts=[];page.on('response',r=>{if(r.request().method()==='POST')posts.push({url:r.url().replace(base,''),status:r.status()});});
