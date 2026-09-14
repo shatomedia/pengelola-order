@@ -20,6 +20,17 @@ parser.add_argument('--database', choices=['sqlite', 'mariadb'], default='sqlite
 parser.add_argument('--database-image', default='mariadb:10.11')
 parser.add_argument('--filter', help='PHPUnit test name filter')
 args = parser.parse_args()
+# Budget for the selected containers plus headroom, before copying dependencies.
+mem = dict(line.split(':', 1) for line in Path('/proc/meminfo').read_text().splitlines())
+available_mib = int(mem['MemAvailable'].split()[0]) // 1024
+required_mib = 1536 if args.database == 'mariadb' else 1024
+if available_mib < required_mib:
+    raise SystemExit(f'Only {available_mib} MiB RAM available; need {required_mib} MiB headroom. Run the GitHub Sales tests workflow instead.')
+scratch = ROOT / '.test-work'
+scratch.mkdir(exist_ok=True)
+filesystem = subprocess.check_output(['findmnt', '-n', '-o', 'FSTYPE', '-T', str(scratch)], text=True).strip()
+if filesystem in {'tmpfs', 'ramfs'}:
+    raise SystemExit('Test workspace is memory-backed; use a disk-backed checkout or GitHub CI.')
 lock = json.loads((ROOT/'composer.lock').read_text())
 installed = json.loads((args.vendor/'composer/installed.json').read_text())
 expected = {x['name']:x['version'] for x in lock['packages']+lock.get('packages-dev',[])}
@@ -59,7 +70,7 @@ def database_namespace():
     finally:
         subprocess.run(['docker', 'rm', '-fv', name], check=True, stdout=subprocess.DEVNULL)
 
-with tempfile.TemporaryDirectory(prefix='order-tests-') as temp, database_namespace() as network:
+with tempfile.TemporaryDirectory(prefix='order-tests-', dir=scratch) as temp, database_namespace() as network:
     app = Path(temp)
     for name in ['app','bootstrap','config','database','resources','routes','tests']:
         shutil.copytree(ROOT/name,app/name,ignore=shutil.ignore_patterns('.env*','cache','*.log','*.sql','*.zip'))
