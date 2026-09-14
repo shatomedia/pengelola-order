@@ -20,3 +20,6 @@ yarn-error.log
 
 # Isolated development dependencies; never deploy or commit.
 /.test-deps/
+
+# Disposable test copies belong on disk, not /tmp tmpfs.
+/.test-work/

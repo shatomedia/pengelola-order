@@ -1,5 +1,7 @@
 from pathlib import Path
 import shutil,subprocess,json,os,secrets
+if os.environ.get('GITHUB_ACTIONS') != 'true':
+    raise SystemExit('Browser setup runs on GitHub CI only; do not allocate browser fixtures on the HomeLab.')
 root=Path(__file__).resolve().parents[2]
 base=Path('/tmp/sales-browser-audit');app=base/'app';app.mkdir(exist_ok=True)
 for name in ['app','bootstrap','config','database','resources','routes']:

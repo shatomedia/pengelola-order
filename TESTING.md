@@ -125,3 +125,14 @@ berkala; digest menjamin runtime konsisten, bukan jaminan bebas kerentanan.
 
 Referensi sintaks: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
 Referensi checkout: https://github.com/actions/checkout
+
+## Pencegahan tekanan RAM HomeLab
+
+Runner PHPUnit menolak mulai jika MemAvailable kurang dari 1024 MiB (SQLite)
+atau 1536 MiB (MariaDB), sebelum menyalin dependency atau membuat container.
+Salinan sementara berada di `.test-work/` pada checkout dan filesystem tmpfs/ramfs
+ditolak. Folder ini gitignored, isi sementara dibersihkan setelah proses normal.
+Ambang adalah guard operasional, bukan jaminan bebas OOM jika workload lain naik.
+Browser prepare juga menolak eksekusi di luar GitHub Actions sebelum membuat
+fixture. Ini mencegah pengulangan sisa fixture 804 MiB di /tmp Beelink.
+Gunakan workflow Sales tests untuk pengujian ketika HomeLab sedang sibuk.
