@@ -107,3 +107,21 @@ Pemeriksaan HTTPS produksi: /login HTTP 200; /dashboard, /order, /pemasukan,
 /pengeluaran, /laporan-keuangan HTTP 302 menuju /login tanpa sesi. Pengguna
 mengonfirmasi belum ada akun khusus pengujian produksi; transaksi setelah login
 di produksi belum diuji. Tidak membuat akun atau transaksi percobaan produksi.
+
+## CI GitHub Actions
+
+Workflow `.github/workflows/sales-tests.yml` menjalankan suite pada PR menuju main,
+push ke main, atau pemicu manual. Runner GitHub ubuntu-24.04 menarik image PHP dan
+MariaDB berdasarkan digest yang sama dengan image pengujian lokal, memasang
+Composer dependency dari lockfile tanpa plugins/scripts, membangun asset dengan
+npm ci dan Vite, lalu menjalankan SQLite dan MariaDB berurutan. Instalasi dan
+build memerlukan internet; container PHPUnit hanya memiliki jaringan terisolasi.
+
+Workflow memiliki izin contents:read, checkout tanpa menyimpan kredensial, batas
+20 menit, dan membatalkan run lama pada ref yang sama. Tidak memakai secret VPS,
+self-hosted runner, atau tahap deployment. Status CI belum menjadi required check
+sampai aturan branch diatur terpisah. Versi image dan dependency perlu ditinjau
+berkala; digest menjamin runtime konsisten, bukan jaminan bebas kerentanan.
+
+Referensi sintaks: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
+Referensi checkout: https://github.com/actions/checkout
