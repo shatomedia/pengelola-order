@@ -87,3 +87,23 @@ IP publik 1.1.1.1:443 dan 8.8.8.8:443, serta resolusi DNS example.com.
 Hasil ini adalah pemeriksaan sesaat, bukan bukti kestabilan jaringan jangka panjang.
 Hasil 12 test di atas merupakan catatan suite sebelumnya.
 Perubahan ini belum dipublikasikan atau dideploy.
+
+## Uji alur transaksi setelah login
+
+`SalesTransactionFlowTest` melakukan POST login dengan akun sintetis, memeriksa
+password salah ditolak, lalu login benar. Melalui route aplikasi, test membuka
+halaman bisnis, membuat order Rp50.000 (stok turun 2), mencatat DP Rp20.000
+(piutang Rp30.000), melunasi order, membuka kedua invoice, mencatat pemasukan
+Rp10.000 dan pengeluaran Rp15.000, serta memeriksa laba dashboard Rp45.000.
+Penghapusan transaksi diverifikasi pada database dan stok kembali ke nilai awal;
+logout menutup akses dashboard. Tidak menggunakan actingAs untuk alur ini.
+
+Suite MariaDB sesudah penambahan test: **16 test, 100 assertion lulus**,
+PHP 8.2.29 / PHPUnit 10.4.2. Test memakai request HTTP internal Laravel, bukan
+browser; JavaScript, tampilan cetak fisik, dan CSRF browser belum tercakup.
+Data dan akun sintetis berada di database sementara yang dibuang runner.
+
+Pemeriksaan HTTPS produksi: /login HTTP 200; /dashboard, /order, /pemasukan,
+/pengeluaran, /laporan-keuangan HTTP 302 menuju /login tanpa sesi. Pengguna
+mengonfirmasi belum ada akun khusus pengujian produksi; transaksi setelah login
+di produksi belum diuji. Tidak membuat akun atau transaksi percobaan produksi.
