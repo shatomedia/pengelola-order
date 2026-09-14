@@ -28,11 +28,16 @@ const {chromium}=require('/tmp/sales-browser-audit/node_modules/playwright');con
   await page.locator('[name=jumlah]').fill('10000');
   await page.locator('[name=tanggal]').fill('2026-09-14');
   await page.locator('[name=keterangan]').fill('Synthetic browser test');
-  await Promise.all([page.waitForURL('**/pemasukan'),page.getByRole('button',{name:'Submit'}).click()]);
+  await page.screenshot({path:'/tmp/sales-browser-audit/'+name+'-income-before.png',fullPage:true});
+  const posts=[];page.on('response',r=>{if(r.request().method()==='POST')posts.push({url:r.url().replace(base,''),status:r.status()});});
+  try { await Promise.all([page.waitForURL('**/pemasukan'),page.getByRole('button',{name:'Submit'}).click()]); }
+  catch(e) { results.push({viewport:name,submitError:e.message,posts,url:page.url().replace(base,''),alerts:await page.locator('.alert').allTextContents(),invalid:await page.locator('input:invalid,select:invalid').evaluateAll(xs=>xs.map(x=>({name:x.name,value:x.value,message:x.validationMessage})))}); }
+  await page.screenshot({path:'/tmp/sales-browser-audit/'+name+'-income-after.png',fullPage:true});
   results.push({viewport:name,incomeSubmit:await page.getByText('Browser submission '+name,{exact:true}).count()>0});
   await page.goto(base+'/logout',{waitUntil:'domcontentloaded'});
   results.push({viewport:name,logout:new URL(page.url()).pathname==='/login',errors,failures});
   await context.close();
  }
+ assert.ok(results.filter(r=>r.incomeSubmit===true).length===2,'Income submit must succeed on both viewports');
  }finally{fs.writeFileSync('/tmp/sales-browser-audit/results.json',JSON.stringify(results,null,2));console.log(JSON.stringify(results));await browser.close();}
 })().catch(e=>{console.error(e.message);process.exitCode=1;});

@@ -69,6 +69,7 @@ jobs:
       - name: Authenticated desktop and mobile browser checks
         run: node tools/browser/authenticated.cjs
       - name: Production public login checks
+        if: ${{ !cancelled() }}
         run: node tools/browser/public.cjs
       - name: Save browser evidence
         if: always()
