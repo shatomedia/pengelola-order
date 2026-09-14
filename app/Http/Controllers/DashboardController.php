@@ -67,7 +67,7 @@ class DashboardController extends Controller
         $trenLabels = [];
         $trenData = [];
         for ($i = 5; $i >= 0; $i--) {
-            $bulan = Carbon::now()->subMonths($i);
+            $bulan = Carbon::now()->startOfMonth()->subMonths($i);
             $trenLabels[] = $bulan->isoFormat('MMM YYYY');
             $trenData[] = (int) Order::whereYear('tgl_order', $bulan->year)
                 ->whereMonth('tgl_order', $bulan->month)
@@ -113,7 +113,7 @@ class DashboardController extends Controller
         $keuanganTrenPemasukan = [];
         $keuanganTrenPengeluaran = [];
         for ($i = 5; $i >= 0; $i--) {
-            $bulan = Carbon::now()->subMonths($i);
+            $bulan = Carbon::now()->startOfMonth()->subMonths($i);
             $keuanganTrenLabels[] = $bulan->isoFormat('MMM YYYY');
 
             $pembayaranOrderBulan = (int) Order::whereYear('tgl_order', $bulan->year)
