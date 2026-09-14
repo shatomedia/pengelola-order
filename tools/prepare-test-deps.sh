@@ -16,5 +16,6 @@ if hashlib.sha256((p/'composer.phar').read_bytes()).hexdigest() != (p/'composer.
 PY
 IMAGE=$(docker image inspect nextcloud:29-apache --format '{{.Id}}')
 docker run --rm --memory 1g --cpus 1 --cap-drop ALL --security-opt no-new-privileges \
+  --user "$(id -u):$(id -g)" --env COMPOSER_HOME=/tmp/composer \
   --mount "type=bind,source=$DEST,target=/app" --workdir /app --entrypoint php \
   "$IMAGE" composer.phar install --no-interaction --no-scripts --no-plugins --prefer-dist
